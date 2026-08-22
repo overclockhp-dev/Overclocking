@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Overclock — reseñas curadas de anime, manga, manhwa y novelas. Recomendaciones elegidas por lo que realmente engancha, sin relleno y sin spoilers.">
+<link rel="icon" type="image/png" href="90631-modified.png">
+<title>Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --fg:#F4F4F1;
+    --fg-dim:#8A8A85;
+    --line:#1E1E1C;
+    --accent:#E4293B;
+    --accent-glow:rgba(228,41,59,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Lora', serif;
+  }
+
+  header{
+    background:#000000;
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+
+  header::after{
+    content:"";
+    display:block;
+    height:2px;
+    background:linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity:0.8;
+  }
+
+  .header-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:18px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+  }
+
+  /* --- Logo + nombre --- */
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:var(--fg);
+  }
+
+  .brand img{
+    height:36px;
+    width:36px;
+    display:block;
+    border-radius:50%;
+    transition:filter .25s ease;
+    filter:drop-shadow(0 0 0 rgba(228,41,59,0));
+  }
+
+  .brand:hover img{
+    filter:drop-shadow(0 0 10px var(--accent-glow));
+  }
+
+  .brand span{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size:1.25rem;
+    letter-spacing:0.02em;
+    position:relative;
+  }
+
+  .brand span::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-6px;
+    width:0%;
+    height:2px;
+    background:var(--accent);
+    transition:width .25s ease;
+  }
+
+  .brand:hover span::after{
+    width:100%;
+  }
+
+  /* --- Navegación derecha --- */
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:28px;
+    font-family:'Lora', serif;
+  }
+
+  /* --- Menú desplegable --- */
+  .menu{
+    position:relative;
+  }
+
+  .menu-toggle{
+    background:none;
+    border:none;
+    border-bottom:2px solid transparent;
+    font-family:'Lora', serif;
+    font-size:1rem;
+    color:var(--fg);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    padding:8px 4px;
+    transition:border-color .2s ease;
+  }
+
+  .menu.open .menu-toggle{
+    border-bottom-color:var(--accent);
+  }
+
+  .menu-toggle:hover{
+    color:var(--accent);
+  }
+
+  .menu-toggle:focus-visible,
+  .login-link:focus-visible{
+    outline:1px solid var(--accent);
+    outline-offset:4px;
+  }
+
+  .menu-indicator{
+    font-size:0.85rem;
+    line-height:1;
+    color:var(--fg-dim);
+    transition:color .2s ease;
+  }
+
+  .menu-toggle:hover .menu-indicator{
+    color:var(--accent);
+  }
+
+  .menu-dropdown{
+    position:absolute;
+    top:calc(100% + 14px);
+    right:0;
+    min-width:200px;
+    max-height:60vh;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+    background:#0A0A0A;
+    border:1px solid var(--line);
+    padding:8px;
+    display:none;
+    flex-direction:column;
+  }
+
+  /* Bloquea el scroll de fondo mientras el menú está abierto (móvil) */
+  body.menu-open{
+    overflow:hidden;
+    height:100%;
+  }
+
+  .menu.open .menu-dropdown{
+    display:flex;
+  }
+
+  .menu-dropdown a{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.95rem;
+    padding:10px 12px;
+    border-radius:2px;
+  }
+
+  .menu-dropdown a:hover{
+    background:#161614;
+    color:var(--accent);
+  }
+
+  .menu-dropdown a.menu-item-profile{
+    display:none;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+    padding-top:12px;
+    color:var(--accent);
+    font-weight:600;
+  }
+
+  .menu-dropdown a.menu-item-profile.visible{
+    display:block;
+  }
+
+  .menu-dropdown a.menu-item-logout{
+    display:none;
+    color:var(--fg-dim);
+    font-size:0.88rem;
+  }
+
+  .menu-dropdown a.menu-item-logout.visible{
+    display:block;
+  }
+
+  .menu-dropdown a.menu-item-login.hidden{
+    display:none;
+  }
+
+  /* --- Iniciar sesión / Perfil --- */
+  .login-link{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:1rem;
+    font-weight:500;
+    background:var(--accent);
+    padding:9px 20px;
+    transition:background .2s ease, box-shadow .2s ease, transform .15s ease;
+  }
+
+  .login-link:hover{
+    background:#FF3B4E;
+    box-shadow:0 0 16px var(--accent-glow);
+    transform:translateY(-1px);
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    overflow:hidden;
+    background:radial-gradient(circle at 78% 20%, rgba(228,41,59,0.14) 0%, transparent 45%);
+  }
+
+  .hero-inner{
+    position:relative;
+    z-index:1;
+    max-width:1200px;
+    margin:0 auto;
+    padding:96px 32px 110px;
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    align-items:center;
+    gap:56px;
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-size:0.8rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+  }
+
+  .eyebrow::before{
+    content:"";
+    width:22px;
+    height:1px;
+    background:var(--accent);
+  }
+
+  .hero-copy h1{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size:clamp(2.4rem, 4.4vw, 3.6rem);
+    line-height:1.12;
+    margin:20px 0 22px;
+    letter-spacing:0.01em;
+  }
+
+  .hero-copy p{
+    font-size:1.05rem;
+    line-height:1.7;
+    color:var(--fg-dim);
+    max-width:46ch;
+    margin:0 0 34px;
+  }
+
+  .hero-actions{
+    display:flex;
+    align-items:center;
+    gap:26px;
+    margin-bottom:44px;
+    flex-wrap:wrap;
+  }
+
+  .btn-primary{
+    background:var(--accent);
+    color:var(--fg);
+    text-decoration:none;
+    font-size:1rem;
+    font-weight:500;
+    padding:13px 26px;
+    transition:background .2s ease, box-shadow .2s ease, transform .15s ease;
+  }
+
+  .btn-primary:hover{
+    background:#FF3B4E;
+    box-shadow:0 0 20px var(--accent-glow);
+    transform:translateY(-1px);
+  }
+
+  .btn-ghost{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.98rem;
+    border-bottom:1px solid var(--line);
+    padding-bottom:2px;
+    transition:border-color .2s ease, color .2s ease;
+  }
+
+  .btn-ghost:hover{
+    color:var(--accent);
+    border-color:var(--accent);
+  }
+
+  .genre-pills{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  .genre-pills a{
+    color:var(--fg-dim);
+    text-decoration:none;
+    font-size:0.85rem;
+    border:1px solid var(--line);
+    padding:7px 16px;
+    border-radius:999px;
+    transition:border-color .2s ease, color .2s ease;
+  }
+
+  .genre-pills a:hover{
+    border-color:var(--accent);
+    color:var(--fg);
+  }
+
+  /* --- Carrusel de reseñas (signature element) --- */
+  .hero-deck{
+    position:relative;
+    height:460px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .carousel{
+    position:relative;
+    width:320px;
+    height:440px;
+    /* Evita el resaltado azul de selección de texto al tocar/doble-tap */
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    user-select:none;
+    -webkit-touch-callout:none;
+  }
+
+  .carousel-card{
+    position:absolute;
+    top:0;
+    left:0;
+    width:320px;
+    height:440px;
+    padding:0 0 30px;
+    border:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    background:
+      radial-gradient(circle at 50% 16%, rgba(228,41,59,0.32), transparent 40%),
+      linear-gradient(to bottom, #1a0509, #0d0505 32%, #050505 75%, #000);
+    box-shadow:inset 0 0 60px rgba(0,0,0,0.5);
+    cursor:pointer;
+    transition:transform .6s ease, opacity .6s ease, filter .6s ease;
+    overflow:hidden;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    user-select:none;
+    -webkit-touch-callout:none;
+  }
+
+  /* --- Espacio reservado para la portada/foto de la obra --- */
+  .carousel-cover{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    background:
+      linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 38%, rgba(0,0,0,0.65) 58%, rgba(5,5,5,0.95) 75%, #050505 88%),
+      #141210;
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding-top:90px;
+  }
+
+  /* Velo oscuro fijo detrás del texto: garantiza legibilidad sin importar
+     cuán clara o "ruidosa" sea la portada de cada obra. */
+  .carousel-scrim{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:64%;
+    z-index:1;
+    background:linear-gradient(to bottom,
+      rgba(5,5,5,0) 0%,
+      rgba(5,5,5,0.5) 20%,
+      rgba(5,5,5,0.86) 42%,
+      #050505 62%);
+    pointer-events:none;
+  }
+
+  .carousel-cover-placeholder{
+    color:var(--fg-dim);
+    font-size:0.75rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    text-align:center;
+    padding:0 20px;
+    opacity:0.6;
+  }
+
+  .carousel-cover[style*="background-image"] .carousel-cover-placeholder{
+    display:none;
+  }
+
+  .carousel-category{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    color:var(--accent);
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    margin-top:16px;
+    padding:0 28px;
+  }
+
+  .carousel-body{
+    position:relative;
+    z-index:60;
+    margin-top:auto;
+    padding:0 28px;
+  }
+
+  .carousel-title{
+    font-family:'Lora', serif;
+    font-weight:700;
+    font-size:1.7rem;
+    line-height:1.15;
+    margin-bottom:16px;
+    text-shadow:0 2px 10px rgba(0,0,0,0.8);
+  }
+
+  .carousel-hook{
+    color:var(--fg-dim);
+    font-size:0.95rem;
+    line-height:1.55;
+    margin-bottom:22px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    text-shadow:0 1px 6px rgba(0,0,0,0.8);
+  }
+
+  .carousel-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+
+  .carousel-stars{
+    color:var(--accent);
+    font-size:1.1rem;
+    letter-spacing:2px;
+    text-shadow:0 1px 6px rgba(0,0,0,0.8);
+  }
+
+  .carousel-review{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.9rem;
+    font-weight:500;
+    border-bottom:1px solid var(--fg-dim);
+    padding-bottom:3px;
+    transition:.2s ease;
+    background:none;
+    border-top:none;
+    border-left:none;
+    border-right:none;
+    font-family:'Lora', serif;
+    cursor:pointer;
+    text-shadow:0 1px 6px rgba(0,0,0,0.8);
+  }
+
+  .carousel-review:hover{
+    color:var(--accent);
+    border-color:var(--accent);
+  }
+
+  /* Zonas de clic para avanzar/retroceder, contenidas al carrusel */
+  .carousel-edge{
+    position:absolute;
+    top:0;
+    width:22%;
+    height:calc(100% - 64px);
+    z-index:50;
+    cursor:pointer;
+  }
+
+  .carousel-edge--left{ left:0; }
+  .carousel-edge--right{ right:0; }
+
+  .carousel-dots{
+    position:absolute;
+    bottom:-32px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:8px;
+  }
+
+  .carousel-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--line);
+    transition:.3s ease;
+  }
+
+  .carousel-dot.active{
+    width:22px;
+    border-radius:10px;
+    background:var(--accent);
+  }
+
+  @media (max-width:900px){
+    .hero-inner{
+      grid-template-columns:1fr;
+      padding:64px 24px 60px;
+      gap:64px;
+    }
+    .hero-deck{
+      height:420px;
+      order:-1;
+    }
+    .carousel{
+      transform:scale(0.9);
+    }
+    .carousel-category{
+      margin-top:12px;
+      padding:0 22px;
+    }
+    .carousel-body{
+      padding:0 22px;
+    }
+    .carousel-title{
+      font-size:1.35rem;
+      line-height:1.2;
+      margin-bottom:10px;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .carousel-hook{
+      font-size:0.85rem;
+      margin-bottom:14px;
+    }
+  }
+
+  @media (max-width:560px){
+    .header-inner{ padding:16px 18px; }
+    .brand span{ font-size:1.05rem; }
+    .header-right{ gap:16px; }
+    .login-link{ padding:7px 14px; font-size:0.9rem; }
+    .hero-copy p{ max-width:none; }
+  }
+
+  /* ============ MODAL: INICIAR SESIÓN / CREAR CUENTA ============ */
+  .auth-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:200;
+  }
+
+  .auth-overlay.open{
+    display:flex;
+  }
+
+  .auth-card{
+    position:relative;
+    width:100%;
+    max-width:380px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(228,41,59,0.22), transparent 55%),
+      #0A0A0A;
+    border:1px solid var(--line);
+    padding:40px 32px 34px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+
+  .auth-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    background:none;
+    border:none;
+    color:var(--fg-dim);
+    font-size:1.3rem;
+    line-height:1;
+    cursor:pointer;
+    padding:4px;
+    transition:color .2s ease;
+  }
+
+  .auth-close:hover{
+    color:var(--accent);
+  }
+
+  .auth-brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+
+  .auth-brand img{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+  }
+
+  .auth-brand span{
+    font-family:'Lora', serif;
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.22em;
+    color:var(--fg-dim);
+  }
+
+  .auth-heading{
+    text-align:center;
+    font-family:'Lora', serif;
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+
+  .auth-subheading{
+    text-align:center;
+    font-size:0.9rem;
+    color:var(--fg-dim);
+    margin-bottom:26px;
+  }
+
+  .auth-tabs{
+    display:flex;
+    border:1px solid var(--line);
+    margin-bottom:24px;
+  }
+
+  .auth-tab{
+    flex:1;
+    background:none;
+    border:none;
+    color:var(--fg-dim);
+    font-family:'Lora', serif;
+    font-size:0.92rem;
+    font-weight:500;
+    padding:11px 0;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+
+  .auth-tab.active{
+    background:var(--accent);
+    color:var(--fg);
+  }
+
+  .auth-form{
+    display:none;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .auth-oauth{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    background:#fff;
+    color:#0d0d0d;
+    border:none;
+    font-family:'Lora', serif;
+    font-size:0.95rem;
+    font-weight:500;
+    padding:12px 0;
+    cursor:pointer;
+    transition:background .2s ease, transform .15s ease;
+  }
+
+  .auth-oauth:hover{
+    background:#e6e6e6;
+    transform:translateY(-1px);
+  }
+
+  .auth-oauth svg{
+    width:19px;
+    height:19px;
+  }
+
+  .auth-divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    color:var(--fg-dim);
+    font-size:0.75rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin:22px 0 18px;
+  }
+
+  .auth-divider::before,
+  .auth-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+
+  .auth-error{
+    display:none;
+    background:rgba(228,41,59,0.1);
+    border:1px solid rgba(228,41,59,0.4);
+    color:#ff8a95;
+    font-size:0.85rem;
+    line-height:1.5;
+    padding:10px 14px;
+    margin:-4px 0 18px;
+  }
+
+  .auth-error.visible{
+    display:block;
+  }
+
+  .auth-error.success{
+    background:rgba(76,175,80,0.1);
+    border-color:rgba(76,175,80,0.4);
+    color:#8fd694;
+  }
+
+  .auth-form.active{
+    display:flex;
+  }
+
+  .auth-field label{
+    display:block;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--fg-dim);
+    margin-bottom:8px;
+  }
+
+  .auth-field input{
+    width:100%;
+    background:#050505;
+    border:1px solid var(--line);
+    color:var(--fg);
+    font-family:'Lora', serif;
+    font-size:0.95rem;
+    padding:12px 14px;
+    transition:border-color .2s ease;
+  }
+
+  .auth-field input:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+
+  .auth-submit{
+    background:var(--accent);
+    color:var(--fg);
+    border:none;
+    font-family:'Lora', serif;
+    font-size:0.98rem;
+    font-weight:500;
+    padding:13px 0;
+    cursor:pointer;
+    margin-top:4px;
+    transition:background .2s ease, box-shadow .2s ease;
+  }
+
+  .auth-submit:hover{
+    background:#FF3B4E;
+    box-shadow:0 0 20px var(--accent-glow);
+  }
+
+  .auth-switch{
+    text-align:center;
+    font-size:0.85rem;
+    color:var(--fg-dim);
+    margin-top:20px;
+  }
+
+  .auth-switch button{
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-family:'Lora', serif;
+    font-size:0.85rem;
+    cursor:pointer;
+    text-decoration:underline;
+    padding:0;
+  }
+
+  /* ============ MODAL: VER RESEÑA ============ */
+  .review-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:200;
+  }
+
+  .review-overlay.open{
+    display:flex;
+  }
+
+  .review-card{
+    position:relative;
+    width:100%;
+    max-width:520px;
+    max-height:85vh;
+    overflow-y:auto;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(228,41,59,0.2), transparent 55%),
+      #0A0A0A;
+    border:1px solid var(--line);
+    padding:36px 32px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+
+  .review-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    background:none;
+    border:none;
+    color:var(--fg-dim);
+    font-size:1.3rem;
+    line-height:1;
+    cursor:pointer;
+    padding:4px;
+    transition:color .2s ease;
+  }
+
+  .review-close:hover{
+    color:var(--accent);
+  }
+
+  .review-category{
+    color:var(--accent);
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+
+  .review-title{
+    font-family:'Lora', serif;
+    font-weight:700;
+    font-size:1.8rem;
+    line-height:1.2;
+    margin-bottom:10px;
+  }
+
+  .review-stars{
+    color:var(--accent);
+    font-size:1.1rem;
+    letter-spacing:2px;
+    margin-bottom:20px;
+  }
+
+  .review-section-label{
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--fg-dim);
+    margin:20px 0 8px;
+  }
+
+  .review-section-label:first-of-type{
+    margin-top:0;
+  }
+
+  .review-text{
+    font-size:0.98rem;
+    line-height:1.7;
+    color:var(--fg);
+    margin:0;
+  }
+
+  .review-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .review-tags span{
+    color:var(--fg-dim);
+    font-size:0.82rem;
+    border:1px solid var(--line);
+    padding:5px 14px;
+    border-radius:999px;
+  }  /* ============ FOOTER ============ */
+  footer{
+    border-top:1px solid var(--line);
+    margin-top:40px;
+  }
+
+  .footer-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:56px 32px 32px;
+  }
+
+  .footer-top{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:40px;
+    padding-bottom:36px;
+  }
+
+  .footer-brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .footer-brand img{
+    height:32px;
+    width:32px;
+    border-radius:50%;
+  }
+
+  .footer-brand span{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size:1.1rem;
+  }
+
+  .footer-tagline{
+    color:var(--fg-dim);
+    font-size:0.85rem;
+    max-width:280px;
+    margin-top:10px;
+    line-height:1.6;
+  }
+
+  .footer-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:48px;
+  }
+
+  .footer-col h4{
+    font-family:'Lora', serif;
+    font-size:0.78rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--fg-dim);
+    margin:0 0 14px;
+    font-weight:600;
+  }
+
+  .footer-col a{
+    display:block;
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.9rem;
+    margin-bottom:10px;
+    opacity:0.85;
+    transition:color .2s ease, opacity .2s ease;
+  }
+
+  .footer-col a:hover{
+    color:var(--accent);
+    opacity:1;
+  }
+
+  .footer-bottom{
+    border-top:1px solid var(--line);
+    padding-top:24px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:16px;
+    color:var(--fg-dim);
+    font-size:0.8rem;
+  }
+
+  .footer-legal{
+    display:flex;
+    gap:22px;
+  }
+
+  .footer-legal a{
+    color:var(--fg-dim);
+    text-decoration:none;
+  }
+
+  .footer-legal a:hover{
+    color:var(--accent);
+  }
+
+  @media(max-width:640px){
+    .footer-top{ flex-direction:column; }
+    .footer-links{ gap:32px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+
+    <a class="brand" href="index.html">
+      <img src="90631-modified.png" alt="Overclock">
+      <span>Overclock</span>
+    </a>
+
+    <div class="header-right">
+
+      <div class="menu" id="menu">
+        <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menuDropdown">
+          Menú
+          <span class="menu-indicator" id="menuIndicator">﹀</span>
+        </button>
+        <div class="menu-dropdown" id="menuDropdown">
+          <a href="#" class="menu-item-login" id="menuItemLogin">Iniciar sesión</a>
+          <a href="guia.html">Guía</a>
+          <a href="perfil.html" class="menu-item-profile" id="menuItemProfile">Perfil</a>
+          <a href="#" class="menu-item-logout" id="menuItemLogout">Cerrar sesión</a>
+          <a href="foro.html">Foro</a>
+          <a href="creditos.html">Crédito</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="biblioteca.html">Biblioteca</a>
+          <a href="actualizaciones.html">Actualización</a>
+        </div>
+      </div>
+
+      <a class="login-link" href="#" id="loginTrigger">Iniciar sesión</a>
+
+    </div>
+
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-inner">
+
+      <div class="hero-copy">
+        <span class="eyebrow">Curaduría, no algoritmo</span>
+        <h1>Descubre tu próxima<br>gran historia.</h1>
+        <p>Recomendaciones de anime, manhwa, manga y novelas — elegidas por lo que realmente engancha, sin relleno y sin spoilers.</p>
+
+        <div class="hero-actions">
+          <a class="btn-primary" href="biblioteca.html">Explorar recomendaciones</a>
+          <a class="btn-ghost" href="#">Cómo elegimos →</a>
+        </div>
+
+        <div class="genre-pills">
+          <a href="biblioteca.html?genero=isekai">Isekai</a>
+          <a href="biblioteca.html?genero=fantasia-oscura">Fantasía oscura</a>
+          <a href="biblioteca.html?genero=romance">Romance</a>
+          <a href="biblioteca.html?genero=accion">Acción</a>
+          <a href="biblioteca.html?genero=recien-agregado">Recién agregado</a>
+        </div>
+      </div>
+
+      <div class="hero-deck">
+        <div class="carousel" id="carousel">
+
+          <div class="carousel-card" data-index="0">
+            <div class="carousel-cover" style="background-image:url('8613.7582.0835.jpg')">
+              <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
+            </div>
+            <div class="carousel-scrim"></div>
+            <span class="carousel-category">Manhwa · Acción</span>
+            <div class="carousel-body">
+              <h3 class="carousel-title">Solo leveling</h3>
+              <p class="carousel-hook">El cazador más débil. Un sistema que lo vuelve imparable.</p>
+              <div class="carousel-bottom">
+                <span class="carousel-stars">★★★★★</span>
+                <button type="button" class="carousel-review" data-review="0">Ver reseña</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card" data-index="1">
+            <div class="carousel-cover" style="background-image:url('9613.6582.4835.jpg')">
+              <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
+            </div>
+            <div class="carousel-scrim"></div>
+            <span class="carousel-category">Anime · Acción </span>
+            <div class="carousel-body">
+              <h3 class="carousel-title">Hell’s Paradise</h3>
+              <p class="carousel-hook">Un ninja inmortal. Una isla que promete el paraíso… o la muerte.</p>
+              <div class="carousel-bottom">
+                <span class="carousel-stars">★★★★★</span>
+                <button type="button" class="carousel-review" data-review="1">Ver reseña</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card" data-index="2">
+            <div class="carousel-cover" style="background-image:url('2084.4246.3650.jpg')">
+              <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
+            </div>
+            <div class="carousel-scrim"></div>
+            <span class="carousel-category">Manga · Acción</span>
+            <div class="carousel-body">
+              <h3 class="carousel-title">Juujika no Rokunin</h3>
+              <p class="carousel-hook">Seis personas. Una cruz. Venganza sin piedad</p>
+              <div class="carousel-bottom">
+                <span class="carousel-stars">★★★★★</span>
+                <button type="button" class="carousel-review" data-review="2">Ver reseña</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-card" data-index="3">
+            <div class="carousel-cover" style="background-image:url('8613.7582.0837.jpg')">
+              <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
+            </div>
+            <div class="carousel-scrim"></div>
+            <span class="carousel-category">Novela · Fantasía oscura</span>
+            <div class="carousel-body">
+              <h3 class="carousel-title">Shadow Slave</h3>
+              <p class="carousel-hook">Marcado por las sombras. Condenado a sobrevivir en un mundo de pesadillas.</p>
+              <div class="carousel-bottom">
+                <span class="carousel-stars">★★★★★</span>
+                <button type="button" class="carousel-review" data-review="3">Ver reseña</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-edge carousel-edge--left" id="carouselPrev"></div>
+          <div class="carousel-edge carousel-edge--right" id="carouselNext"></div>
+
+          <div class="carousel-dots" id="carouselDots">
+            <span class="carousel-dot active"></span>
+            <span class="carousel-dot"></span>
+            <span class="carousel-dot"></span>
+            <span class="carousel-dot"></span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+
+    <div class="footer-top">
+
+      <div>
+        <div class="footer-brand">
+          <img src="90631-modified.png" alt="Overclock">
+          <span>Overclock</span>
+        </div>
+        <p class="footer-tagline">Reseñas curadas de anime, manga, manhwa y novelas — sin relleno y sin spoilers.</p>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explorar</h4>
+          <a href="biblioteca.html">Biblioteca</a>
+          <a href="guia.html">Guía</a>
+          <a href="actualizaciones.html">Actualización</a>
+        </div>
+        <div class="footer-col">
+          <h4>Comunidad</h4>
+          <a href="foro.html">Foro</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="creditos.html">Crédito</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 Overclock. Todos los derechos reservados.</span>
+      <div class="footer-legal">
+        <a href="privacidad.html">Privacidad</a>
+        <a href="terminos.html">Términos</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<!-- ===== Modal: Iniciar sesión / Crear cuenta ===== -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <button class="auth-close" id="authClose" aria-label="Cerrar">✕</button>
+
+    <div class="auth-brand">
+      <img src="90631-modified.png" alt="Overclock">
+      <span>OVERCLOCK</span>
+    </div>
+
+    <h2 class="auth-heading" id="authHeading">Iniciar sesión</h2>
+    <p class="auth-subheading" id="authSubheading">Entra para seguir tus recomendaciones</p>
+
+    <button type="button" class="auth-oauth" id="githubLogin">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      Continuar con GitHub
+    </button>
+
+    <div class="auth-divider"><span>o con tu correo</span></div>
+
+    <p class="auth-error" id="authError"></p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin">Iniciar sesión</button>
+      <button class="auth-tab" id="tabRegister">Crear cuenta</button>
+    </div>
+
+    <form class="auth-form active" id="formLogin">
+      <div class="auth-field">
+        <label for="loginEmail">Correo</label>
+        <input type="email" id="loginEmail" required>
+      </div>
+      <div class="auth-field">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <button type="submit" class="auth-submit">Iniciar sesión</button>
+    </form>
+
+    <form class="auth-form" id="formRegister">
+      <div class="auth-field">
+        <label for="registerEmail">Correo</label>
+        <input type="email" id="registerEmail" required>
+      </div>
+      <div class="auth-field">
+        <label for="registerPassword">Contraseña</label>
+        <input type="password" id="registerPassword" required>
+      </div>
+      <div class="auth-field">
+        <label for="registerConfirm">Confirmar contraseña</label>
+        <input type="password" id="registerConfirm" required>
+      </div>
+      <button type="submit" class="auth-submit">Crear cuenta</button>
+    </form>
+
+    <p class="auth-switch" id="authSwitch">
+      ¿No tienes cuenta? <button id="switchToRegister">Crear una</button>
+    </p>
+  </div>
+</div>
+
+<!-- ===== Modal: Ver reseña ===== -->
+<div class="review-overlay" id="reviewOverlay">
+  <div class="review-card">
+    <button class="review-close" id="reviewClose" aria-label="Cerrar">✕</button>
+    <p class="review-category" id="reviewCategory">Categoría</p>
+    <h2 class="review-title" id="reviewTitle">Título</h2>
+    <div class="review-stars" id="reviewStars">★★★★★</div>
+
+    <p class="review-section-label">Sinopsis</p>
+    <p class="review-text" id="reviewSynopsis"></p>
+
+    <p class="review-section-label">Por qué la recomendamos</p>
+    <p class="review-text" id="reviewWhy"></p>
+
+    <p class="review-section-label">Ideal si te gusta</p>
+    <div class="review-tags" id="reviewTags"></div>
+  </div>
+</div>
+
+<!-- ===== Supabase: SDK + credenciales de tu proyecto ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ⚠️ Reemplaza estos dos valores por los de TU proyecto de Supabase
+  // (Project Settings → API → Project URL / anon public key).
+  const SUPABASE_URL = 'https://jhqjzxotxyxhvxdtuzxu.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_KA9m4jldQbksI7WmTimR8Q_KNXHrevT';
+
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
+
+<script>
+  const menu = document.getElementById('menu');
+  const menuToggle = document.getElementById('menuToggle');
+  const menuIndicator = document.getElementById('menuIndicator');
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', isOpen);
+    menuIndicator.textContent = isOpen ? '︿' : '﹀';
+    document.body.classList.toggle('menu-open', isOpen);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target) && menu.classList.contains('open')) {
+      menu.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuIndicator.textContent = '﹀';
+      document.body.classList.remove('menu-open');
+    }
+  });
+
+  /* ===== Carrusel de reseñas ===== */
+  const carousel = document.getElementById('carousel');
+  const carouselCards = carousel.querySelectorAll('.carousel-card');
+  const carouselDots = carousel.querySelectorAll('.carousel-dot');
+  let carouselPos = 0;
+  const carouselDelay = 5000;
+  let carouselTimer;
+
+  function updateCarousel(){
+    carouselCards.forEach((card, i) => {
+      const diff = i - carouselPos;
+
+      if (diff === 0) {
+        card.style.transform = 'translateX(0) translateY(0) rotate(0deg) scale(1)';
+        card.style.zIndex = 10;
+        card.style.filter = 'brightness(1)';
+      } else if (diff === -1 || diff === carouselCards.length - 1) {
+        card.style.transform = 'translateX(-46px) rotate(-6deg) scale(.94)';
+        card.style.zIndex = 3;
+        card.style.filter = 'brightness(.6)';
+      } else if (diff === 1 || diff === -(carouselCards.length - 1)) {
+        card.style.transform = 'translateX(46px) rotate(6deg) scale(.94)';
+        card.style.zIndex = 3;
+        card.style.filter = 'brightness(.6)';
+      } else {
+        card.style.transform = 'translateY(20px) rotate(-3deg) scale(.9)';
+        card.style.zIndex = 1;
+        card.style.filter = 'brightness(.4)';
+      }
+    });
+
+    carouselDots.forEach((dot, i) => dot.classList.toggle('active', i === carouselPos));
+  }
+
+  function goToCarousel(direction){
+    carouselPos = (carouselPos + direction + carouselCards.length) % carouselCards.length;
+    updateCarousel();
+  }
+
+  function restartCarouselTimer(){
+    clearInterval(carouselTimer);
+    carouselTimer = setInterval(() => goToCarousel(1), carouselDelay);
+  }
+
+  document.getElementById('carouselNext').addEventListener('click', () => {
+    goToCarousel(1);
+    restartCarouselTimer();
+  });
+
+  document.getElementById('carouselPrev').addEventListener('click', () => {
+    goToCarousel(-1);
+    restartCarouselTimer();
+  });
+
+  carouselCards.forEach((card, i) => {
+    card.addEventListener('click', (e) => {
+      // Evita que un click sobre "Ver reseña" (u otro control interno)
+      // también mueva el carrusel: solo debe abrir la reseña.
+      if (e.target.closest('.carousel-review')) return;
+      carouselPos = i;
+      updateCarousel();
+      restartCarouselTimer();
+    });
+  });
+
+  updateCarousel();
+  restartCarouselTimer();
+
+  /* ===== Modal: Ver reseña ===== */
+  const reviewData = {
+    0: {
+      category: 'Manhwa · Acción · Fantasía · Aventura',
+      title: 'Solo leveling',
+      stars: '★★★★★',
+      synopsis: 'En un mundo invadido por portales que liberan monstruos, Sung Jin-Woo es el cazador de rango E más débil. Tras casi morir en una mazmorra mortal, despierta un sistema único que le permite subir de nivel como en un videojuego. De ser el más débil pasa a convertirse en el cazador más poderoso, dominando habilidades extraordinarias y un ejército de sombras.',
+      why: 'Por la transformación brutal del protagonista, el sistema de progresión adictivo y las peleas cada vez más épicas. Es el ejemplo perfecto del “from zero to hero” llevado al extremo.',
+      tags: ['Protagonista OP que parte de cero', 'Acción de mazmorras y rankings', 'Sistema de level-up estilo videojuego']
+    },
+    1: {
+      category: 'Anime · Acción · Aventura · Fantasía oscura · Supervivencia',
+      title: 'Jigokuraku (Hell’s Paradise)',
+      stars: '★★★★★',
+      synopsis: 'Gabimaru, el ninja más fuerte y despiadado, es condenado a muerte. Para salvarse (y reunirse con su esposa), acepta una misión suicida: viajar a una isla misteriosa en busca del Elixir de la Vida. Allí, junto a una verdugo y otros criminales, enfrentará monstruos horripilantes, enigmas y una lucha brutal por la supervivencia.',
+      why: 'Por la mezcla perfecta de acción sangrienta, personajes rotos y una atmósfera de terror y belleza. Gabimaru es un antihéroe fascinante: un asesino que solo quiere vivir en paz.',
+      tags: ['Personajes con pasado traumático', 'Acción violenta y detallada', 'Isla misteriosa llena de horrores']
+    },
+    2: {
+      category: 'Manga · Acción · Drama psicológico · Thriller · Venganza · Horror',
+      title: 'Juujika no Rokunin',
+      stars: '★★★★★',
+      synopsis: 'Shun Uruma fue brutalmente acosado por cinco compañeros de clase durante su infancia. Tras un trauma devastador, desaparece durante años. Cuando regresa, ya no es el mismo: se ha convertido en una máquina de venganza fría y metódica. Uno por uno, va a destruir a quienes le arruinaron la vida, sin dejar espacio para el perdón ni la redención.',
+      why: 'Por ser una de las historias de venganza más crudas y extremas del manga. No hay héroes ni moralidad: solo odio, dolor y una espiral de violencia cada vez más oscura.',
+      tags: ['Venganza extrema y sin filtros', 'Ambientación oscura y asfixiante', 'Protagonista que se vuelve monstruo']
+    },
+    3: {
+      category: 'Novela · Fantasía oscura · LitRPG · Aventura · Supervivencia',
+      title: 'Shadow Slave (Esclavo de la Sombra)',
+      stars: '★★★★★',
+      synopsis: 'Sunny es un joven marcado por el Hechizo de la Pesadilla y convertido en un “Shadow Slave”. Arrastrado a un mundo brutal lleno de monstruos, dioses olvidados y pruebas mortales, debe usar su peculiar afinidad con las sombras para sobrevivir, ascender y descubrir los secretos de su destino. En un universo donde la muerte es solo el comienzo, Sunny lucha por no convertirse en lo que el mundo espera de él.',
+      why: 'Por su sistema de progresión profundo, la atmósfera oscura y opresiva, y un protagonista inteligente que sobrevive más con astucia que con fuerza bruta. Es una de las historias LitRPG más intensas y bien construidas de los últimos años.',
+      tags: ['Protagonista astuto y marcado por las sombras', 'Mundo de pesadillas y progresión brutal', 'Atmósfera oscura y de alto riesgo']
+    }
+  };
+
+  const reviewOverlay = document.getElementById('reviewOverlay');
+  const reviewClose = document.getElementById('reviewClose');
+  const reviewCategory = document.getElementById('reviewCategory');
+  const reviewTitle = document.getElementById('reviewTitle');
+  const reviewStars = document.getElementById('reviewStars');
+  const reviewSynopsis = document.getElementById('reviewSynopsis');
+  const reviewWhy = document.getElementById('reviewWhy');
+  const reviewTags = document.getElementById('reviewTags');
+
+  function openReview(index){
+    const data = reviewData[index];
+    if(!data) return;
+
+    reviewCategory.textContent = data.category;
+    reviewTitle.textContent = data.title;
+    reviewStars.textContent = data.stars;
+    reviewSynopsis.textContent = data.synopsis;
+    reviewWhy.textContent = data.why;
+    reviewTags.innerHTML = data.tags.map(tag => `<span>${tag}</span>`).join('');
+
+    reviewOverlay.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+
+  function closeReview(){
+    reviewOverlay.classList.remove('open');
+    document.body.classList.remove('menu-open');
+  }
+
+  carousel.querySelectorAll('.carousel-review').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      openReview(btn.dataset.review);
+    }, { passive: false });
+  });
+
+  reviewClose.addEventListener('click', closeReview);
+  reviewOverlay.addEventListener('click', (e) => {
+    if (e.target === reviewOverlay) closeReview();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && reviewOverlay.classList.contains('open')) closeReview();
+  });
+
+  /* ===== Modal: Iniciar sesión / Crear cuenta (Supabase + GitHub) ===== */
+  const authOverlay = document.getElementById('authOverlay');
+  const loginTrigger = document.getElementById('loginTrigger');
+  const authClose = document.getElementById('authClose');
+  const tabLogin = document.getElementById('tabLogin');
+  const tabRegister = document.getElementById('tabRegister');
+  const formLogin = document.getElementById('formLogin');
+  const formRegister = document.getElementById('formRegister');
+  const authHeading = document.getElementById('authHeading');
+  const authSubheading = document.getElementById('authSubheading');
+  const authSwitch = document.getElementById('authSwitch');
+  const authError = document.getElementById('authError');
+  const githubLogin = document.getElementById('githubLogin');
+  const menuItemProfile = document.getElementById('menuItemProfile');
+  const menuItemLogin = document.getElementById('menuItemLogin');
+  const menuItemLogout = document.getElementById('menuItemLogout');
+
+  // Sesión real: la llena Supabase, no la tocamos a mano
+  let currentUser = null;
+
+  function updateAuthUI(){
+    if(currentUser){
+      loginTrigger.textContent = 'Perfil';
+      loginTrigger.setAttribute('href', 'perfil.html');
+      menuItemProfile.classList.add('visible');
+      menuItemLogin.classList.add('hidden');
+      menuItemLogout.classList.add('visible');
+    } else {
+      loginTrigger.textContent = 'Iniciar sesión';
+      loginTrigger.setAttribute('href', '#');
+      menuItemProfile.classList.remove('visible');
+      menuItemLogin.classList.remove('hidden');
+      menuItemLogout.classList.remove('visible');
+    }
+  }
+
+  function showAuthMessage(message, isSuccess){
+    authError.textContent = message;
+    authError.classList.add('visible');
+    authError.classList.toggle('success', !!isSuccess);
+  }
+
+  function clearAuthMessage(){
+    authError.textContent = '';
+    authError.classList.remove('visible', 'success');
+  }
+
+  function openAuth(mode){
+    clearAuthMessage();
+    authOverlay.classList.add('open');
+    document.body.classList.add('menu-open');
+    setAuthMode(mode || 'login');
+  }
+
+  function closeAuth(){
+    authOverlay.classList.remove('open');
+    document.body.classList.remove('menu-open');
+  }
+
+  function setAuthMode(mode){
+    const isLogin = mode === 'login';
+    clearAuthMessage();
+
+    tabLogin.classList.toggle('active', isLogin);
+    tabRegister.classList.toggle('active', !isLogin);
+    formLogin.classList.toggle('active', isLogin);
+    formRegister.classList.toggle('active', !isLogin);
+
+    authHeading.textContent = isLogin ? 'Iniciar sesión' : 'Crear cuenta';
+    authSubheading.textContent = isLogin
+      ? 'Entra para seguir tus recomendaciones'
+      : 'Únete para guardar tus preferencias';
+
+    authSwitch.innerHTML = isLogin
+      ? '¿No tienes cuenta? <button id="switchToRegister">Crear una</button>'
+      : '¿Ya tienes cuenta? <button id="switchToLogin">Iniciar sesión</button>';
+
+    const newSwitchBtn = authSwitch.querySelector('button');
+    newSwitchBtn.addEventListener('click', () => setAuthMode(isLogin ? 'register' : 'login'));
+  }
+
+  loginTrigger.addEventListener('click', (e) => {
+    if(currentUser) return; // ya logueado: deja que el link vaya a perfil.html
+    e.preventDefault();
+    openAuth('login');
+  });
+
+  menuItemLogin.addEventListener('click', (e) => {
+    if(currentUser) return;
+    e.preventDefault();
+    menu.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuIndicator.textContent = '﹀';
+    openAuth('login');
+  });
+
+  menuItemLogout.addEventListener('click', async (e) => {
+    e.preventDefault();
+    menu.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuIndicator.textContent = '﹀';
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    updateAuthUI();
+  });
+
+  authClose.addEventListener('click', closeAuth);
+
+  authOverlay.addEventListener('click', (e) => {
+    if (e.target === authOverlay) closeAuth();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && authOverlay.classList.contains('open')) closeAuth();
+  });
+
+  tabLogin.addEventListener('click', () => setAuthMode('login'));
+  tabRegister.addEventListener('click', () => setAuthMode('register'));
+
+  /* --- GitHub OAuth --- */
+  githubLogin.addEventListener('click', async () => {
+    clearAuthMessage();
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'github',
+      options: { redirectTo: window.location.href.split('#')[0] }
+    });
+    if(error){
+      showAuthMessage('No se pudo iniciar sesión con GitHub: ' + error.message);
+    }
+    // Si no hay error, el navegador redirige a GitHub; al volver, onAuthStateChange se encarga.
+  });
+
+  /* --- Correo + contraseña: login --- */
+  formLogin.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearAuthMessage();
+
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const submitBtn = formLogin.querySelector('.auth-submit');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Entrando…';
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Iniciar sesión';
+
+    if(error){
+      showAuthMessage(error.message === 'Invalid login credentials'
+        ? 'Correo o contraseña incorrectos.'
+        : error.message);
+      return;
+    }
+
+    currentUser = data.user;
+    updateAuthUI();
+    closeAuth();
+  });
+
+  /* --- Correo + contraseña: registro --- */
+  formRegister.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearAuthMessage();
+
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    const confirm = document.getElementById('registerConfirm').value;
+
+    if(password !== confirm){
+      showAuthMessage('Las contraseñas no coinciden.');
+      return;
+    }
+    if(password.length < 6){
+      showAuthMessage('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
+    const submitBtn = formRegister.querySelector('.auth-submit');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creando cuenta…';
+
+    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Crear cuenta';
+
+    if(error){
+      showAuthMessage(error.message);
+      return;
+    }
+
+    // Por defecto, Supabase exige confirmar el correo antes de dar sesión activa.
+    if(!data.session){
+      showAuthMessage('Cuenta creada. Revisa tu correo para confirmarla antes de iniciar sesión.', true);
+      formRegister.reset();
+      return;
+    }
+
+    currentUser = data.user;
+    updateAuthUI();
+    closeAuth();
+  });
+
+  /* --- Estado de sesión: se sincroniza solo (incluye la vuelta desde GitHub) --- */
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    currentUser = session ? session.user : null;
+    updateAuthUI();
+    if(currentUser){
+      closeAuth();
+    }
+  });
+
+  (async function initSession(){
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    currentUser = session ? session.user : null;
+    updateAuthUI();
+  })();
+</script>
+
+</body>
+</html>
