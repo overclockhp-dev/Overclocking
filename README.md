@@ -1,11 +1,1 @@
 # Overclocking
-Copyright (c) 2026 overclockhp-dev
-
-Todos los derechos reservados.
-
-Este software es propiedad privada. 
-Queda estrictamente prohibido copiar, modificar, distribuir, 
-usar comercialmente o publicar este código sin autorización 
-expresa y por escrito del autor.
-
-Cualquier uso no autorizado será perseguido legalmente.
