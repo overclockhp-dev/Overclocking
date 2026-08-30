@@ -1788,6 +1788,19 @@ const WORKS = [
 ];
 WORKS.forEach((w, i) => { w.__idx = i; }); // guarda el orden original del catálogo
 
+function syncWorksIndex() {
+  try {
+    const index = WORKS.map(w => ({
+      id: w.id,
+      title: w.title,
+      format: w.format
+    }));
+    localStorage.setItem('oc_works_index', JSON.stringify(index));
+  } catch (err) {
+    console.warn('No se pudo sincronizar oc_works_index', err);
+  }
+}
+
 const FORMAT_LABEL = { manhwa:'Manhwa', manga:'Manga', anime:'Anime', novela:'Novela' };
 const STATUS_LABELS = { quiero:'Quiero leer', leyendo:'Leyendo', terminado:'Terminado', abandonado:'Abandonado' };
 
@@ -2611,6 +2624,7 @@ function typeGroupReset() {
 }
 
 /* Init */
+syncWorksIndex();
 updateAuthUI();
 renderLibrary();
 initReportForm();
