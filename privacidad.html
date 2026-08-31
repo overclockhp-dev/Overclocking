@@ -347,6 +347,95 @@
     .privacy-footer{ padding:0 18px 60px; }
     .privacy-toc{ padding:16px 18px; }
   }
+    /* ============ MODAL: INICIAR SESIÓN / CREAR CUENTA ============ */
+  .auth-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:200;
+  }
+
+  .auth-overlay.open{
+    display:flex;
+  }
+
+  .auth-card{
+    position:relative;
+    width:100%;
+    max-width:380px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(228,41,59,0.22), transparent 55%),
+      #0A0A0A;
+    border:1px solid var(--line);
+    padding:40px 32px 34px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+
+  .auth-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    background:none;
+    border:none;
+    color:var(--fg-dim);
+    font-size:1.3rem;
+    line-height:1;
+    cursor:pointer;
+    padding:4px;
+    transition:color .2s ease;
+  }
+
+  .auth-close:hover{
+    color:var(--accent);
+  }
+
+  .auth-brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+
+  .auth-brand img{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+  }
+
+  .auth-brand span{
+    font-family:'Lora', serif;
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.22em;
+    color:var(--fg-dim);
+  }
+
+  .auth-heading{
+    text-align:center;
+    font-family:'Lora', serif;
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+
+  .auth-subheading{
+    text-align:center;
+    font-size:0.9rem;
+    color:var(--fg-dim);
+    margin-bottom:26px;
+  }
+
+  .auth-tabs{
+    display:flex;
+    border:1px solid var(--line);
+    margin-bottom:24px;
+  }
 </style>
 </head>
 <body>
@@ -364,17 +453,13 @@
           <span class="menu-indicator" id="menuIndicator">﹀</span>
         </button>
         <div class="menu-dropdown" id="menuDropdown">
-          <a href="index.html">Inicio</a>
-          <a href="biblioteca.html">Biblioteca</a>
-          <a href="foro.html">Foro</a>
           <a href="guia.html">Guía</a>
-          <a href="privacidad.html">Privacidad</a>
-          <a href="terminos.html">Términos</a>
-          <a href="actualizaciones.html">Actualizaciones</a>
-          <a href="creditos.html">Créditos</a>
-          <a href="contacto.html">Contacto</a>
           <a href="perfil.html" id="menuPerfil" hidden>Perfil</a>
           <a href="#" id="menuLogout" hidden>Cerrar sesión</a>
+          <a href="foro.html">Foro</a>
+          <a href="creditos.html">Créditos</a>
+          <a href="contacto.html">Contacto</a>
+          <a href="biblioteca.html">Biblioteca</a>
         </div>
       </div>
       <a class="login-link" href="index.html" id="loginTrigger">Iniciar sesión</a>
