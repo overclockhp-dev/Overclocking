@@ -8,7 +8,90 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
+<style> 
+  /* ============ MODAL: INICIAR SESIÓN / CREAR CUENTA ============ */
+.auth-overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(3px);
+  display:none; align-items:center; justify-content:center;
+  padding:24px; z-index:200;
+}
+.auth-overlay.open{ display:flex; }
+.auth-card{
+  position:relative; width:100%; max-width:380px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(228,41,59,0.22), transparent 55%),
+    #0A0A0A;
+  border:1px solid var(--line);
+  padding:40px 32px 34px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7);
+}
+.auth-close{
+  position:absolute; top:16px; right:16px;
+  background:none; border:none; color:var(--fg-dim);
+  font-size:1.3rem; line-height:1; cursor:pointer; padding:4px;
+  transition:color .2s ease;
+}
+.auth-close:hover{ color:var(--accent); }
+.auth-brand{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:26px; }
+.auth-brand img{ width:44px; height:44px; border-radius:50%; }
+.auth-brand span{ font-family:'Lora', serif; font-size:0.78rem; font-weight:600; letter-spacing:0.22em; color:var(--fg-dim); }
+.auth-heading{ text-align:center; font-family:'Lora', serif; font-size:1.5rem; font-weight:700; margin-bottom:6px; }
+.auth-subheading{ text-align:center; font-size:0.9rem; color:var(--fg-dim); margin-bottom:26px; }
+.auth-tabs{ display:flex; border:1px solid var(--line); margin-bottom:24px; }
+.auth-tab{
+  flex:1; background:none; border:none; color:var(--fg-dim);
+  font-family:'Lora', serif; font-size:0.92rem; font-weight:500;
+  padding:11px 0; cursor:pointer; transition:background .2s ease, color .2s ease;
+}
+.auth-tab.active{ background:var(--accent); color:var(--fg); }
+.auth-form{ display:none; flex-direction:column; gap:16px; }
+.auth-form.active{ display:flex; }
+.auth-oauth{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; background:#fff; color:#0d0d0d; border:none;
+  font-family:'Lora', serif; font-size:0.95rem; font-weight:500;
+  padding:12px 0; cursor:pointer; transition:background .2s ease, transform .15s ease;
+}
+.auth-oauth:hover{ background:#e6e6e6; transform:translateY(-1px); }
+.auth-oauth svg{ width:19px; height:19px; }
+.auth-divider{
+  display:flex; align-items:center; gap:14px; color:var(--fg-dim);
+  font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase;
+  margin:22px 0 18px;
+}
+.auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+.auth-error{
+  display:none; background:rgba(228,41,59,0.1);
+  border:1px solid rgba(228,41,59,0.4); color:#ff8a95;
+  font-size:0.85rem; line-height:1.5; padding:10px 14px; margin:-4px 0 18px;
+}
+.auth-error.visible{ display:block; }
+.auth-error.success{ background:rgba(76,175,80,0.1); border-color:rgba(76,175,80,0.4); color:#8fd694; }
+.auth-field label{
+  display:block; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--fg-dim); margin-bottom:8px;
+}
+.auth-field input{
+  width:100%; background:#050505; border:1px solid var(--line); color:var(--fg);
+  font-family:'Lora', serif; font-size:0.95rem; padding:12px 14px;
+  transition:border-color .2s ease;
+}
+.auth-field input:focus{ outline:none; border-color:var(--accent); }
+.auth-submit{
+  background:var(--accent); color:var(--fg); border:none;
+  font-family:'Lora', serif; font-size:0.98rem; font-weight:500;
+  padding:13px 0; cursor:pointer; margin-top:4px;
+  transition:background .2s ease, box-shadow .2s ease;
+}
+.auth-submit:hover{ background:#FF3B4E; box-shadow:0 0 20px var(--accent-glow); }
+.auth-switch{ text-align:center; font-size:0.85rem; color:var(--fg-dim); margin-top:20px; }
+.auth-switch button{
+  background:none; border:none; color:var(--accent);
+  font-family:'Lora', serif; font-size:0.85rem; cursor:pointer;
+  text-decoration:underline; padding:0;
+}
   :root{
     --bg:#000000;
     --fg:#F4F4F1;
