@@ -29,7 +29,7 @@ const SUPABASE_URL =
   'https://jhqjzxotxyxhvxdtuzxu.supabase.co';
 
 const SUPABASE_ANON_KEY =
-  'sb_publishable_KA9m4jldQbksI7WmT9R8Q_KNXHrevT';
+  'sb_publishable_KA9m4jldQbksI7WmTimR8Q_KNXHrevT';
 
 
 const supabaseClient = supabase.createClient(
