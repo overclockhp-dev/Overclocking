@@ -1059,43 +1059,12 @@
 </style>
 </head>
 <body>
+  
+  <div id="menu-container"></div>
+  
+<main> 
 
-<header>
-  <div class="header-inner">
-
-    <a class="brand" href="index.html">
-      <img src="assets/logo.png" alt="Overclock">
-      <span>Overclock</span>
-    </a>
-
-    <div class="header-right">
-
-      <div class="menu" id="menu">
-        <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menuDropdown">
-          Menú
-          <span class="menu-indicator" id="menuIndicator">﹀</span>
-        </button>
-        <div class="menu-dropdown" id="menuDropdown">
-          <a href="#" class="menu-item-login" id="menuItemLogin">Iniciar sesión</a>
-          <a href="guia.html">Guía</a>
-          <a href="perfil.html" class="menu-item-profile" id="menuItemProfile">Perfil</a>
-          <a href="#" class="menu-item-logout" id="menuItemLogout">Cerrar sesión</a>
-          <a href="foro.html">Foro</a>
-          <a href="creditos.html">Crédito</a>
-          <a href="contacto.html">Contacto</a>
-          <a href="biblioteca.html">Biblioteca</a>
-          <a href="actualizaciones.html">Actualización</a>
-        </div>
-      </div>
-
-      <a class="login-link" href="#" id="loginTrigger">Iniciar sesión</a>
-
-    </div>
-
-  </div>
-</header>
-
-<main>
+  <div id="menu-container"></div> 
 
   <section class="hero">
     <div class="hero-inner">
@@ -1202,7 +1171,9 @@
     </div>
   </section>
 
-</main>
+</main> 
+  
+  <div id="auth-container"></div>
 
 <footer>
   <div class="footer-inner">
@@ -1244,68 +1215,7 @@
 
   </div>
 </footer>
-
-<!-- ===== Modal: Iniciar sesión / Crear cuenta ===== -->
-<div class="auth-overlay" id="authOverlay">
-  <div class="auth-card">
-    <button class="auth-close" id="authClose" aria-label="Cerrar">✕</button>
-
-    <div class="auth-brand">
-      <img src="assets/logo.png" alt="Overclock">
-      <span>OVERCLOCK</span>
-    </div>
-
-    <h2 class="auth-heading" id="authHeading">Iniciar sesión</h2>
-    <p class="auth-subheading" id="authSubheading">Entra para seguir tus recomendaciones</p>
-
-    <button type="button" class="auth-oauth" id="githubLogin">
-      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-      Continuar con GitHub
-    </button>
-
-    <div class="auth-divider"><span>o con tu correo</span></div>
-
-    <p class="auth-error" id="authError"></p>
-
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tabLogin">Iniciar sesión</button>
-      <button class="auth-tab" id="tabRegister">Crear cuenta</button>
-    </div>
-
-    <form class="auth-form active" id="formLogin">
-      <div class="auth-field">
-        <label for="loginEmail">Correo</label>
-        <input type="email" id="loginEmail" required>
-      </div>
-      <div class="auth-field">
-        <label for="loginPassword">Contraseña</label>
-        <input type="password" id="loginPassword" required>
-      </div>
-      <button type="submit" class="auth-submit">Iniciar sesión</button>
-    </form>
-
-    <form class="auth-form" id="formRegister">
-      <div class="auth-field">
-        <label for="registerEmail">Correo</label>
-        <input type="email" id="registerEmail" required>
-      </div>
-      <div class="auth-field">
-        <label for="registerPassword">Contraseña</label>
-        <input type="password" id="registerPassword" required>
-      </div>
-      <div class="auth-field">
-        <label for="registerConfirm">Confirmar contraseña</label>
-        <input type="password" id="registerConfirm" required>
-      </div>
-      <button type="submit" class="auth-submit">Crear cuenta</button>
-    </form>
-
-    <p class="auth-switch" id="authSwitch">
-      ¿No tienes cuenta? <button id="switchToRegister">Crear una</button>
-    </p>
-  </div>
-</div>
-
+  
 <!-- ===== Modal: Ver reseña ===== -->
 <div class="review-overlay" id="reviewOverlay">
   <div class="review-card">
@@ -1325,10 +1235,10 @@
   </div>
 </div>
 
-<!-- ===== Supabase + auth compartido (auth.js) ===== -->
+<!-- ===== Supabase + componentes + auth ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="auth.js"></script>
-
+<script src="components.js"></script>
 <script>
   /* ===== Carrusel de reseñas ===== */
   const carousel = document.getElementById('carousel');
