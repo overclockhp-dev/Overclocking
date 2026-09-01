@@ -179,13 +179,31 @@
     color:var(--accent);
   }
 
-  .menu-item-account{
+  .menu-dropdown a.menu-item-profile{
+    display:none;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+    padding-top:12px;
     color:var(--accent);
-    font-family:'Lora', serif;
+    font-weight:600;
   }
 
-  .menu-item-logout{
+  .menu-dropdown a.menu-item-profile.visible{
+    display:block;
+  }
+
+  .menu-dropdown a.menu-item-logout{
+    display:none;
     color:var(--fg-dim);
+    font-size:0.88rem;
+  }
+
+  .menu-dropdown a.menu-item-logout.visible{
+    display:block;
+  }
+
+  .menu-dropdown a.menu-item-login.hidden{
+    display:none;
   }
 
   .login-link{
@@ -1384,53 +1402,6 @@
   </section>
 </main>
 
-<!-- Auth modal -->
-<div class="auth-overlay" id="authOverlay">
-  <div class="auth-card">
-    <button class="auth-close" id="authClose" aria-label="Cerrar">✕</button>
-    <div class="auth-brand">
-      <img src="assets/logo.png" alt="Overclock">
-      <span>OVERCLOCK</span>
-    </div>
-    <h2 class="auth-heading" id="authHeading">Iniciar sesión</h2>
-    <p class="auth-subheading" id="authSubheading">Entra para seguir tus recomendaciones</p>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tabLogin">Iniciar sesión</button>
-      <button class="auth-tab" id="tabRegister">Crear cuenta</button>
-    </div>
-    <p class="report-help" id="authError" style="display:none;"></p>
-    <form class="auth-form active" id="formLogin">
-      <div class="auth-field">
-        <label for="loginEmail">Correo</label>
-        <input type="email" id="loginEmail" required>
-      </div>
-      <div class="auth-field">
-        <label for="loginPassword">Contraseña</label>
-        <input type="password" id="loginPassword" required>
-      </div>
-      <button type="submit" class="auth-submit">Iniciar sesión</button>
-    </form>
-    <form class="auth-form" id="formRegister">
-      <div class="auth-field">
-        <label for="registerEmail">Correo</label>
-        <input type="email" id="registerEmail" required>
-      </div>
-      <div class="auth-field">
-        <label for="registerPassword">Contraseña</label>
-        <input type="password" id="registerPassword" required>
-      </div>
-      <div class="auth-field">
-        <label for="registerConfirm">Confirmar contraseña</label>
-        <input type="password" id="registerConfirm" required>
-      </div>
-      <button type="submit" class="auth-submit">Crear cuenta</button>
-    </form>
-    <p class="auth-switch" id="authSwitch">
-      ¿No tienes cuenta? <button type="button" id="switchToRegister">Crear una</button>
-    </p>
-  </div>
-</div>
-
 <!-- Detail modal -->
 <div class="detail-overlay" id="detailOverlay" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
   <div class="detail-card" id="detailCard">
@@ -1468,10 +1439,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="components.js"></script>
 <script>
-  const SUPABASE_URL = 'https://jhqjzxotxyxhvxdtuzxu.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_KA9m4jldQbksI7WmTimR8Q_KNXHrevT';
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 /* ========== DATA ==========
    Agrega cada obra como un objeto dentro de la sección que corresponda
    (Manhwa, Manga, Anime o Novela). Copia esta plantilla y rellena los
@@ -1862,8 +1832,8 @@ function closeDetail() {
 
 /* ========== SAVE / LIBRARY ========== */
 function toggleSave(id, btnEl) {
-  if (!isLoggedIn) {
-    openAuth('login', 'Inicia sesión para guardar obras en tu biblioteca.');
+  if (!ocAuth.currentUser) {
+    ocAuth.openAuth('login', 'Inicia sesión para guardar obras en tu biblioteca.');
     return;
   }
   if (libraryStatus[id]) {
@@ -1885,8 +1855,8 @@ function toggleSave(id, btnEl) {
 }
 
 function setStatus(id, status) {
-  if (!isLoggedIn) {
-    openAuth('login', 'Inicia sesión para guardar obras en tu biblioteca.');
+  if (!ocAuth.currentUser) {
+    ocAuth.openAuth('login', 'Inicia sesión para guardar obras en tu biblioteca.');
     return;
   }
   libraryStatus[id] = status;
@@ -1897,197 +1867,21 @@ function setStatus(id, status) {
   renderLibrary();
 }
 
-/* ========== AUTH (Supabase real) ========== */
-const authOverlay = document.getElementById('authOverlay');
-const loginTrigger = document.getElementById('loginTrigger');
-let currentUser = null;
-// isLoggedIn se mantiene por compatibilidad con el resto del código de esta página;
-// siempre refleja si hay una sesión real de Supabase activa.
-let isLoggedIn = false;
-
-function showAuthError(message) {
-  const el = document.getElementById('authError');
-  el.textContent = message;
-  el.style.display = 'block';
-}
-function clearAuthError() {
-  const el = document.getElementById('authError');
-  el.textContent = '';
-  el.style.display = 'none';
-}
-
-function openAuth(mode, message) {
-  authOverlay.classList.add('open');
-  document.body.classList.add('menu-open');
-  setAuthMode(mode || 'login');
-  if (message) {
-    document.getElementById('authSubheading').textContent = message;
-  }
-}
-
-function closeAuth() {
-  authOverlay.classList.remove('open');
-  document.body.classList.remove('menu-open');
-}
-
-function setAuthMode(mode) {
-  const isLogin = mode === 'login';
-  clearAuthError();
-  document.getElementById('tabLogin').classList.toggle('active', isLogin);
-  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
-  document.getElementById('formLogin').classList.toggle('active', isLogin);
-  document.getElementById('formRegister').classList.toggle('active', !isLogin);
-  document.getElementById('authHeading').textContent = isLogin ? 'Iniciar sesión' : 'Crear cuenta';
-  document.getElementById('authSubheading').textContent = isLogin
-    ? 'Entra para seguir tus recomendaciones'
-    : 'Únete para guardar tus preferencias';
-  const authSwitch = document.getElementById('authSwitch');
-  authSwitch.innerHTML = isLogin
-    ? '¿No tienes cuenta? <button type="button" id="switchToRegister">Crear una</button>'
-    : '¿Ya tienes cuenta? <button type="button" id="switchToLogin">Iniciar sesión</button>';
-  authSwitch.querySelector('button').addEventListener('click', () =>
-    setAuthMode(isLogin ? 'register' : 'login')
-  );
-}
-
-function updateAuthUI() {
-  isLoggedIn = !!currentUser;
-  loginTrigger.textContent = isLoggedIn ? 'Perfil' : 'Iniciar sesión';
-  document.getElementById('menuPerfil').hidden = !isLoggedIn;
-  document.getElementById('menuLogout').hidden = !isLoggedIn;
-}
-
-/* Sincroniza la sesión real de Supabase (incluye lo que se inició en index.html) */
-supabaseClient.auth.onAuthStateChange((_event, session) => {
-  currentUser = session ? session.user : null;
-  updateAuthUI();
-  if (currentUser) closeAuth();
+/* ========== AUTH + MENÚ ==========
+   La sesión, el modal de login/registro y el menú desplegable ahora
+   los maneja auth.js (compartido con index.html) a través de
+   window.ocAuth. Esta página solo reacciona a los cambios de sesión
+   para refrescar la biblioteca guardada. */
+document.addEventListener('overclock:components-ready', () => {
+  ocAuth.onChange(() => {
+    renderLibrary();
+  });
 });
 
-(async function initSession() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  currentUser = session ? session.user : null;
-  updateAuthUI();
-})();
-
-/* ========== MENU ========== */
-const menu = document.getElementById('menu');
-const menuToggle = document.getElementById('menuToggle');
-const menuIndicator = document.getElementById('menuIndicator');
-
-menuToggle.addEventListener('click', () => {
-  const isOpen = menu.classList.toggle('open');
-  menuToggle.setAttribute('aria-expanded', isOpen);
-  menuIndicator.textContent = isOpen ? '︿' : '﹀';
-  document.body.classList.toggle('menu-open', isOpen);
-});
-
-document.addEventListener('click', (e) => {
-  if (!menu.contains(e.target) && menu.classList.contains('open')) {
-    menu.classList.remove('open');
-    menuToggle.setAttribute('aria-expanded', 'false');
-    menuIndicator.textContent = '﹀';
-    document.body.classList.remove('menu-open');
-  }
-});
-
-/* ========== EVENTS ========== */
-loginTrigger.addEventListener('click', (e) => {
-  e.preventDefault();
-  if (isLoggedIn) {
-    window.location.href = 'perfil.html';
-    return;
-  }
-  openAuth('login');
-});
-
-document.getElementById('menuLogout').addEventListener('click', async (e) => {
-  e.preventDefault();
-  await supabaseClient.auth.signOut();
-  currentUser = null;
-  updateAuthUI();
-  menu.classList.remove('open');
-  menuToggle.setAttribute('aria-expanded', 'false');
-  menuIndicator.textContent = '﹀';
-  document.body.classList.remove('menu-open');
-});
-
-document.getElementById('authClose').addEventListener('click', closeAuth);
-authOverlay.addEventListener('click', (e) => {
-  if (e.target === authOverlay) closeAuth();
-});
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
-    if (authOverlay.classList.contains('open')) closeAuth();
     if (document.getElementById('detailOverlay').classList.contains('open')) closeDetail();
   }
-});
-
-document.getElementById('tabLogin').addEventListener('click', () => setAuthMode('login'));
-document.getElementById('tabRegister').addEventListener('click', () => setAuthMode('register'));
-
-document.getElementById('formLogin').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  clearAuthError();
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const submitBtn = e.target.querySelector('.auth-submit');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Entrando…';
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-  submitBtn.disabled = false;
-  submitBtn.textContent = 'Iniciar sesión';
-
-  if (error) {
-    showAuthError(error.message === 'Invalid login credentials'
-      ? 'Correo o contraseña incorrectos.'
-      : error.message);
-    return;
-  }
-  currentUser = data.user;
-  updateAuthUI();
-  closeAuth();
-});
-
-document.getElementById('formRegister').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  clearAuthError();
-  const email = document.getElementById('registerEmail').value.trim();
-  const password = document.getElementById('registerPassword').value;
-  const confirm = document.getElementById('registerConfirm').value;
-
-  if (password !== confirm) {
-    showAuthError('Las contraseñas no coinciden.');
-    return;
-  }
-  if (password.length < 6) {
-    showAuthError('La contraseña debe tener al menos 6 caracteres.');
-    return;
-  }
-
-  const submitBtn = e.target.querySelector('.auth-submit');
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Creando cuenta…';
-
-  const { data, error } = await supabaseClient.auth.signUp({ email, password });
-
-  submitBtn.disabled = false;
-  submitBtn.textContent = 'Crear cuenta';
-
-  if (error) {
-    showAuthError(error.message);
-    return;
-  }
-  if (!data.session) {
-    showAuthError('Cuenta creada. Revisa tu correo para confirmarla antes de iniciar sesión.');
-    e.target.reset();
-    return;
-  }
-  currentUser = data.user;
-  updateAuthUI();
-  closeAuth();
 });
 
 document.getElementById('detailClose').addEventListener('click', closeDetail);
@@ -2098,8 +1892,8 @@ document.getElementById('detailOverlay').addEventListener('click', (e) => {
 document.getElementById('detailSave').addEventListener('click', (e) => {
   e.stopPropagation();
   const id = e.currentTarget.dataset.id;
-  if (!isLoggedIn) {
-    openAuth('login', 'Inicia sesión para guardar obras en tu biblioteca.');
+  if (!ocAuth.currentUser) {
+    ocAuth.openAuth('login', 'Inicia sesión para guardar obras en tu biblioteca.');
     return;
   }
   document.getElementById('statusMenu').classList.toggle('open');
@@ -2305,8 +2099,8 @@ async function submitReport(submitBtn) {
     problem: reportState.problem,
     comment: commentVal,
     page: window.location.href,
-    user_id: currentUser ? currentUser.id : null,
-    user_email: currentUser ? currentUser.email : null
+    user_id: ocAuth.currentUser ? ocAuth.currentUser.id : null,
+    user_email: ocAuth.currentUser ? ocAuth.currentUser.email : null
   };
 
   if (submitBtn) {
@@ -2314,7 +2108,7 @@ async function submitReport(submitBtn) {
     submitBtn.textContent = 'Enviando…';
   }
 
-  const { error } = await supabaseClient.from('reports').insert([report]);
+  const { error } = await window.supabaseClient.from('reports').insert([report]);
 
   if (submitBtn) {
     submitBtn.disabled = false;
@@ -2352,7 +2146,6 @@ function typeGroupReset() {
 
 /* Init */
 syncWorksIndex();
-updateAuthUI();
 renderLibrary();
 initReportForm();
 </script>
