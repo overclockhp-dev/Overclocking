@@ -1211,9 +1211,9 @@ const ocAuth = (() => {
      * ocAuth.openAuth('register');
      */
 
-    openAuth(mode = 'login') {
+    openAuth(mode = 'login', message = null) {
 
-      openAuth(mode);
+      openAuth(mode, message);
 
     },
 
