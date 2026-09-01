@@ -445,17 +445,31 @@
     display:none;
   }
 
-  .carousel-category{
+  .carousel-tags{
     position:relative;
     z-index:2;
-    text-align:center;
-    color:var(--accent);
-    font-size:0.78rem;
-    font-weight:600;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
+    display:flex;
+    justify-content:center;
+    gap:8px;
     margin-top:16px;
     padding:0 28px;
+  }
+
+  .carousel-tag{
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:4px 10px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,0.75);
+    color:var(--fg);
+  }
+
+  .carousel-tag-oc{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--fg);
   }
 
   .carousel-body{
@@ -570,7 +584,7 @@
     .carousel{
       transform:scale(0.9);
     }
-    .carousel-category{
+    .carousel-tags{
       margin-top:12px;
       padding:0 22px;
     }
@@ -1090,11 +1104,14 @@
         <div class="carousel" id="carousel">
 
           <div class="carousel-card" data-index="0">
-            <div class="carousel-cover" style="background-image:url('8613.7582.0835.jpg')">
+            <div class="carousel-cover" style="background-image:url('assets/portada/8613.7582.0835.jpg')">
               <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
             </div>
             <div class="carousel-scrim"></div>
-            <span class="carousel-category">Manhwa · Acción</span>
+            <div class="carousel-tags">
+              <span class="carousel-tag">Manhwa</span>
+              <span class="carousel-tag carousel-tag-oc">Overclock</span>
+            </div>
             <div class="carousel-body">
               <h3 class="carousel-title">Solo leveling</h3>
               <p class="carousel-hook">El cazador más débil. Un sistema que lo vuelve imparable.</p>
@@ -1106,11 +1123,14 @@
           </div>
 
           <div class="carousel-card" data-index="1">
-            <div class="carousel-cover" style="background-image:url('9613.6582.4835.jpg')">
+            <div class="carousel-cover" style="background-image:url('assets/portada/9613.6582.4835.jpg')">
               <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
             </div>
             <div class="carousel-scrim"></div>
-            <span class="carousel-category">Anime · Acción </span>
+            <div class="carousel-tags">
+              <span class="carousel-tag">Anime</span>
+              <span class="carousel-tag carousel-tag-oc">Overclock</span>
+            </div>
             <div class="carousel-body">
               <h3 class="carousel-title">Hell’s Paradise</h3>
               <p class="carousel-hook">Un ninja inmortal. Una isla que promete el paraíso… o la muerte.</p>
@@ -1122,11 +1142,14 @@
           </div>
 
           <div class="carousel-card" data-index="2">
-            <div class="carousel-cover" style="background-image:url('2084.4246.3650.jpg')">
+            <div class="carousel-cover" style="background-image:url('assets/portada/2084.4246.3650.jpg')">
               <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
             </div>
             <div class="carousel-scrim"></div>
-            <span class="carousel-category">Manga · Acción</span>
+            <div class="carousel-tags">
+              <span class="carousel-tag">Manga</span>
+              <span class="carousel-tag carousel-tag-oc">Overclock</span>
+            </div>
             <div class="carousel-body">
               <h3 class="carousel-title">Juujika no Rokunin</h3>
               <p class="carousel-hook">Seis personas. Una cruz. Venganza sin piedad</p>
@@ -1138,11 +1161,14 @@
           </div>
 
           <div class="carousel-card" data-index="3">
-            <div class="carousel-cover" style="background-image:url('8613.7582.0837.jpg')">
+            <div class="carousel-cover" style="background-image:url('assets/portada/8613.7582.0837.jpg')">
               <span class="carousel-cover-placeholder">Portada de la obra<br>(320×220)</span>
             </div>
             <div class="carousel-scrim"></div>
-            <span class="carousel-category">Novela · Fantasía oscura</span>
+            <div class="carousel-tags">
+              <span class="carousel-tag">Novela</span>
+              <span class="carousel-tag carousel-tag-oc">Overclock</span>
+            </div>
             <div class="carousel-body">
               <h3 class="carousel-title">Shadow Slave</h3>
               <p class="carousel-hook">Marcado por las sombras. Condenado a sobrevivir en un mundo de pesadillas.</p>
