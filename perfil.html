@@ -107,7 +107,29 @@
     padding:9px 11px;
   }
   .menu-dropdown a:hover{ background:#161614; color:var(--accent); }
-  .nav-link{
+
+  .menu-dropdown a.menu-item-profile{
+    display:none;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+    padding-top:12px;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .menu-dropdown a.menu-item-profile.visible{ display:block; }
+
+  .menu-dropdown a.menu-item-logout{
+    display:none;
+    color:var(--fg-dim);
+    font-size:0.88rem;
+  }
+  .menu-dropdown a.menu-item-logout.visible{ display:block; }
+
+  .menu-dropdown a.menu-item-login.hidden{ display:none; }
+
+  body.menu-open{ overflow:hidden; height:100%; }
+
+  .login-link{
     color:var(--fg);
     text-decoration:none;
     font-size:0.9rem;
@@ -115,7 +137,7 @@
     background:var(--accent);
     padding:8px 16px;
   }
-  .nav-link:hover{ background:#FF3B4E; }
+  .login-link:hover{ background:#FF3B4E; }
 
   .page{
     padding:28px 16px 80px;
@@ -542,32 +564,7 @@
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <a class="brand" href="index.html">
-      <img src="assets/logo.png" alt="Overclock">
-      <span>Overclock</span>
-    </a>
-    <div class="header-right">
-      <div class="menu" id="menu">
-        <button class="menu-toggle" id="menuToggle" type="button">
-          Menú <span class="menu-indicator" id="menuIndicator">﹀</span>
-        </button>
-        <div class="menu-dropdown">
-          <a href="guia.html">Guía</a>
-          <a href="perfil.html" id="menuPerfil">Perfil</a>
-          <a href="#" id="menuLogout">Cerrar sesión</a>
-          <a href="foro.html">Foro</a>
-          <a href="creditos.html">Créditos</a>
-          <a href="contacto.html">Contacto</a>
-          <a href="biblioteca.html">Biblioteca</a>
-          <a href="actualizaciones.html">Actualizaciones</a>
-        </div>
-      </div>
-      <a class="nav-link" href="biblioteca.html">Biblioteca</a>
-    </div>
-  </div>
-</header>
+<div id="menu-container"></div>
 
 <div class="page">
   <div class="profile-card" id="profileCard"></div>
@@ -575,6 +572,7 @@
 </div>
 
 <script src="auth.js"></script>
+<script src="components.js"></script>
 <script>
 /*
   Imágenes / audio (colócalos tú en assets):
@@ -612,17 +610,17 @@ function containsBannedWord(text) {
 
 const AVATARS = [
   {
-    id: 'neko1',
-    title: '',
+    id: 'neko',
+    title: 'YOU CAN’T WIN IF YOU’RE AFRAID OF LOSING',
     gradient: 'linear-gradient(135deg, #2b2740 0%, #0a0a0c 65%)',
     freq: 587.33,
-    image: 'assets/profile/avatars/neko1.jpg',
-    banner: 'assets/profile/banners/neko1.gif',
-    audio: 'assets/profile/audio/neko1.mp3'
+    image: 'assets/profile/avatars/neko.jpg',
+    banner: 'assets/profile/banners/neko.gif',
+    audio: 'assets/profile/audio/neko.mp3'
   },
   {
     id: 'neko2',
-    title: '',
+    title: 'The sun doesn t stop rising because of a single cloud',
     gradient: 'linear-gradient(135deg, #3a2c2c 0%, #0a0a0c 65%)',
     freq: 493.88,
     image: 'assets/profile/avatars/neko2.jpg',
@@ -635,7 +633,7 @@ const AVATARS = [
     gradient: 'linear-gradient(135deg, #26313a 0%, #0a0a0c 65%)',
     freq: 659.25,
     image: 'assets/profile/avatars/neko3.jpg',
-    banner: 'assets/profile/banners/neko3.gif',
+    banner: 'assets/profile/banners/neko3.jpg',
     audio: 'assets/profile/audio/neko3.mp3'
   },
   {
@@ -644,17 +642,8 @@ const AVATARS = [
     gradient: 'linear-gradient(135deg, #33262f 0%, #0a0a0c 65%)',
     freq: 440.0,
     image: 'assets/profile/avatars/neko4.jpg',
-    banner: 'assets/profile/banners/neko4.gif',
+    banner: 'assets/profile/banners/neko4.jpg',
     audio: 'assets/profile/audio/neko4.mp3'
-  },
-  {
-    id: 'neko5',
-    title: '',
-    gradient: 'linear-gradient(135deg, #xxxxxx 0%, #0a0a0c 65%)',
-    freq: 523.25,
-    image: 'assets/profile/avatars/neko5.jpg',
-    banner: 'assets/profile/banners/neko5.gif',
-    audio: 'assets/profile/audio/neko5.mp3'
   }
 ];
 
@@ -1192,4 +1181,4 @@ if (window.ocAuth) {
 render();
 </script>
 </body>
-</html>
+  </html>
