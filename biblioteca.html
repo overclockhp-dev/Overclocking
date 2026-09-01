@@ -1543,8 +1543,756 @@
 */
 const WORKS = [
   // Manhwa
+  { id:'mh1', title:'El Asesino de la Luna a la Deriva', format:'manhwa', genres:['Acción','Aventura','Drama','Fantasía','Artes Marciales','Venganza'],
+  score:8.7, year:2022, status:'Pausado', chapters:'135 caps',
+  author:'Ugak / Mok-In', artist:'REDICE Studio / INKYO', recommended:false,
+  updated:'Cap. 135 · hace 1d', synopsis:'Pyo Wol, un huérfano secuestrado y entrenado como arma humana en las profundidades del Jianghu, sobrevive a una masacre y regresa como el Asesino de la Luna a la Deriva para vengarse de quienes le robaron su humanidad.' },
+
+{ id:'mh2', title:'El Mago Pastor', format:'manhwa', genres:['Acción','Aventura','Fantasía','Magia'],
+  score:8.2, year:2026, status:'En emisión', chapters:'32 caps',
+  author:'Watermelon Peach', artist:'YU / Jetae Yoo', recommended:false,
+  updated:'Cap. 32 · hace 1d', synopsis:'Turan, un pastor que oculta su talento como gran archimago, decide finalmente salir al mundo y enfrentar su destino en un reino donde el poder mágico define el estatus.' },
+
+{ id:'mh3', title:'Señor del Hielo', format:'manhwa', genres:['Acción','Aventura','Fantasía','Artes Marciales','Isekai'],
+  score:7.5, year:2024, status:'Finalizado', chapters:'65 caps',
+  author:'Valen / Tim Croissant', artist:'Wild Animals / San Jimseung', recommended:false,
+  updated:'Cap. 65 · hace 1d', synopsis:'Seol Mudok, joven señor del Palacio de Hielo del Mar del Norte, desciende a otro mundo tras la muerte de su amante en busca de la flor legendaria que podría devolverle la vida.' },
+
+{ id:'mh4', title:'Regresión Absoluta', format:'manhwa', genres:['Acción','Fantasía','Artes Marciales','Regresión'],
+  score:8.7, year:2024, status:'En emisión', chapters:'115 caps',
+  author:'Jang Yeonghun', artist:'Park Jin-hwan', recommended:false,
+  updated:'Cap. 115 · hace 1d', synopsis:'Mugeuk Geom regresa al pasado mediante un ritual prohibido para evitar la derrota ante Mugi Hwa, reparar heridas familiares y unir el Murim antes de que el destino se repita.' },
+
+{ id:'mh5', title:'Novato Solo a Nivel Máximo', format:'manhwa', genres:['Acción','Aventura','Fantasía','Sistema'],
+  score:8.3, year:2021, status:'En emisión', chapters:'273 caps',
+  author:'Singeun', artist:'Maslow', recommended:false,
+  updated:'Cap. 273 · hace 1d', synopsis:'Kang Jinhyeok, el único que completó el juego Torre de Pruebas, ve cómo la torre aparece en el mundo real. Usa su conocimiento absoluto para dominar el ranking desde el nivel máximo.' },
+
+{ id:'mh6', title:'Crónica del Retorno del Dios Marcial', format:'manhwa', genres:['Acción','Aventura','Fantasía','Artes Marciales'],
+  score:8.1, year:2021, status:'En emisión', chapters:'170 caps',
+  author:'Hong Jeong-hun', artist:'Kim Seong-jae', recommended:false,
+  updated:'Cap. 170 · hace 1d', synopsis:'Tras mil años sellado, el Dios Marcial Dan Woohyun regresa a un mundo que lo olvidó. Al salvar a una niña, decide vivir en paz, pero el mundo marcial no se lo permitirá.' },
+
+{ id:'mh7', title:'El Dios de la Espada en un Mundo Destruido', format:'manhwa', genres:['Acción','Fantasía','Apocalipsis','Artes Marciales'],
+  score:7.9, year:2022, status:'En emisión', chapters:'120 caps',
+  author:'Kim Un', artist:'Kim Un', recommended:false,
+  updated:'Cap. 120 · hace 1d', synopsis:'En un mundo destruido, un maestro de la espada lucha por sobrevivir y recuperar su poder mientras enfrenta amenazas que amenazan con acabar con lo poco que queda de la humanidad.' },
+
+{ id:'mh8', title:'Crónicas de un Inmortal: El Regreso del Ranker Más Grande de la Historia', format:'manhwa', genres:['Acción','Aventura','Fantasía','Sistema'],
+  score:8.0, year:2021, status:'En emisión', chapters:'150 caps',
+  author:'Singeun', artist:'Various', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'El ranker más poderoso de la historia regresa tras convertirse en inmortal y debe volver a subir desde cero en un mundo que ha cambiado drásticamente.' },
+
+{ id:'mh9', title:'Me He Convertido en Cuervo', format:'manhwa', genres:['Acción','Fantasía','Reencarnación','Drama'],
+  score:7.8, year:2023, status:'En emisión', chapters:'80 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'Un hombre reencarna como un cuervo en un mundo de cultivación y debe usar su inteligencia y nuevas habilidades para sobrevivir y ascender.' },
+
+{ id:'mh10', title:'Solo Leveling', format:'manhwa', genres:['Acción','Aventura','Fantasía','Sistema'],
+  score:8.57, year:2018, status:'Finalizado', chapters:'200 caps',
+  author:'Chugong', artist:'Jang Sung-rak / Disciples', recommended:false,
+  updated:'Cap. 200 · hace 1d', synopsis:'Sung Jin-Woo, el cazador más débil, obtiene la habilidad de subir de nivel ilimitadamente tras un doble dungeon y se convierte en el cazador más fuerte del mundo.' },
+
+{ id:'mh11', title:'Solo Leveling: Arise Hunter Origin', format:'manhwa', genres:['Acción','Fantasía','Sistema'],
+  score:7.5, year:2024, status:'En emisión', chapters:'30 caps',
+  author:'Chugong / Various', artist:'Various', recommended:false,
+  updated:'Cap. 30 · hace 1d', synopsis:'Spin-off del universo de Solo Leveling centrado en el origen de los cazadores y eventos previos a la historia principal.' },
+
+{ id:'mh12', title:'Solo Leveling: Ragnarok', format:'manhwa', genres:['Acción','Aventura','Fantasía','Sistema'],
+  score:8.2, year:2024, status:'En emisión', chapters:'80 caps',
+  author:'Daul', artist:'Various', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'Secuela centrada en Sung Suho, hijo de Jin-Woo, que hereda el poder de las sombras y debe enfrentar nuevas amenazas en un mundo post-monarcas.' },
+
+{ id:'mh13', title:'La Leyenda de la Ojalá del Norte', format:'manhwa', genres:['Acción','Fantasía','Artes Marciales'],
+  score:7.7, year:2022, status:'En emisión', chapters:'90 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 90 · hace 1d', synopsis:'Un guerrero del norte busca reclamar su lugar y leyenda en un mundo de sectas y poderes sobrenaturales.' },
+
+{ id:'mh14', title:'Cómo Vivir como un Villano', format:'manhwa', genres:['Comedia','Fantasía','Isekai','Villano'],
+  score:7.9, year:2021, status:'En emisión', chapters:'100 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Un hombre reencarna como el villano de una novela y debe sobrevivir evitando el destino trágico que le espera.' },
+
+{ id:'mh15', title:'Nivelando con los Dioses', format:'manhwa', genres:['Acción','Fantasía','Sistema','Mitología'],
+  score:8.0, year:2021, status:'En emisión', chapters:'140 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 140 · hace 1d', synopsis:'Un humano es elegido para subir de nivel junto a dioses y enfrentar pruebas divinas que determinarán el destino del mundo.' },
+
+{ id:'mh16', title:'Asesino Divino: Yo Soy la Sombra', format:'manhwa', genres:['Acción','Fantasía','Asesinos','Sistema'],
+  score:7.8, year:2022, status:'En emisión', chapters:'110 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 110 · hace 1d', synopsis:'Un asesino de élite obtiene poderes divinos y se convierte en la sombra que elimina amenazas desde la oscuridad.' },
+
+{ id:'mh17', title:'El Sobarato del Hogar', format:'manhwa', genres:['Comedia','Drama','Slice of Life'],
+  score:7.5, year:2023, status:'En emisión', chapters:'50 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Historia centrada en un personaje que gestiona un hogar mientras enfrenta situaciones cotidianas y sobrenaturales.' },
+
+{ id:'mh18', title:'Del Dios de la Espada Más Fuerte', format:'manhwa', genres:['Acción','Fantasía','Artes Marciales'],
+  score:7.9, year:2021, status:'En emisión', chapters:'130 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 130 · hace 1d', synopsis:'El dios de la espada más fuerte regresa o reencarna para reclamar su título y enfrentar nuevos rivales.' },
+
+{ id:'mh19', title:'Camino en la Noche Consumido por las Espadas', format:'manhwa', genres:['Acción','Drama','Fantasía','Artes Marciales'],
+  score:7.7, year:2022, status:'En emisión', chapters:'90 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 90 · hace 1d', synopsis:'Un espadachín camina por un sendero de sangre y espadas en busca de redención o poder absoluto.' },
+
+{ id:'mh20', title:'El Gran Demonio Celestial Soberano', format:'manhwa', genres:['Acción','Fantasía','Artes Marciales','Demonio'],
+  score:8.1, year:2020, status:'En emisión', chapters:'180 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 180 · hace 1d', synopsis:'Un demonio celestial regresa o despierta para reclamar el dominio sobre el mundo marcial y celestial.' },
+
+{ id:'mh21', title:'La Reencarnación del Ninja', format:'manhwa', genres:['Acción','Aventura','Fantasía','Ninja'],
+  score:7.6, year:2022, status:'En emisión', chapters:'70 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Un ninja legendario reencarna en un nuevo cuerpo y debe recuperar su poder mientras navega un mundo diferente.' },
+
+{ id:'mh22', title:'El Psicópata de Murim', format:'manhwa', genres:['Acción','Drama','Psicológico','Artes Marciales'],
+  score:8.0, year:2021, status:'En emisión', chapters:'100 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Un psicópata con talento marcial excepcional siembra el caos en el Murim mientras persigue sus propios objetivos retorcidos.' },
+
+{ id:'mh23', title:'Nano Machine', format:'manhwa', genres:['Acción','Aventura','Fantasía','Ciencia ficción','Artes Marciales'],
+  score:8.15, year:2020, status:'En emisión', chapters:'272 caps',
+  author:'Hanjung Wolya', artist:'Geumgang Bulgoe', recommended:false,
+  updated:'Cap. 272 · hace 1d', synopsis:'Cheon Yeo-woon recibe una nanomáquina del futuro que le permite dominar las artes marciales y ascender en la Academia Demónica hasta convertirse en el más fuerte.' },
+
+{ id:'mh24', title:'Nigromante en Solitario', format:'manhwa', genres:['Acción','Fantasía','Sistema','Nigromancia'],
+  score:7.9, year:2021, status:'En emisión', chapters:'120 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 120 · hace 1d', synopsis:'Un nigromante solitario usa su poder sobre los muertos para sobrevivir y subir de nivel en un mundo hostil.' },
+
+{ id:'mh25', title:'Escort Warrior', format:'manhwa', genres:['Acción','Aventura','Fantasía','Artes Marciales'],
+  score:7.8, year:2020, status:'En emisión', chapters:'150 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'Un guerrero de escolta protege a clientes en un mundo peligroso mientras revela un pasado y poder extraordinarios.' },
+
+{ id:'mh26', title:'Dominio Absoluto', format:'manhwa', genres:['Acción','Comedia','Fantasía','Artes Marciales','Wuxia'],
+  score:8.4, year:2024, status:'En emisión', chapters:'87 caps',
+  author:'Younghoon Jang', artist:'Park Shi-dae', recommended:false,
+  updated:'Cap. 87 · hace 1d', synopsis:'Jeok Leegeon, un joven enigmático, jura restaurar la gloria del Jianghu con dos espadas legendarias y un talento abrumador.' },
+
+{ id:'mh27', title:'God of Blackfield', format:'manhwa', genres:['Acción','Drama','Militar','Artes Marciales'],
+  score:7.9, year:2019, status:'En emisión', chapters:'200 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 200 · hace 1d', synopsis:'Un soldado de élite regresa al mundo civil y usa sus habilidades de combate para proteger a su familia y enfrentar amenazas criminales.' },
+
+{ id:'mh28', title:'Yo Soy la Muerte', format:'manhwa', genres:['Acción','Fantasía','Sobrenatural','Drama'],
+  score:7.7, year:2022, status:'En emisión', chapters:'80 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'Un personaje se convierte en la personificación de la Muerte y debe cumplir su rol mientras enfrenta dilemas morales.' },
+
+{ id:'mh29', title:'El Maestro de la Espada Acogedor de Estrellas', format:'manhwa', genres:['Acción','Fantasía','Artes Marciales'],
+  score:7.8, year:2021, status:'En emisión', chapters:'100 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Un maestro de la espada con la capacidad de absorber o controlar estrellas busca el poder absoluto.' },
+
+{ id:'mh30', title:'El Rey Caballero que Regresó con un Dios', format:'manhwa', genres:['Acción','Fantasía','Regresión','Sistema'],
+  score:8.0, year:2022, status:'En emisión', chapters:'110 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 110 · hace 1d', synopsis:'Un rey caballero regresa del pasado o de la muerte acompañado de un dios para reclamar su trono y venganza.' },
+
+{ id:'mh31', title:'Relatos Fantásticos del Sabio Inmortal', format:'manhwa', genres:['Acción','Aventura','Fantasía','Cultivación'],
+  score:7.9, year:2020, status:'En emisión', chapters:'160 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 160 · hace 1d', synopsis:'Un sabio inmortal relata o vive aventuras fantásticas mientras guía o enfrenta a nuevos cultivadores.' },
+
+{ id:'mh32', title:'El Dios Caótico de Fuerza Extraordinaria', format:'manhwa', genres:['Acción','Fantasía','Sistema','Poder'],
+  score:7.8, year:2021, status:'En emisión', chapters:'90 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 90 · hace 1d', synopsis:'Un dios caótico con fuerza descomunal despierta o reencarna y altera el equilibrio del mundo con su poder bruto.' },
+
+{ id:'mh33', title:'Sangre Maldita', format:'manhwa', genres:['Acción','Drama','Horror','Sobrenatural'],
+  score:7.6, year:2022, status:'En emisión', chapters:'70 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Un protagonista con sangre maldita lucha contra su destino y las criaturas que lo persiguen.' },
+
+{ id:'mh34', title:'La Novia Más Feliz de la Historia', format:'manhwa', genres:['Romance','Comedia','Drama','Fantasía'],
+  score:7.7, year:2021, status:'En emisión', chapters:'80 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'Una mujer se convierte en la novia más feliz a través de circunstancias extraordinarias y un matrimonio inesperado.' },
+
+{ id:'mh35', title:'El Regreso del Caballero de la Muerte Clase: Apocalipsis', format:'manhwa', genres:['Acción','Fantasía','Apocalipsis','Caballeros'],
+  score:7.9, year:2022, status:'En emisión', chapters:'100 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'El Caballero de la Muerte de clase Apocalipsis regresa para enfrentar el fin del mundo o detenerlo.' },
+
+{ id:'mh36', title:'Everyone Loves Her', format:'manhwa', genres:['Romance','Comedia','Drama','Harem'],
+  score:7.5, year:2023, status:'En emisión', chapters:'60 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 60 · hace 1d', synopsis:'Una chica se convierte en el centro de atención y afecto de todos a su alrededor por razones misteriosas o sobrenaturales.' },
+
+{ id:'mh37', title:'Alguien Ha Poseído Mi Cuerpo', format:'manhwa', genres:['Comedia','Drama','Posesión','Fantasía'],
+  score:7.6, year:2022, status:'En emisión', chapters:'70 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'El protagonista descubre que alguien ha poseído su cuerpo y debe recuperar el control mientras lidia con las consecuencias.' },
+
+{ id:'mh38', title:'Me Convertí en un Príncipe de la Novela', format:'manhwa', genres:['Comedia','Fantasía','Isekai','Romance'],
+  score:7.8, year:2021, status:'En emisión', chapters:'90 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 90 · hace 1d', synopsis:'Un lector reencarna como un príncipe dentro de una novela y debe sobrevivir a los peligros de la trama original.' },
+
+{ id:'mh39', title:'El Mago de Curación que Aprendió a Luchar', format:'manhwa', genres:['Acción','Fantasía','Magia','Aventura'],
+  score:7.7, year:2022, status:'En emisión', chapters:'80 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'Un mago especializado en curación se ve obligado a aprender a luchar y se convierte en un combatiente formidable.' },
+
+{ id:'mh40', title:'Maestro de la Espada Devorador de Espadas', format:'manhwa', genres:['Acción','Fantasía','Artes Marciales'],
+  score:7.9, year:2021, status:'En emisión', chapters:'110 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 110 · hace 1d', synopsis:'Un maestro de la espada con la habilidad de devorar otras espadas busca convertirse en el más fuerte.' },
+
+{ id:'mh41', title:'Voidman', format:'manhwa', genres:['Acción','Ciencia ficción','Fantasía'],
+  score:7.6, year:2023, status:'En emisión', chapters:'50 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Un hombre relacionado con el vacío o el vacío dimensional enfrenta amenazas de otros mundos o realidades.' },
+
+{ id:'mh42', title:'Zombie Dad', format:'manhwa', genres:['Acción','Comedia','Drama','Horror','Zombis'],
+  score:7.8, year:2022, status:'En emisión', chapters:'70 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Un padre convertido en zombi lucha por proteger a su hija en un mundo apocalíptico manteniendo su humanidad residual.' },
+
+{ id:'mh43', title:'Torre de Dios', format:'manhwa', genres:['Acción','Aventura','Drama','Fantasía','Misterio'],
+  score:8.33, year:2010, status:'En emisión', chapters:'650+ caps',
+  author:'SIU', artist:'SIU', recommended:false,
+  updated:'Cap. 650 · hace 1d', synopsis:'Bam entra en la Torre de Dios para encontrar a su amiga Rachel y descubre un mundo de pruebas, política y secretos que desafían todo lo que conoce.' },
+
+{ id:'mh44', title:'The Heavenly Path\'s Annihilation', format:'manhwa', genres:['Acción','Fantasía','Cultivación'],
+  score:7.7, year:2022, status:'En emisión', chapters:'80 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'Un cultivador busca aniquilar o dominar el Camino Celestial mientras enfrenta sectas y poderes divinos.' },
+
+{ id:'mh45', title:'Shadow Slave', format:'manhwa', genres:['Acción','Aventura','Fantasía','Horror','Sistema'],
+  score:8.5, year:2022, status:'En emisión', chapters:'150+ caps',
+  author:'Guiltythree', artist:'Various', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'Sunny se convierte en un Esclavo de las Sombras en un mundo de pesadillas y debe sobrevivir a los Sueños y ascender en el ranking de Awakened.' },
+
+{ id:'mh46', title:'Reencarnación del Dios de la Batalla Suicida', format:'manhwa', genres:['Acción','Fantasía','Reencarnación','Artes Marciales'],
+  score:7.8, year:2021, status:'En emisión', chapters:'90 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 90 · hace 1d', synopsis:'El Dios de la Batalla que solía suicidarse en combate reencarna y busca una nueva forma de pelear y vivir.' },
+
+{ id:'mh47', title:'Pick Me Up, Infinite Gacha', format:'manhwa', genres:['Acción','Fantasía','Sistema','Gacha'],
+  score:8.4, year:2022, status:'En emisión', chapters:'215 caps',
+  author:'Hermod / U-Ne Cho', artist:'Wasakbasak', recommended:false,
+  updated:'Cap. 215 · hace 1d', synopsis:'Seojin Han es transportado al juego Pick Me Up como un héroe de 1 estrella y debe subir de rango para derrotar al jugador que lo controla.' },
+
+{ id:'mh48', title:'Player', format:'manhwa', genres:['Acción','Fantasía','Sistema'],
+  score:7.7, year:2021, status:'En emisión', chapters:'100 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Un jugador común obtiene habilidades especiales y se convierte en una figura clave en un mundo donde los jugadores determinan el destino.' },
+
+{ id:'mh49', title:'Existencia', format:'manhwa', genres:['Acción','Drama','Psicológico','Ciencia ficción'],
+  score:7.9, year:2022, status:'En emisión', chapters:'70 caps',
+  author:'Unknown', artist:'Unknown', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Un protagonista cuestiona o lucha por su propia existencia en un mundo que parece rechazarlo o manipularlo.' },
+
+{ id:'mh50', title:'El Asesino Pietro', format:'manhwa', genres:['Acción','Drama','Crimen','Comedia'],
+  score:8.6, year:2023, status:'En emisión', chapters:'145 caps',
+  author:'Kim Junghyun', artist:'Im Lina', recommended:false,
+  updated:'Cap. 145 · hace 1d', synopsis:'Peter, un asesino legendario retirado, es traicionado y rejuvenecido mágicamente a su juventud. Ahora busca venganza contra la organización que lo traicionó.' },
   
   // Manga
+  { id:'an1', title:'Rosen Garten Saga', format:'manga', genres:['Acción','Aventura','Comedia','Fantasía','Erótico'],
+  score:7.92, year:2020, status:'Finalizado', chapters:'99 caps',
+  author:'Sakimori Fuji', artist:'Bakotsu Tonooka', recommended:false,
+  updated:'Cap. 99 · hace 1d', synopsis:'Tras el ataque a su aldea, la virgen Rin encuentra la espada que contiene el alma del héroe pervertido Siegfried y se embarca en un torneo lleno de mitos, violencia y humor negro para vengarse y resucitarlo.' },
+
+{ id:'an2', title:'Jujutsu Kaisen', format:'manga', genres:['Acción','Sobrenatural','Escolar','Horror'],
+  score:8.17, year:2018, status:'Finalizado', chapters:'271 caps',
+  author:'Gege Akutami', artist:'Gege Akutami', recommended:false,
+  updated:'Cap. 271 · hace 1d', synopsis:'Yuji Itadori se traga un dedo maldito y se convierte en el recipiente de Sukuna. Entra en el mundo de los hechiceros de jujutsu para exorcizar maldiciones y salvar a quienes ama.' },
+
+{ id:'an3', title:'Jujutsu Kaisen Modulo', format:'manga', genres:['Acción','Sobrenatural','Ciencia ficción'],
+  score:6.8, year:2025, status:'Finalizado', chapters:'25 caps',
+  author:'Gege Akutami', artist:'Yūji Iwasaki', recommended:false,
+  updated:'Cap. 25 · hace 1d', synopsis:'En 2086, 68 años después de los Juegos de Exterminio, los hechiceros Yuka y Tsurugi Okkotsu se enfrentan a una raza alienígena que también usa jujutsu y busca refugio en la Tierra.' },
+
+{ id:'an4', title:'Claymore', format:'manga', genres:['Acción','Aventura','Fantasía','Horror'],
+  score:8.29, year:2001, status:'Finalizado', chapters:'159 caps',
+  author:'Norihiro Yagi', artist:'Norihiro Yagi', recommended:false,
+  updated:'Cap. 159 · hace 1d', synopsis:'En un mundo asolado por yoma, las Claymores (mitad humanas, mitad monstruo) luchan contra ellos mientras intentan no perder su humanidad. Clare busca venganza contra el monstruo que mató a su mentora.' },
+
+{ id:'an5', title:'Berserk', format:'manga', genres:['Acción','Aventura','Drama','Fantasía','Horror'],
+  score:9.46, year:1989, status:'En emisión', chapters:'386 caps',
+  author:'Kentaro Miura / Kouji Mori', artist:'Kentaro Miura / Studio Gaga', recommended:false,
+  updated:'Cap. 386 · hace 1d', synopsis:'Guts, el Espadachín Negro, emprende un viaje de venganza y supervivencia en un mundo oscuro lleno de demonios, traiciones y la búsqueda de significado tras la masacre del Eclipse.' },
+
+{ id:'an6', title:'Bleach', format:'manga', genres:['Acción','Aventura','Sobrenatural'],
+  score:7.93, year:2001, status:'Finalizado', chapters:'705 caps',
+  author:'Tite Kubo', artist:'Tite Kubo', recommended:false,
+  updated:'Cap. 705 · hace 1d', synopsis:'Ichigo Kurosaki obtiene los poderes de un Shinigami y se convierte en protector de los vivos y los muertos, enfrentándose a Hollows, Quincy y fuerzas que amenazan el equilibrio entre mundos.' },
+
+{ id:'an7', title:'Trigun', format:'manga', genres:['Acción','Aventura','Comedia','Ciencia ficción'],
+  score:8.0, year:1995, status:'Finalizado', chapters:'≈100 caps',
+  author:'Yasuhiro Nightow', artist:'Yasuhiro Nightow', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Vash the Stampede, un pistolero legendario con recompensa de 60 mil millones, viaja por un planeta desértico intentando no matar mientras es perseguido por cazarrecompensas y su hermano Millions Knives.' },
+
+{ id:'an8', title:'Trigun Maximum', format:'manga', genres:['Acción','Aventura','Comedia','Ciencia ficción'],
+  score:8.32, year:1997, status:'Finalizado', chapters:'102 caps',
+  author:'Yasuhiro Nightow', artist:'Yasuhiro Nightow', recommended:false,
+  updated:'Cap. 102 · hace 1d', synopsis:'Continuación directa de Trigun. Vash enfrenta las consecuencias de su pasado, la amenaza de Knives y una guerra que pondrá a prueba su filosofía de no matar.' },
+
+{ id:'an9', title:'Tokyo Ghoul', format:'manga', genres:['Acción','Drama','Horror','Sobrenatural'],
+  score:8.0, year:2011, status:'Finalizado', chapters:'143 caps',
+  author:'Sui Ishida', artist:'Sui Ishida', recommended:false,
+  updated:'Cap. 143 · hace 1d', synopsis:'Ken Kaneki es transformado a la fuerza en mitad ghoul y debe sobrevivir en el mundo de los comedores de carne humana mientras lucha por mantener su humanidad.' },
+
+{ id:'an10', title:'Tokyo Ghoul:re', format:'manga', genres:['Acción','Drama','Horror','Sobrenatural'],
+  score:8.36, year:2014, status:'Finalizado', chapters:'181 caps',
+  author:'Sui Ishida', artist:'Sui Ishida', recommended:false,
+  updated:'Cap. 181 · hace 1d', synopsis:'Secuela de Tokyo Ghoul. Un joven amnésico llamado Haise Sasaki trabaja para la CCG cazando ghouls mientras fragmentos de su pasado como Kaneki comienzan a resurgir.' },
+
+{ id:'an11', title:'Yama no Susume', format:'manga', genres:['Comedia','Slice of Life','Aventura'],
+  score:7.0, year:2011, status:'En emisión', chapters:'≈200+ caps',
+  author:'Shiro', artist:'Shiro', recommended:false,
+  updated:'Cap. 200 · hace 1d', synopsis:'Aoi, una chica tímida, es arrastrada por su amiga de la infancia Hinata al mundo del montañismo y descubre la belleza de la naturaleza y la amistad a través de las montañas.' },
+
+{ id:'an12', title:'Attack on Titan', format:'manga', genres:['Acción','Drama','Fantasía','Horror','Suspense'],
+  score:8.56, year:2009, status:'Finalizado', chapters:'141 caps',
+  author:'Hajime Isayama', artist:'Hajime Isayama', recommended:false,
+  updated:'Cap. 141 · hace 1d', synopsis:'La humanidad vive detrás de enormes muros para protegerse de los Titanes. Eren Yeager jura erradicarlos después de que uno destruya su ciudad y mate a su madre.' },
+
+{ id:'an13', title:'Vagabond', format:'manga', genres:['Acción','Aventura','Drama','Histórico'],
+  score:9.27, year:1998, status:'Pausado', chapters:'327 caps',
+  author:'Takehiko Inoue', artist:'Takehiko Inoue', recommended:false,
+  updated:'Cap. 327 · hace 1d', synopsis:'Adaptación libre de la vida de Miyamoto Musashi. Un joven espadachín busca convertirse en el más fuerte mientras enfrenta su propio camino hacia la iluminación y la violencia.' },
+
+{ id:'an14', title:'Kuroko no Basket', format:'manga', genres:['Comedia','Deportes','Escolar'],
+  score:8.10, year:2008, status:'Finalizado', chapters:'276 caps',
+  author:'Tadatoshi Fujimaki', artist:'Tadatoshi Fujimaki', recommended:false,
+  updated:'Cap. 276 · hace 1d', synopsis:'Tetsuya Kuroko, el sexto miembro invisible de la Generación de los Milagros, se une al equipo de Seirin junto a Kagami para derrotar a sus antiguos compañeros y convertirse en el mejor de Japón.' },
+
+{ id:'an15', title:'Blue Lock', format:'manga', genres:['Acción','Deportes','Drama'],
+  score:8.3, year:2018, status:'En emisión', chapters:'357 caps',
+  author:'Muneyuki Kaneshiro', artist:'Yusuke Nomura', recommended:false,
+  updated:'Cap. 357 · hace 1d', synopsis:'Tras la eliminación de Japón en el Mundial, se crea el proyecto Blue Lock para encontrar al egoísta delantero definitivo. Yoichi Isagi entra en un torneo eliminatorio extremo por el sueño de representar a su país.' },
+
+{ id:'an16', title:'Slam Dunk', format:'manga', genres:['Comedia','Deportes','Escolar','Drama'],
+  score:8.7, year:1990, status:'Finalizado', chapters:'276 caps',
+  author:'Takehiko Inoue', artist:'Takehiko Inoue', recommended:false,
+  updated:'Cap. 276 · hace 1d', synopsis:'Hanamichi Sakuragi, un delincuente que nunca ha jugado al baloncesto, se une al equipo de Shohoku para impresionar a una chica y termina enamorándose del deporte.' },
+
+{ id:'an17', title:'Kagurabachi', format:'manga', genres:['Acción','Aventura','Sobrenatural'],
+  score:8.1, year:2023, status:'En emisión', chapters:'≈70+ caps',
+  author:'Takeru Hokazono', artist:'Takeru Hokazono', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Chihiro Rokuhira hereda las katanas encantadas de su padre asesinado y se embarca en una búsqueda de venganza contra la organización que las robó.' },
+
+{ id:'an18', title:'Sakamoto Days', format:'manga', genres:['Acción','Comedia'],
+  score:8.2, year:2020, status:'En emisión', chapters:'≈180+ caps',
+  author:'Yuto Suzuki', artist:'Yuto Suzuki', recommended:false,
+  updated:'Cap. 180 · hace 1d', synopsis:'Taro Sakamoto, el asesino más fuerte del mundo, se retira para vivir una vida normal como tendero, pero su pasado lo persigue constantemente.' },
+
+{ id:'an19', title:'Nanatsu no Taizai', format:'manga', genres:['Acción','Aventura','Fantasía','Comedia'],
+  score:7.7, year:2012, status:'Finalizado', chapters:'346 caps',
+  author:'Nakaba Suzuki', artist:'Nakaba Suzuki', recommended:false,
+  updated:'Cap. 346 · hace 1d', synopsis:'La princesa Elizabeth busca a los Siete Pecados Capitales, un grupo de caballeros desterrados, para salvar el reino de Liones de la Santa Caballería corrupta.' },
+
+{ id:'an20', title:'Four Knights of the Apocalypse', format:'manga', genres:['Acción','Aventura','Fantasía'],
+  score:7.4, year:2021, status:'En emisión', chapters:'≈170+ caps',
+  author:'Nakaba Suzuki', artist:'Nakaba Suzuki', recommended:false,
+  updated:'Cap. 170 · hace 1d', synopsis:'Secuela de Nanatsu no Taizai. Percival y los Caballeros del Apocalipsis deben impedir la profecía que traerá la destrucción del mundo.' },
+
+{ id:'an21', title:'Gachiakuta', format:'manga', genres:['Acción','Fantasía','Ciencia ficción'],
+  score:8.0, year:2022, status:'En emisión', chapters:'≈100+ caps',
+  author:'Kei Urana', artist:'Kei Urana', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Rudo es acusado injustamente y arrojado al Abismo, un mundo de basura donde debe sobrevivir y luchar contra monstruos hechos de desechos con un arma especial.' },
+
+{ id:'an22', title:'Chainsaw Man', format:'manga', genres:['Acción','Horror','Sobrenatural','Comedia'],
+  score:8.6, year:2018, status:'En emisión', chapters:'≈200+ caps',
+  author:'Tatsuki Fujimoto', artist:'Tatsuki Fujimoto', recommended:false,
+  updated:'Cap. 200 · hace 1d', synopsis:'Denji, un joven pobre con deudas, se fusiona con su demonio mascota Pochita y se convierte en Chainsaw Man, cazando demonios por una vida normal.' },
+
+{ id:'an23', title:'Record of Ragnarok', format:'manga', genres:['Acción','Fantasía','Mitología'],
+  score:7.8, year:2017, status:'En emisión', chapters:'≈100+ caps',
+  author:'Shinya Umemura / Takumi Fukui', artist:'Ajichika', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Los dioses deciden acabar con la humanidad. Para salvarla, trece humanos legendarios deben enfrentarse a trece dioses en combates a muerte en el Ragnarok.' },
+
+{ id:'an24', title:'Gantz', format:'manga', genres:['Acción','Horror','Ciencia ficción','Sobrenatural'],
+  score:8.0, year:2000, status:'Finalizado', chapters:'383 caps',
+  author:'Hiroya Oku', artist:'Hiroya Oku', recommended:false,
+  updated:'Cap. 383 · hace 1d', synopsis:'Kei Kurono y Masaru Kato mueren y despiertan en una habitación con una misteriosa esfera negra que los obliga a cazar alienígenas en misiones mortales.' },
+
+{ id:'an25', title:'The Fable', format:'manga', genres:['Acción','Comedia','Drama','Crimen'],
+  score:8.4, year:2014, status:'Finalizado', chapters:'240 caps',
+  author:'Katsuhisa Minami', artist:'Katsuhisa Minami', recommended:false,
+  updated:'Cap. 240 · hace 1d', synopsis:'El asesino legendario conocido como “The Fable” recibe la orden de vivir una vida normal durante un año. Intenta adaptarse a la sociedad mientras evita matar.' },
+
+{ id:'an26', title:'Blame!', format:'manga', genres:['Acción','Ciencia ficción','Horror'],
+  score:8.1, year:1997, status:'Finalizado', chapters:'66 caps',
+  author:'Tsutomu Nihei', artist:'Tsutomu Nihei', recommended:false,
+  updated:'Cap. 66 · hace 1d', synopsis:'En una megaciudad infinita y decadente, el silencioso Killy busca el Net Terminal Gene que podría salvar a la humanidad de las máquinas de seguridad.' },
+
+{ id:'an27', title:'Kimetsu no Yaiba', format:'manga', genres:['Acción','Aventura','Sobrenatural','Histórico'],
+  score:8.1, year:2016, status:'Finalizado', chapters:'205 caps',
+  author:'Koyoharu Gotouge', artist:'Koyoharu Gotouge', recommended:false,
+  updated:'Cap. 205 · hace 1d', synopsis:'Tanjiro Kamado se convierte en cazador de demonios para curar a su hermana Nezuko, transformada en demonio, y vengar a su familia asesinada.' },
+
+{ id:'an28', title:'Devilman', format:'manga', genres:['Acción','Horror','Sobrenatural'],
+  score:7.8, year:1972, status:'Finalizado', chapters:'≈50+ caps',
+  author:'Go Nagai', artist:'Go Nagai', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Akira Fudo se fusiona con el demonio Amon para convertirse en Devilman y luchar contra la invasión demoníaca que amenaza a la humanidad.' },
+
+{ id:'an29', title:'Juujika no Rokunin', format:'manga', genres:['Drama','Horror','Psicológico','Suspense'],
+  score:7.5, year:2020, status:'En emisión', chapters:'≈100+ caps',
+  author:'Nakahara Shirou', artist:'Nakahara Shirou', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Tras sufrir un bullying extremo, Uruma Shun planea una venganza brutal y meticulosa contra los seis responsables de la muerte de su amiga de la infancia.' },
+
+{ id:'an30', title:'Oyasumi Punpun', format:'manga', genres:['Drama','Psicológico','Slice of Life'],
+  score:8.9, year:2007, status:'Finalizado', chapters:'147 caps',
+  author:'Inio Asano', artist:'Inio Asano', recommended:false,
+  updated:'Cap. 147 · hace 1d', synopsis:'La vida de Punpun, un niño dibujado como pájaro, se narra desde la infancia hasta la adultez, explorando el amor, la depresión, la familia y la pérdida de inocencia.' },
+
+{ id:'an31', title:'Yofukashi no Uta', format:'manga', genres:['Comedia','Romance','Sobrenatural','Slice of Life'],
+  score:8.2, year:2019, status:'En emisión', chapters:'≈180+ caps',
+  author:'Kotoyama', artist:'Kotoyama', recommended:false,
+  updated:'Cap. 180 · hace 1d', synopsis:'Kou Yamori, un estudiante insomne, conoce a la vampira Nazuna y descubre el atractivo de la vida nocturna y la posibilidad de convertirse en vampiro.' },
+
+{ id:'an32', title:'Choujin X', format:'manga', genres:['Acción','Sobrenatural','Superhéroes'],
+  score:7.9, year:2021, status:'En emisión', chapters:'≈60+ caps',
+  author:'Sui Ishida', artist:'Sui Ishida', recommended:false,
+  updated:'Cap. 60 · hace 1d', synopsis:'En un mundo donde algunos humanos desarrollan poderes de “Choujin”, Azuma y Tokio se ven envueltos en una guerra entre facciones de superhumanos.' },
+
+{ id:'an33', title:'Death Note', format:'manga', genres:['Drama','Misterio','Psicológico','Sobrenatural','Suspense'],
+  score:8.6, year:2003, status:'Finalizado', chapters:'108 caps',
+  author:'Tsugumi Ohba', artist:'Takeshi Obata', recommended:false,
+  updated:'Cap. 108 · hace 1d', synopsis:'Light Yagami encuentra un cuaderno que mata a quien escriba su nombre. Decide usarlo para crear un mundo ideal y se enfrenta al detective L en un juego de inteligencia mortal.' },
+
+{ id:'an34', title:'Kaguya-sama: Love is War', format:'manga', genres:['Comedia','Romance','Escolar','Psicológico'],
+  score:8.8, year:2015, status:'Finalizado', chapters:'281 caps',
+  author:'Aka Akasaka', artist:'Aka Akasaka', recommended:false,
+  updated:'Cap. 281 · hace 1d', synopsis:'Kaguya Shinomiya y Miyuki Shirogane, los dos estudiantes más brillantes, se enamoran pero se niegan a confesarse. Comienza una guerra psicológica para hacer que el otro se declare primero.' },
+
+{ id:'an35', title:'The 100 Girlfriends Who Really, Really, Really, Really, Really Love You', format:'manga', genres:['Comedia','Romance','Harem','Escolar'],
+  score:7.9, year:2019, status:'En emisión', chapters:'≈180+ caps',
+  author:'Rikito Nakamura', artist:'Yukiko Nozawa', recommended:false,
+  updated:'Cap. 180 · hace 1d', synopsis:'Rentarou Aijou es rechazado 100 veces. Una diosa le promete 100 novias. Cada vez que conoce a una, se enamora instantáneamente y debe gestionar un harén cada vez más caótico.' },
+
+{ id:'an36', title:'My Dress-Up Darling', format:'manga', genres:['Comedia','Romance','Slice of Life'],
+  score:8.2, year:2018, status:'En emisión', chapters:'≈100+ caps',
+  author:'Shinichi Fukuda', artist:'Shinichi Fukuda', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Gojo Wakana, un chico tímido aficionado a las muñecas hina, conoce a Marin Kitagawa, una cosplayer popular, y comienza a ayudarla a crear trajes, descubriendo un nuevo mundo.' },
+
+{ id:'an37', title:'One Piece', format:'manga', genres:['Acción','Aventura','Comedia','Fantasía'],
+  score:9.0, year:1997, status:'En emisión', chapters:'1120+ caps',
+  author:'Eiichiro Oda', artist:'Eiichiro Oda', recommended:false,
+  updated:'Cap. 1120 · hace 1d', synopsis:'Monkey D. Luffy se hace a la mar para convertirse en el Rey de los Piratas y encontrar el legendario tesoro One Piece, reuniendo una tripulación de sueños en el Grand Line.' },
+
+{ id:'an38', title:'Oshi no Ko', format:'manga', genres:['Drama','Misterio','Psicológico','Sobrenatural'],
+  score:8.5, year:2020, status:'En emisión', chapters:'≈160+ caps',
+  author:'Aka Akasaka', artist:'Mengo Yokoyari', recommended:false,
+  updated:'Cap. 160 · hace 1d', synopsis:'Un médico y su paciente reencarnan como los hijos gemelos de una idol asesinada. Buscan la verdad detrás de su muerte mientras navegan el oscuro mundo del entretenimiento.' },
+
+{ id:'an39', title:'Veil', format:'manga', genres:['Drama','Romance','Slice of Life'],
+  score:8.0, year:2020, status:'En emisión', chapters:'≈30+ caps',
+  author:'Kotteri', artist:'Kotteri', recommended:false,
+  updated:'Cap. 30 · hace 1d', synopsis:'Una historia tranquila y atmosférica sobre encuentros y relaciones humanas en un París otoñal, centrada en una joven y un misterioso hombre de cabello largo.' },
+
+{ id:'an40', title:'Kaoru Hana wa Rin to Saku', format:'manga', genres:['Comedia','Romance','Escolar','Slice of Life'],
+  score:8.4, year:2021, status:'En emisión', chapters:'≈140+ caps',
+  author:'Saka Mikami', artist:'Saka Mikami', recommended:false,
+  updated:'Cap. 140 · hace 1d', synopsis:'Rintaro Tsumugi, un chico intimidante de una escuela de “delincuentes”, conoce a Kaoruko Waguri, una estudiante de una prestigiosa academia de chicas, y surge una dulce relación.' },
+
+{ id:'an41', title:'Sousou no Frieren', format:'manga', genres:['Aventura','Drama','Fantasía','Slice of Life'],
+  score:9.0, year:2020, status:'En emisión', chapters:'≈130+ caps',
+  author:'Kanehito Yamada', artist:'Tsukasa Abe', recommended:false,
+  updated:'Cap. 130 · hace 1d', synopsis:'La maga élfica Frieren, tras derrotar al Rey Demonio junto a su grupo, emprende un viaje para comprender mejor a los humanos y el paso del tiempo tras la muerte de sus compañeros.' },
+
+{ id:'an42', title:'Horimiya', format:'manga', genres:['Comedia','Romance','Escolar','Slice of Life'],
+  score:8.3, year:2011, status:'Finalizado', chapters:'130 caps',
+  author:'HERO', artist:'Daisuke Hagiwara', recommended:false,
+  updated:'Cap. 130 · hace 1d', synopsis:'Kyoko Hori, la chica perfecta de la escuela, y Izumi Miyamura, el chico tímido y piercing, descubren los lados ocultos del otro y comienzan una relación sincera.' },
+
+{ id:'an43', title:'I\'m in Love with the Villainess', format:'manga', genres:['Comedia','Fantasía','Yuri','Isekai'],
+  score:8.0, year:2019, status:'Finalizado', chapters:'≈40+ caps',
+  author:'Inori', artist:'Hanagata', recommended:false,
+  updated:'Cap. 40 · hace 1d', synopsis:'Rei Ohashi reencarna en el cuerpo de la rival de un juego otome y se enamora de la villana Claire, intentando cambiar su destino trágico.' },
+
+{ id:'an44', title:'Villainess Level 99', format:'manga', genres:['Comedia','Fantasía','Isekai'],
+  score:7.6, year:2019, status:'En emisión', chapters:'≈50+ caps',
+  author:'Satori Tanabata', artist:'Tea', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Yumiella reencarna como la villana de un juego y, obsesionada con subir de nivel, se convierte en la persona más fuerte del mundo, aterrorizando a todos sin querer.' },
+
+{ id:'an45', title:'Goblin Slayer', format:'manga', genres:['Acción','Aventura','Fantasía','Horror'],
+  score:7.7, year:2016, status:'En emisión', chapters:'≈60+ caps',
+  author:'Kumo Kagyu', artist:'Kousuke Kurose', recommended:false,
+  updated:'Cap. 60 · hace 1d', synopsis:'Un hombre conocido solo como Goblin Slayer dedica su vida a exterminar goblins de la forma más eficiente y brutal posible, acompañado de un grupo de aventureros.' },
+
+{ id:'an46', title:'Fire Force', format:'manga', genres:['Acción','Sobrenatural','Ciencia ficción'],
+  score:7.8, year:2015, status:'Finalizado', chapters:'304 caps',
+  author:'Atsushi Ohkubo', artist:'Atsushi Ohkubo', recommended:false,
+  updated:'Cap. 304 · hace 1d', synopsis:'Shinra Kusakabe se une a la Fuerza Especial de Bomberos para investigar las combustiones humanas espontáneas y descubrir la verdad sobre el incendio que mató a su familia.' },
+
+{ id:'an47', title:'Soul Eater', format:'manga', genres:['Acción','Comedia','Sobrenatural','Fantasía'],
+  score:7.9, year:2004, status:'Finalizado', chapters:'113 caps',
+  author:'Atsushi Ohkubo', artist:'Atsushi Ohkubo', recommended:false,
+  updated:'Cap. 113 · hace 1d', synopsis:'En la Academia Shibusen, los estudiantes y sus armas humanas trabajan para recolectar 99 almas de brujas y una de bruja para convertir sus armas en Death Scythes.' },
+
+{ id:'an48', title:'Re:Zero', format:'manga', genres:['Drama','Fantasía','Isekai','Psicológico','Suspense'],
+  score:8.2, year:2014, status:'En emisión', chapters:'≈50+ caps',
+  author:'Tappei Nagatsuki', artist:'Daichi Matsuse / Shinichirou Otsuka', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Subaru Natsuki es transportado a otro mundo y descubre que tiene la habilidad de regresar en el tiempo al morir, usándola para salvar a quienes ama a un alto costo mental.' },
+
+{ id:'an49', title:'Ajin', format:'manga', genres:['Acción','Horror','Misterio','Sobrenatural'],
+  score:8.0, year:2012, status:'Finalizado', chapters:'86 caps',
+  author:'Gamon Sakurai', artist:'Gamon Sakurai', recommended:false,
+  updated:'Cap. 86 · hace 1d', synopsis:'Kei Nagai descubre que es un Ajin, un ser inmortal perseguido por el gobierno y corporaciones que desean experimentar con él.' },
+
+{ id:'an50', title:'Ao Haru Ride', format:'manga', genres:['Drama','Romance','Escolar','Slice of Life'],
+  score:8.0, year:2011, status:'Finalizado', chapters:'49 caps',
+  author:'Io Sakisaka', artist:'Io Sakisaka', recommended:false,
+  updated:'Cap. 49 · hace 1d', synopsis:'Yoshiko Yoshioka se reencuentra en el instituto con Tanaka Kou, su primer amor de secundaria, pero él ha cambiado completamente.' },
+
+{ id:'an51', title:'Hottarake no Yomeiri', format:'manga', genres:['Comedia','Romance','Slice of Life'],
+  score:7.5, year:2022, status:'En emisión', chapters:'≈40+ caps',
+  author:'Matsuda', artist:'Matsuda', recommended:false,
+  updated:'Cap. 40 · hace 1d', synopsis:'Una historia de matrimonio arreglado entre una chica despreocupada y un hombre serio que poco a poco desarrollan sentimientos genuinos.' },
+
+{ id:'an52', title:'Nana', format:'manga', genres:['Drama','Música','Romance','Slice of Life'],
+  score:8.6, year:2000, status:'Pausado', chapters:'84 caps',
+  author:'Ai Yazawa', artist:'Ai Yazawa', recommended:false,
+  updated:'Cap. 84 · hace 1d', synopsis:'Dos chicas llamadas Nana se conocen en un tren a Tokio y terminan compartiendo piso. Sus vidas se entrelazan con el mundo de la música y relaciones complicadas.' },
+
+{ id:'an53', title:'Mob Psycho 100', format:'manga', genres:['Acción','Comedia','Sobrenatural','Slice of Life'],
+  score:8.7, year:2012, status:'Finalizado', chapters:'109 caps',
+  author:'ONE', artist:'ONE', recommended:false,
+  updated:'Cap. 109 · hace 1d', synopsis:'Shigeo “Mob” Kageyama es un poderoso psíquico que intenta vivir una vida normal y controlar sus emociones para no desatar su poder.' },
+
+{ id:'an54', title:'Isekai Ojisan', format:'manga', genres:['Comedia','Fantasía','Isekai'],
+  score:8.0, year:2018, status:'En emisión', chapters:'≈60+ caps',
+  author:'Hotondoshindeiru', artist:'Hotondoshindeiru', recommended:false,
+  updated:'Cap. 60 · hace 1d', synopsis:'Un tío regresa tras 17 años en otro mundo y se reencuentra con su sobrino, enfrentándose a la cultura moderna japonesa con humor absurdo.' },
+
+{ id:'an55', title:'Tensei Shitara Slime Datta Ken', format:'manga', genres:['Acción','Aventura','Comedia','Fantasía','Isekai'],
+  score:8.0, year:2015, status:'En emisión', chapters:'≈120+ caps',
+  author:'Fuse', artist:'Taiki Kawakami', recommended:false,
+  updated:'Cap. 120 · hace 1d', synopsis:'Satoru Mikami muere y reencarna como un slime en otro mundo. Con la habilidad de absorber y copiar poderes, funda una nación de monstruos.' },
+
+{ id:'an56', title:'Spy × Family', format:'manga', genres:['Acción','Comedia','Slice of Life'],
+  score:8.5, year:2019, status:'En emisión', chapters:'≈110+ caps',
+  author:'Tatsuya Endo', artist:'Tatsuya Endo', recommended:false,
+  updated:'Cap. 110 · hace 1d', synopsis:'El espía Twilight debe formar una familia falsa para una misión. Adopta a Anya (una telepata) y se casa con Yor (una asesina), sin que nadie sepa los secretos de los demás.' },
+
+{ id:'an57', title:'Tensei Shitara Ken Deshita', format:'manga', genres:['Acción','Aventura','Fantasía','Isekai'],
+  score:7.5, year:2016, status:'En emisión', chapters:'≈70+ caps',
+  author:'Yuu Tanaka', artist:'Tomowo Kawakami', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Un hombre reencarna como una espada legendaria y es empuñada por una chica cat-girl llamada Fran. Juntos buscan volverse más fuertes.' },
+
+{ id:'an58', title:'The Unwanted Undead Adventurer', format:'manga', genres:['Acción','Aventura','Fantasía'],
+  score:7.6, year:2017, status:'En emisión', chapters:'≈50+ caps',
+  author:'Yu Okano', artist:'Tsukasa Zabuton', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Rentt Faina, un aventurero mediocre, muere y despierta como no-muerto. Decide ocultar su condición y seguir subiendo de rango.' },
+
+{ id:'an59', title:'Hell\'s Paradise', format:'manga', genres:['Acción','Aventura','Horror','Sobrenatural'],
+  score:8.2, year:2018, status:'Finalizado', chapters:'127 caps',
+  author:'Yuji Kaku', artist:'Yuji Kaku', recommended:false,
+  updated:'Cap. 127 · hace 1d', synopsis:'El ninja Gabimaru es enviado a una isla misteriosa en busca del elixir de la inmortalidad, acompañado por la verduga Sagiri, en una misión de la que nadie ha regresado.' },
+
+{ id:'an60', title:'Owari no Seraph', format:'manga', genres:['Acción','Drama','Sobrenatural','Horror'],
+  score:7.7, year:2012, status:'En emisión', chapters:'≈130+ caps',
+  author:'Takaya Kagami', artist:'Yamato Yamamoto', recommended:false,
+  updated:'Cap. 130 · hace 1d', synopsis:'Tras una catástrofe que mata a la mayoría de los humanos, los vampiros toman el control. Yuichiro Hyakuya busca venganza por su familia adoptiva asesinada.' },
+
+{ id:'an61', title:'Takopi\'s Original Sin', format:'manga', genres:['Drama','Horror','Psicológico','Ciencia ficción'],
+  score:8.3, year:2021, status:'Finalizado', chapters:'16 caps',
+  author:'Taizan 5', artist:'Taizan 5', recommended:false,
+  updated:'Cap. 16 · hace 1d', synopsis:'Un adorable alienígena llamado Takopi llega a la Tierra para hacer felices a los niños, pero se encuentra con el bullying y la desesperación de una niña, desencadenando una tragedia.' },
+
+{ id:'an62', title:'Tomodachi Game', format:'manga', genres:['Drama','Misterio','Psicológico','Suspense'],
+  score:8.1, year:2013, status:'En emisión', chapters:'≈120+ caps',
+  author:'Yuki Yaku', artist:'Shiho Sato', recommended:false,
+  updated:'Cap. 120 · hace 1d', synopsis:'Yuuichi Katagiri y sus amigos son forzados a participar en juegos psicológicos brutales donde la confianza y la traición determinan quién sobrevive.' },
+
+{ id:'an63', title:'Clevatess', format:'manga', genres:['Acción','Aventura','Fantasía'],
+  score:7.8, year:2020, status:'En emisión', chapters:'≈40+ caps',
+  author:'Yuji Kaku', artist:'Yuji Kaku', recommended:false,
+  updated:'Cap. 40 · hace 1d', synopsis:'En un mundo donde los demonios fueron sellados, un joven y una misteriosa entidad se ven envueltos en una trama de poder y destrucción.' },
+
+{ id:'an64', title:'Akame ga Kill!', format:'manga', genres:['Acción','Aventura','Drama','Fantasía'],
+  score:7.8, year:2010, status:'Finalizado', chapters:'78 caps',
+  author:'Takahiro', artist:'Tetsuya Tashiro', recommended:false,
+  updated:'Cap. 78 · hace 1d', synopsis:'Tatsumi se une al grupo de asesinos Night Raid para derrocar a un imperio corrupto, enfrentándose a armas imperiales y traiciones constantes.' },
+
+{ id:'an65', title:'The Apothecary Will Make This Ragged Elf Happy', format:'manga', genres:['Comedia','Fantasía','Romance'],
+  score:7.7, year:2021, status:'En emisión', chapters:'≈40+ caps',
+  author:'Kosuke Oono', artist:'Kosuke Oono', recommended:false,
+  updated:'Cap. 40 · hace 1d', synopsis:'Un farmacéutico de otro mundo se encuentra con una elfa herida y maltratada y decide cuidarla y hacerla feliz con sus conocimientos de medicina.' },
+
+{ id:'an66', title:'Kill Blue', format:'manga', genres:['Acción','Comedia','Escolar'],
+  score:7.6, year:2023, status:'En emisión', chapters:'≈50+ caps',
+  author:'Tadatoshi Fujimaki', artist:'Tadatoshi Fujimaki', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Un asesino profesional es obligado a infiltrarse en un instituto como estudiante para completar una misión, enfrentándose a la vida escolar y a otros peligros.' },
+
+{ id:'an67', title:'Sun-Ken Rock', format:'manga', genres:['Acción','Drama','Romance'],
+  score:8.0, year:2006, status:'Finalizado', chapters:'185 caps',
+  author:'Ryoji Minagawa', artist:'Ryoji Minagawa', recommended:false,
+  updated:'Cap. 185 · hace 1d', synopsis:'Ken, un delincuente japonés, viaja a Corea del Sur por amor y termina convirtiéndose en el líder de una banda yakuza mientras busca un propósito.' },
+
+{ id:'an68', title:'Dark Gathering', format:'manga', genres:['Horror','Sobrenatural','Suspense'],
+  score:8.1, year:2019, status:'En emisión', chapters:'≈70+ caps',
+  author:'Kenkichi', artist:'Kenkichi', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Keitaro Gentoga, maldito por los espíritus, es contratado por una chica rica que colecciona fantasmas para investigar lugares embrujados.' },
+
+{ id:'an69', title:'Hellsing', format:'manga', genres:['Acción','Horror','Sobrenatural'],
+  score:8.2, year:1997, status:'Finalizado', chapters:'90 caps',
+  author:'Kouta Hirano', artist:'Kouta Hirano', recommended:false,
+  updated:'Cap. 90 · hace 1d', synopsis:'La organización Hellsing protege a Inglaterra de vampiros y otras amenazas sobrenaturales, con el poderoso vampiro Alucard como su arma principal.' },
+
+{ id:'an70', title:'Ultimate Exorcist Kiyoshi', format:'manga', genres:['Acción','Comedia','Sobrenatural'],
+  score:7.5, year:2023, status:'En emisión', chapters:'≈40+ caps',
+  author:'Shoto', artist:'Shoto', recommended:false,
+  updated:'Cap. 40 · hace 1d', synopsis:'Kiyoshi, un exorcista extremadamente poderoso pero torpe en la vida diaria, enfrenta demonios mientras intenta vivir de forma normal.' },
+
+{ id:'an71', title:'Noragami', format:'manga', genres:['Acción','Comedia','Sobrenatural','Drama'],
+  score:8.1, year:2010, status:'En emisión', chapters:'≈100+ caps',
+  author:'Adachitoka', artist:'Adachitoka', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Yato, un dios menor sin santuario, busca hacerse famoso realizando trabajos por 5 yenes, acompañado de su shinki Yukine y la humana Hiyori.' },
+
+{ id:'an72', title:'Madan no Ou to Vanadis', format:'manga', genres:['Acción','Aventura','Fantasía','Romance','Harem'],
+  score:7.5, year:2011, status:'Finalizado', chapters:'≈80+ caps',
+  author:'Tsukasa Kawaguchi', artist:'Noboru Kannatuki', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'Tigrevurmud Vorn, un joven conarco excepcional, es capturado por la Vanadis Eleonora y se ve envuelto en las guerras y la política del continente.' },
+
+{ id:'an73', title:'Origin', format:'manga', genres:['Acción','Ciencia ficción','Drama'],
+  score:8.0, year:2016, status:'Finalizado', chapters:'80 caps',
+  author:'Boichi', artist:'Boichi', recommended:false,
+  updated:'Cap. 80 · hace 1d', synopsis:'En un Tokio futurista, un androide amnésico llamado Origin despierta y debe descubrir su propósito mientras es perseguido y enfrenta otros robots.' },
+
+{ id:'an74', title:'Magus of the Library', format:'manga', genres:['Aventura','Fantasía','Slice of Life'],
+  score:8.3, year:2017, status:'En emisión', chapters:'≈40+ caps',
+  author:'Mitsu Izumi', artist:'Mitsu Izumi', recommended:false,
+  updated:'Cap. 40 · hace 1d', synopsis:'Theo, un niño de una ciudad discriminada, sueña con convertirse en un Magus de la gran Biblioteca Central y proteger el conocimiento del mundo.' },
+
+{ id:'an75', title:'Tomo-chan wa Onnanoko!', format:'manga', genres:['Comedia','Romance','Escolar'],
+  score:8.0, year:2015, status:'Finalizado', chapters:'150 caps',
+  author:'Yanagi', artist:'Yanagi', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'Tomo Aizawa es una chica muy masculina enamorada de su mejor amigo Jun, quien la trata como a un chico. Intenta por todos los medios que la vea como mujer.' },
+
+{ id:'an76', title:'Wotakoi: Love is Hard for Otaku', format:'manga', genres:['Comedia','Romance','Slice of Life'],
+  score:8.2, year:2014, status:'Finalizado', chapters:'90 caps',
+  author:'Fujita', artist:'Fujita', recommended:false,
+  updated:'Cap. 90 · hace 1d', synopsis:'Narumi Momose y Hirotaka Nifuji, dos otaku adultos, comienzan una relación y enfrentan las dificultades de amar siendo fans de anime, juegos y cosplay.' },
+
+{ id:'an77', title:'Ore Monogatari!!', format:'manga', genres:['Comedia','Romance','Escolar'],
+  score:8.1, year:2011, status:'Finalizado', chapters:'70 caps',
+  author:'Kazune Kawahara', artist:'Aruko', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Takeo Gouda, un chico enorme y de apariencia intimidante pero de buen corazón, se enamora de la pequeña y dulce Rinko y vive un romance puro y adorable.' },
+
+{ id:'an78', title:'Kimi ni Todoke', format:'manga', genres:['Comedia','Drama','Romance','Escolar'],
+  score:8.3, year:2005, status:'Finalizado', chapters:'123 caps',
+  author:'Karuho Shiina', artist:'Karuho Shiina', recommended:false,
+  updated:'Cap. 123 · hace 1d', synopsis:'Sawako Kuronuma, apodada “Sadako” por su apariencia, quiere hacer amigos. Gracias a Shouta Kazehaya comienza a abrirse y descubrir el amor.' },
+
+{ id:'an79', title:'Lovely Complex', format:'manga', genres:['Comedia','Romance','Escolar'],
+  score:8.1, year:2001, status:'Finalizado', chapters:'70 caps',
+  author:'Aya Nakahara', artist:'Aya Nakahara', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Risa Koizumi (alta) y Atsushi Otani (bajo) son el blanco de bromas por su diferencia de altura. Su amistad se convierte lentamente en romance.' },
+
+{ id:'an80', title:'Toradora!', format:'manga', genres:['Comedia','Drama','Romance','Escolar'],
+  score:8.1, year:2006, status:'Finalizado', chapters:'70 caps',
+  author:'Yuyuko Takemiya', artist:'Yasu', recommended:false,
+  updated:'Cap. 70 · hace 1d', synopsis:'Ryuuji Takasu y Taiga Aisaka forman una alianza improbable para conquistar a las personas de las que están enamorados, desarrollando sentimientos mutuos.' },
+
+{ id:'an81', title:'Nisekoi', format:'manga', genres:['Comedia','Romance','Harem','Escolar'],
+  score:7.7, year:2011, status:'Finalizado', chapters:'229 caps',
+  author:'Naoshi Komi', artist:'Naoshi Komi', recommended:false,
+  updated:'Cap. 229 · hace 1d', synopsis:'Raku Ichijo y Chitoge Kirisaki, hijos de bandas rivales, deben fingir ser pareja. Entre malentendidos y un amor de la infancia, surge un verdadero romance.' },
+
+{ id:'an82', title:'Skip and Loafer', format:'manga', genres:['Comedia','Drama','Escolar','Slice of Life'],
+  score:8.3, year:2018, status:'En emisión', chapters:'≈60+ caps',
+  author:'Misaki Takamatsu', artist:'Misaki Takamatsu', recommended:false,
+  updated:'Cap. 60 · hace 1d', synopsis:'Mitsumi, una chica brillante del campo, se muda a Tokio para estudiar y se hace amiga de Sousuke, un chico popular, descubriendo la vida urbana y el crecimiento personal.' },
+
+{ id:'an83', title:'Ao no Hako', format:'manga', genres:['Drama','Romance','Deportes','Escolar'],
+  score:8.0, year:2021, status:'En emisión', chapters:'≈150+ caps',
+  author:'Kouji Miura', artist:'Kouji Miura', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'Taiki Inomata, un jugador de bádminton, está enamorado de Chinatsu Kano, una estrella del baloncesto. Ambos se esfuerzan por mejorar mientras surge un romance.' },
+
+{ id:'an84', title:'Komi Can\'t Communicate', format:'manga', genres:['Comedia','Romance','Escolar','Slice of Life'],
+  score:8.2, year:2015, status:'Finalizado', chapters:'450+ caps',
+  author:'Tomohito Oda', artist:'Tomohito Oda', recommended:false,
+  updated:'Cap. 450 · hace 1d', synopsis:'Shouko Komi es la chica más popular de la escuela, pero sufre de ansiedad social extrema. Hitohito Tadano se propone ayudarla a conseguir 100 amigos.' },
+
+{ id:'an85', title:'Rent-A-Girlfriend', format:'manga', genres:['Comedia','Drama','Romance','Harem'],
+  score:6.8, year:2017, status:'En emisión', chapters:'≈350+ caps',
+  author:'Reiji Miyajima', artist:'Reiji Miyajima', recommended:false,
+  updated:'Cap. 350 · hace 1d', synopsis:'Kazuya Kinoshita alquila a la hermosa Chizuru Mizuhara como novia falsa tras una ruptura. Lo que empieza como un contrato se complica con sentimientos reales.' },
+
+{ id:'an86', title:'Gekkan Shoujo Nozaki-kun', format:'manga', genres:['Comedia','Romance','Escolar'],
+  score:8.2, year:2011, status:'En emisión', chapters:'≈150+ caps',
+  author:'Izumi Tsubaki', artist:'Izumi Tsubaki', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'Chiyo Sakura se confiesa a Umetarou Nozaki, pero él cree que quiere ser su asistente de manga. Ella termina ayudándolo a crear shoujo mientras oculta sus sentimientos.' },
+
+{ id:'an87', title:'Uzaki-chan Wants to Hang Out!', format:'manga', genres:['Comedia','Romance','Slice of Life'],
+  score:7.5, year:2017, status:'Finalizado', chapters:'≈100+ caps',
+  author:'Take', artist:'Take', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Hana Uzaki, una universitaria enérgica y bien dotada, se empeña en pasar tiempo con su tímido senpai Shinichi Sakurai, sacándolo de su zona de confort.' },
+
+{ id:'an88', title:'The Quintessential Quintuplets', format:'manga', genres:['Comedia','Romance','Harem','Escolar'],
+  score:8.0, year:2017, status:'Finalizado', chapters:'122 caps',
+  author:'Negi Haruba', artist:'Negi Haruba', recommended:false,
+  updated:'Cap. 122 · hace 1d', synopsis:'Fuutarou Uesugi es contratado como tutor de las quintillizas Nakano, cinco hermanas con personalidades muy distintas y pésimas notas. Poco a poco se desarrolla un romance.' },
+
+{ id:'an89', title:'A Sign of Affection', format:'manga', genres:['Drama','Romance','Slice of Life'],
+  score:8.4, year:2019, status:'En emisión', chapters:'≈50+ caps',
+  author:'Suu Morishita', artist:'Suu Morishita', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Yuki, una chica sorda, conoce a Itsuomi, un chico viajero que habla varios idiomas. Juntos exploran la comunicación, el amor y el mundo más allá de las barreras.' },
+
+{ id:'an90', title:'Mission: Yozakura Family', format:'manga', genres:['Acción','Comedia','Romance'],
+  score:8.0, year:2019, status:'En emisión', chapters:'≈200+ caps',
+  author:'Hitsuji Gondaira', artist:'Hitsuji Gondaira', recommended:false,
+  updated:'Cap. 200 · hace 1d', synopsis:'Taiyo Asano se casa con su amiga de la infancia Mutsumi Yozakura y descubre que su familia es un clan de espías. Debe entrenar para protegerla.' },
+
+{ id:'an91', title:'The Dangers in My Heart', format:'manga', genres:['Comedia','Romance','Escolar','Slice of Life'],
+  score:8.3, year:2018, status:'En emisión', chapters:'≈150+ caps',
+  author:'Norio Sakurai', artist:'Norio Sakurai', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'Kyotaro Ichikawa es un chico oscuro que fantasea con matar a la popular Anna Yamada. Sin embargo, poco a poco se enamora de ella de verdad.' },
+
+{ id:'an92', title:'Romantic Killer', format:'manga', genres:['Comedia','Romance','Escolar'],
+  score:8.0, year:2019, status:'Finalizado', chapters:'≈50+ caps',
+  author:'Nao Anzai', artist:'Nao Anzai', recommended:false,
+  updated:'Cap. 50 · hace 1d', synopsis:'Anzu Hoshino prefiere los videojuegos al romance. Una misteriosa entidad la obliga a vivir una vida de shoujo y a atraer a tres chicos guapos.' },
+
+{ id:'an93', title:'Bloom Into You', format:'manga', genres:['Drama','Romance','Yuri','Escolar'],
+  score:8.5, year:2015, status:'Finalizado', chapters:'45 caps',
+  author:'Nio Nakatani', artist:'Nio Nakatani', recommended:false,
+  updated:'Cap. 45 · hace 1d', synopsis:'Yuu Koito no entiende el amor hasta que conoce a la presidenta del consejo estudiantil Touko Nanami, quien le pide que actúe como su “otra yo” ideal.' },
+
+{ id:'an94', title:'Hokkaido Gals Are Super Adorable!', format:'manga', genres:['Comedia','Romance','Escolar','Slice of Life'],
+  score:7.7, year:2019, status:'En emisión', chapters:'≈100+ caps',
+  author:'Kai Ikada', artist:'Kai Ikada', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Tsubasa Shiki se muda a Hokkaido y conoce a Minami Fuyuki, una gal local extremadamente amable y cariñosa que desafía todos sus prejuicios.' },
+
+{ id:'an95', title:'Tonikaku Kawaii', format:'manga', genres:['Comedia','Romance','Slice of Life'],
+  score:8.0, year:2018, status:'En emisión', chapters:'≈250+ caps',
+  author:'Kenjiro Hata', artist:'Kenjiro Hata', recommended:false,
+  updated:'Cap. 250 · hace 1d', synopsis:'Nasa Yuzaki es salvado por una misteriosa chica llamada Tsukasa. Ella le propone matrimonio al instante y comienzan una vida de casados llena de dulzura y misterio.' },
+
+{ id:'an96', title:'Kubo-san wa Mob wo Yurusanai', format:'manga', genres:['Comedia','Romance','Escolar'],
+  score:7.9, year:2019, status:'Finalizado', chapters:'≈140+ caps',
+  author:'Nene Yukimori', artist:'Nene Yukimori', recommended:false,
+  updated:'Cap. 140 · hace 1d', synopsis:'Junta Shiraishi es un “mob” tan genérico que nadie lo nota. Su compañera Nagisa Kubo se dedica a molestarlo y hacerlo reaccionar constantemente.' },
+
+{ id:'an97', title:'Yamada-kun to Lv999 no Koi wo Suru', format:'manga', genres:['Comedia','Romance','Slice of Life'],
+  score:8.1, year:2019, status:'En emisión', chapters:'≈100+ caps',
+  author:'Mashiro', artist:'Mashiro', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'Akane Kinoshita es abandonada por su novio y conoce a Yamada, un guapo pro-gamer. Comienzan a jugar juntos y surge un romance lento y realista.' },
+
+{ id:'an98', title:'The Duke of Death and His Maid', format:'manga', genres:['Comedia','Romance','Sobrenatural','Slice of Life'],
+  score:7.8, year:2019, status:'En emisión', chapters:'≈200+ caps',
+  author:'Koharu Inoue', artist:'Koharu Inoue', recommended:false,
+  updated:'Cap. 200 · hace 1d', synopsis:'Un duque con el poder de matar con solo tocar conoce a la criada Alice, quien se burla de él constantemente y poco a poco llena su vida de color.' },
+
+{ id:'an99', title:'Senpai ga Uzai Kouhai no Hanashi', format:'manga', genres:['Comedia','Romance','Slice of Life'],
+  score:7.9, year:2017, status:'En emisión', chapters:'≈100+ caps',
+  author:'Shiro Manta', artist:'Shiro Manta', recommended:false,
+  updated:'Cap. 100 · hace 1d', synopsis:'La pequeña y seria Igarashi soporta las bromas y el exceso de energía de su senpai Takuma, quien está secretamente enamorado de ella.' },
+
+{ id:'an100', title:'Amagami-san Chi no Enmusubi', format:'manga', genres:['Comedia','Romance','Harem','Escolar','Sobrenatural'],
+  score:7.8, year:2020, status:'En emisión', chapters:'≈150+ caps',
+  author:'Kamiya Yuu', artist:'Kamiya Yuu', recommended:false,
+  updated:'Cap. 150 · hace 1d', synopsis:'Uryuu llega a vivir a la casa de las tres hermanas Amagami, sacerdotisas de un santuario. Cada una tiene una personalidad distinta y poco a poco se desarrollan lazos y romance.' },
 
   // Anime
 
