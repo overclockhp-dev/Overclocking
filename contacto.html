@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Contacto — Overclock. Ponte en contacto con el equipo editorial, reporta errores o envíanos sugerencias para mejorar la biblioteca.">
+
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="manifest" href="site.webmanifest">
+
+<title>Contacto — Overclock</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --bg:#000000;
+  --surface:#080808;
+  --surface-soft:#0D0D0D;
+  --fg:#F4F4F1;
+  --fg-dim:#8A8A85;
+  --line:#1E1E1C;
+  --accent:#E4293B;
+  --accent-soft:rgba(228,41,59,0.10);
+  --accent-glow:rgba(228,41,59,0.35);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'Lora',serif;
+}
+
+a{
+  color:inherit;
+}
+
+button,
+input,
+textarea,
+select{
+  font-family:'Lora',serif;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+  background:#000;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+header::after{
+  content:"";
+  display:block;
+  height:2px;
+  background:linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent) 50%,
+    transparent 100%
+  );
+  opacity:.8;
+}
+
+.header-inner{
+  max-width:1200px;
+  margin:0 auto;
+  padding:18px 32px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+  color:var(--fg);
+}
+
+.brand img{
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:block;
+  transition:filter .25s ease;
+}
+
+.brand:hover img{
+  filter:drop-shadow(0 0 10px var(--accent-glow));
+}
+
+.brand span{
+  font-weight:600;
+  font-size:1.25rem;
+  letter-spacing:.02em;
+  position:relative;
+}
+
+.brand span::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-6px;
+  width:0;
+  height:2px;
+  background:var(--accent);
+  transition:width .25s ease;
+}
+
+.brand:hover span::after{
+  width:100%;
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.contact-page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:90px 32px 110px;
+}
+
+/* =========================================================
+   EDITORIAL INTRO
+========================================================= */
+
+.editorial-heading{
+  max-width:780px;
+  margin-bottom:72px;
+}
+
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  color:var(--accent);
+  font-size:.78rem;
+  font-weight:600;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.eyebrow::before{
+  content:"";
+  width:24px;
+  height:1px;
+  background:var(--accent);
+}
+
+.editorial-heading h1{
+  font-size:clamp(2.8rem,6vw,5rem);
+  line-height:1.04;
+  font-weight:600;
+  margin:22px 0 24px;
+  letter-spacing:-.025em;
+}
+
+.editorial-heading p{
+  max-width:650px;
+  color:var(--fg-dim);
+  font-size:1.05rem;
+  line-height:1.8;
+  margin:0;
+}
+
+/* =========================================================
+   CONTACT LAYOUT
+========================================================= */
+
+.contact-layout{
+  display:grid;
+  grid-template-columns:.72fr 1.28fr;
+  gap:70px;
+  align-items:start;
+}
+
+/* =========================================================
+   LEFT INFORMATION
+========================================================= */
+
+.contact-info{
+  position:sticky;
+  top:110px;
+}
+
+.info-kicker{
+  color:var(--fg-dim);
+  font-size:.72rem;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  margin-bottom:18px;
+}
+
+.contact-info h2{
+  font-size:1.65rem;
+  line-height:1.3;
+  font-weight:600;
+  margin:0 0 18px;
+}
+
+.contact-info > p{
+  color:var(--fg-dim);
+  line-height:1.75;
+  font-size:.93rem;
+  margin:0 0 38px;
+}
+
+.contact-methods{
+  border-top:1px solid var(--line);
+}
+
+.contact-method{
+  padding:22px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.contact-method-label{
+  color:var(--accent);
+  font-size:.72rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:7px;
+}
+
+.contact-method-title{
+  font-size:1rem;
+  margin-bottom:6px;
+}
+
+.contact-method-description{
+  color:var(--fg-dim);
+  font-size:.82rem;
+  line-height:1.55;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.contact-form-wrapper{
+  border-top:1px solid var(--fg);
+  padding-top:24px;
+}
+
+.form-header{
+  display:flex;
+  justify-content:space-between;
+  gap:30px;
+  align-items:flex-start;
+  margin-bottom:38px;
+}
+
+.form-header h2{
+  font-size:1.55rem;
+  font-weight:600;
+  margin:0;
+}
+
+.form-header p{
+  max-width:300px;
+  color:var(--fg-dim);
+  font-size:.82rem;
+  line-height:1.6;
+  margin:0;
+  text-align:right;
+}
+
+.form-section{
+  margin-bottom:42px;
+}
+
+.form-section-heading{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:24px;
+}
+
+.form-section-number{
+  color:var(--accent);
+  font-size:.72rem;
+  letter-spacing:.1em;
+}
+
+.form-section-title{
+  font-size:.78rem;
+  letter-spacing:.11em;
+  text-transform:uppercase;
+  color:var(--fg-dim);
+}
+
+/* =========================================================
+   FIELDS
+========================================================= */
+
+.field{
+  margin-bottom:22px;
+}
+
+.field label{
+  display:block;
+  color:var(--fg);
+  font-size:.78rem;
+  letter-spacing:.06em;
+  margin-bottom:9px;
+}
+
+.required{
+  color:var(--accent);
+}
+
+.field-note{
+  color:var(--fg-dim);
+  font-size:.73rem;
+  margin-top:7px;
+}
+
+.field input,
+.field textarea,
+.field select{
+  width:100%;
+  border:1px solid var(--line);
+  background:var(--surface);
+  color:var(--fg);
+  padding:13px 14px;
+  font-size:.9rem;
+  outline:none;
+  transition:
+    border-color .2s ease,
+    background .2s ease;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  border-color:var(--accent);
+  background:var(--surface-soft);
+}
+
+.field textarea{
+  min-height:150px;
+  resize:vertical;
+  line-height:1.65;
+}
+
+.field select{
+  appearance:none;
+  cursor:pointer;
+  background-image:
+    linear-gradient(45deg,transparent 50%,var(--fg-dim) 50%),
+    linear-gradient(135deg,var(--fg-dim) 50%,transparent 50%);
+  background-position:
+    calc(100% - 18px) 18px,
+    calc(100% - 13px) 18px;
+  background-size:5px 5px;
+  background-repeat:no-repeat;
+  padding-right:40px;
+}
+
+.field select option{
+  background:#0A0A0A;
+  color:var(--fg);
+}
+
+.two-fields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+/* =========================================================
+   CONTACT TYPE
+========================================================= */
+
+.contact-type{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.type-option{
+  position:relative;
+}
+
+.type-option input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.type-option label{
+  display:block;
+  border:1px solid var(--line);
+  padding:18px;
+  cursor:pointer;
+  transition:
+    border-color .2s ease,
+    background .2s ease;
+}
+
+.type-option label:hover{
+  border-color:#343432;
+}
+
+.type-option input:checked + label{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+}
+
+.type-title{
+  display:block;
+  font-size:.9rem;
+  margin-bottom:6px;
+}
+
+.type-description{
+  display:block;
+  color:var(--fg-dim);
+  font-size:.75rem;
+  line-height:1.5;
+}
+
+/* =========================================================
+   REPORT SECTION
+========================================================= */
+
+.report-panel{
+  display:none;
+  border-top:1px solid var(--line);
+  padding-top:34px;
+  margin-top:34px;
+}
+
+.report-panel.visible{
+  display:block;
+}
+
+.report-intro{
+  color:var(--fg-dim);
+  font-size:.82rem;
+  line-height:1.65;
+  margin:-8px 0 26px;
+}
+
+/* =========================================================
+   CATEGORÍA (chip-group de opción única, igual que en
+   biblioteca.html: "¿Qué tipo de obra estás reportando?")
+========================================================= */
+
+.report-chip-group{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.report-chip{
+  background:var(--surface);
+  border:1px solid var(--line);
+  color:var(--fg-dim);
+  font-family:'Lora',serif;
+  font-size:.85rem;
+  padding:8px 16px;
+  cursor:pointer;
+  border-radius:999px;
+  transition:
+    border-color .2s ease,
+    color .2s ease,
+    background .2s ease;
+}
+
+.report-chip:hover{
+  border-color:var(--accent);
+  color:var(--fg);
+}
+
+.report-chip.selected{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:var(--fg);
+}
+
+/* =========================================================
+   PROBLEMA (dropdown de opción única, igual mecánica que
+   biblioteca.html: "¿Qué problema encontraste?")
+========================================================= */
+
+.custom-select{
+  position:relative;
+}
+
+.custom-select-toggle{
+  background:var(--surface);
+  border:1px solid var(--line);
+  color:var(--fg);
+  font-family:'Lora',serif;
+  font-size:.9rem;
+  padding:13px 36px 13px 14px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  white-space:nowrap;
+  position:relative;
+  width:100%;
+  text-align:left;
+  transition:border-color .2s ease;
+}
+
+.custom-select-toggle::after{
+  content:"";
+  position:absolute;
+  right:14px;
+  top:50%;
+  width:12px;
+  height:12px;
+  transform:translateY(-50%);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238A8A85' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:center;
+  transition:transform .2s ease;
+}
+
+.custom-select.open .custom-select-toggle{
+  border-color:var(--accent);
+}
+
+.custom-select.open .custom-select-toggle::after{
+  transform:translateY(-50%) rotate(180deg);
+}
+
+.custom-select-toggle:focus-visible{
+  outline:1px solid var(--accent);
+  outline-offset:2px;
+}
+
+.custom-select-dropdown{
+  position:absolute;
+  top:calc(100% + 8px);
+  left:0;
+  right:0;
+  max-height:280px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  background:var(--surface);
+  border:1px solid var(--line);
+  padding:6px;
+  margin:0;
+  list-style:none;
+  display:none;
+  flex-direction:column;
+  z-index:50;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
+
+.custom-select.open .custom-select-dropdown{
+  display:flex;
+}
+
+.custom-select-dropdown li{
+  padding:11px 12px;
+  font-size:.88rem;
+  color:var(--fg-dim);
+  cursor:pointer;
+  border-radius:2px;
+}
+
+.custom-select-dropdown li:hover{
+  background:var(--surface-soft);
+  color:var(--fg);
+}
+
+.custom-select-dropdown li.active{
+  color:var(--accent);
+}
+
+/* =========================================================
+   USER STATUS
+========================================================= */
+
+.user-status{
+  border:1px solid var(--line);
+  background:#050505;
+  padding:13px 15px;
+  color:var(--fg-dim);
+  font-size:.76rem;
+  line-height:1.5;
+  margin-bottom:28px;
+}
+
+.user-status strong{
+  color:var(--fg);
+  font-weight:500;
+}
+
+/* =========================================================
+   SUBMIT
+========================================================= */
+
+.form-footer{
+  border-top:1px solid var(--line);
+  padding-top:28px;
+  margin-top:40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:25px;
+}
+
+.form-disclaimer{
+  color:var(--fg-dim);
+  font-size:.7rem;
+  line-height:1.55;
+  max-width:350px;
+}
+
+.submit-button{
+  border:0;
+  background:var(--accent);
+  color:var(--fg);
+  padding:14px 27px;
+  font-size:.88rem;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:
+    background .2s ease,
+    box-shadow .2s ease,
+    transform .15s ease;
+}
+
+.submit-button:hover{
+  background:#FF3B4E;
+  box-shadow:0 0 20px var(--accent-glow);
+  transform:translateY(-1px);
+}
+
+.submit-button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+  box-shadow:none;
+}
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
+.form-message{
+  display:none;
+  padding:14px 16px;
+  margin-top:20px;
+  border:1px solid var(--line);
+  font-size:.82rem;
+  line-height:1.55;
+}
+
+.form-message.visible{
+  display:block;
+}
+
+.form-message.error{
+  border-color:rgba(228,41,59,.45);
+  background:rgba(228,41,59,.08);
+  color:#ff9aa3;
+}
+
+.form-message.success{
+  border-color:rgba(100,190,110,.35);
+  background:rgba(100,190,110,.07);
+  color:#9bd49f;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+  border-top:1px solid var(--line);
+}
+
+.footer-inner{
+  max-width:1200px;
+  margin:0 auto;
+  padding:56px 32px 32px;
+}
+
+.footer-top{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:40px;
+  padding-bottom:36px;
+}
+
+.footer-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.footer-brand img{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+}
+
+.footer-brand span{
+  font-weight:600;
+  font-size:1.1rem;
+}
+
+.footer-tagline{
+  color:var(--fg-dim);
+  font-size:.85rem;
+  max-width:280px;
+  margin-top:10px;
+  line-height:1.6;
+}
+
+.footer-links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:48px;
+}
+
+.footer-col h4{
+  font-size:.78rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--fg-dim);
+  margin:0 0 14px;
+  font-weight:600;
+}
+
+.footer-col a{
+  display:block;
+  color:var(--fg);
+  text-decoration:none;
+  font-size:.9rem;
+  margin-bottom:10px;
+  opacity:.85;
+  transition:
+    color .2s ease,
+    opacity .2s ease;
+}
+
+.footer-col a:hover{
+  color:var(--accent);
+  opacity:1;
+}
+
+.footer-bottom{
+  border-top:1px solid var(--line);
+  padding-top:24px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:16px;
+  color:var(--fg-dim);
+  font-size:.8rem;
+}
+
+.footer-legal{
+  display:flex;
+  gap:22px;
+}
+
+.footer-legal a{
+  color:var(--fg-dim);
+  text-decoration:none;
+}
+
+.footer-legal a:hover{
+  color:var(--accent);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:900px){
+
+  .contact-layout{
+    grid-template-columns:1fr;
+    gap:60px;
+  }
+
+  .contact-info{
+    position:static;
+  }
+
+  .editorial-heading{
+    margin-bottom:55px;
+  }
+}
+
+@media(max-width:640px){
+
+  .header-inner{
+    padding:16px 18px;
+  }
+
+  .brand span{
+    font-size:1.05rem;
+  }
+
+  .contact-page{
+    padding:64px 20px 80px;
+  }
+
+  .editorial-heading h1{
+    font-size:2.8rem;
+  }
+
+  .editorial-heading p{
+    font-size:.95rem;
+  }
+
+  .form-header{
+    display:block;
+  }
+
+  .form-header p{
+    text-align:left;
+    margin-top:10px;
+  }
+
+  .two-fields{
+    grid-template-columns:1fr;
+    gap:0;
+  }
+
+  .contact-type{
+    grid-template-columns:1fr;
+  }
+
+  .form-footer{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .submit-button{
+    width:100%;
+  }
+
+  .footer-inner{
+    padding:45px 20px 28px;
+  }
+
+  .footer-top{
+    flex-direction:column;
+  }
+
+  .footer-links{
+    gap:32px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     COMPONENTES COMPARTIDOS
+========================================================= -->
+
+<div id="menu-container"></div>
+
+
+<main class="contact-page">
+
+  <!-- =======================================================
+       INTRO EDITORIAL
+  ======================================================== -->
+
+  <section class="editorial-heading">
+
+    <span class="eyebrow">
+      Contacto editorial
+    </span>
+
+    <h1>
+      Hablemos.
+    </h1>
+
+    <p>
+      Overclock es una biblioteca de historias que realmente
+      merecen ser descubiertas. Si encontraste un problema, tienes
+      una sugerencia o simplemente quieres ponerte en contacto con
+      nosotros, este es el lugar.
+    </p>
+
+  </section>
+
+
+  <!-- =======================================================
+       CONTENIDO PRINCIPAL
+  ======================================================== -->
+
+  <div class="contact-layout">
+
+
+    <!-- =====================================================
+         INFORMACIÓN
+    ====================================================== -->
+
+    <aside class="contact-info">
+
+      <div class="info-kicker">
+        Overclock
+      </div>
+
+      <h2>
+        Una biblioteca que mejora con cada lector.
+      </h2>
+
+      <p>
+        La calidad de la biblioteca depende también de quienes la
+        utilizan. Puedes escribirnos para comunicar un problema,
+        corregir información de una obra o compartir una sugerencia.
+      </p>
+
+
+      <div class="contact-methods">
+
+        <div class="contact-method">
+
+          <div class="contact-method-label">
+            Correcciones
+          </div>
+
+          <div class="contact-method-title">
+            Información de una obra
+          </div>
+
+          <div class="contact-method-description">
+            Portadas, títulos, categorías y otros datos que necesiten
+            ser corregidos.
+          </div>
+
+        </div>
+
+
+        <div class="contact-method">
+
+          <div class="contact-method-label">
+            Sugerencias
+          </div>
+
+          <div class="contact-method-title">
+            Ayúdanos a mejorar
+          </div>
+
+          <div class="contact-method-description">
+            Comparte ideas que puedan mejorar la biblioteca y la
+            experiencia de navegación.
+          </div>
+
+        </div>
+
+
+        <div class="contact-method">
+
+          <div class="contact-method-label">
+            Contacto
+          </div>
+
+          <div class="contact-method-title">
+            Mensaje general
+          </div>
+
+          <div class="contact-method-description">
+            Para cualquier asunto que no encaje en las categorías
+            anteriores.
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+
+    <!-- =====================================================
+         FORMULARIO
+    ====================================================== -->
+
+    <section class="contact-form-wrapper">
+
+      <div class="form-header">
+
+        <h2>
+          Envíanos un mensaje
+        </h2>
+
+        <p>
+        
+        </p>
+
+      </div>
+
+
+      <form id="contactForm">
+
+
+        <!-- =================================================
+             USUARIO
+        ================================================== -->
+
+        <div class="user-status" id="userStatus">
+          Comprobando sesión...
+        </div>
+
+
+        <!-- =================================================
+             TIPO DE CONTACTO
+        ================================================== -->
+
+        <div class="form-section">
+
+          <div class="form-section-heading">
+
+            <span class="form-section-number">
+              01
+            </span>
+
+            <span class="form-section-title">
+              Motivo del contacto
+            </span>
+
+          </div>
+
+
+          <div class="contact-type">
+
+            <div class="type-option">
+
+              <input
+                type="radio"
+                id="typeGeneral"
+                name="contactType"
+                value="general"
+                checked
+              >
+
+              <label for="typeGeneral">
+
+                <span class="type-title">
+                  Contacto general
+                </span>
+
+                <span class="type-description">
+                  Sugerencias, preguntas o cualquier otro asunto.
+                </span>
+
+              </label>
+
+            </div>
+
+
+            <div class="type-option">
+
+              <input
+                type="radio"
+                id="typeReport"
+                name="contactType"
+                value="reporte"
+              >
+
+              <label for="typeReport">
+
+                <span class="type-title">
+                  Reportar un problema
+                </span>
+
+                <span class="type-description">
+                  ¿Encontraste un error en una obra o en la biblioteca?
+                </span>
+
+              </label>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             DATOS DE CONTACTO
+        ================================================== -->
+
+        <div class="form-section">
+
+          <div class="form-section-heading">
+
+            <span class="form-section-number">
+              02
+            </span>
+
+            <span class="form-section-title">
+              Tus datos
+            </span>
+
+          </div>
+
+
+          <div class="two-fields">
+
+            <div class="field">
+
+              <label for="name">
+                Nombre <span class="required"></span>
+              </label>
+
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Tu nombre"
+                required
+                maxlength="80"
+              >
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="email">
+                Correo electrónico <span class="required"></span>
+              </label>
+
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="tu@email.com"
+                required
+                maxlength="160"
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             REPORTE
+        ================================================== -->
+
+        <div class="report-panel" id="reportPanel">
+
+          <div class="form-section-heading">
+
+            <span class="form-section-number">
+              03
+            </span>
+
+            <span class="form-section-title">
+              Detalles del reporte
+            </span>
+
+          </div>
+
+
+          <p class="report-intro">
+            Selecciona el problema que encontraste.
+          </p>
+
+
+          <!-- Categoría obligatoria -->
+
+          <div class="field">
+
+            <label id="workCategoryLabel">
+              Categoría de la obra <span class="required"></span>
+            </label>
+
+            <div class="report-chip-group" id="workCategoryGroup" role="radiogroup" aria-labelledby="workCategoryLabel">
+              <button type="button" class="report-chip" data-value="manga" role="radio" aria-checked="false">Manga</button>
+              <button type="button" class="report-chip" data-value="manhwa" role="radio" aria-checked="false">Manhwa</button>
+              <button type="button" class="report-chip" data-value="novela-ligera" role="radio" aria-checked="false">Novela ligera</button>
+              <button type="button" class="report-chip" data-value="novela-web" role="radio" aria-checked="false">Novela web</button>
+              <button type="button" class="report-chip" data-value="literatura" role="radio" aria-checked="false">Literatura</button>
+              <button type="button" class="report-chip" data-value="anime" role="radio" aria-checked="false">Anime</button>
+            </div>
+
+          </div>
+
+
+          <!-- Título obligatorio -->
+
+          <div class="field">
+
+            <label for="workTitle">
+              Título de la obra <span class="required"></span>
+            </label>
+
+            <input
+              type="text"
+              id="workTitle"
+              name="workTitle"
+              placeholder="Escribe el título de la obra"
+              maxlength="180"
+            >
+
+          </div>
+
+
+          <!-- Problemas -->
+
+          <div class="field">
+
+            <label id="issuesLabel">
+              ¿Qué problema encontraste?
+              <span class="required"></span>
+            </label>
+
+            <div class="custom-select" id="issueSelect">
+              <button type="button" class="custom-select-toggle" id="issueToggle" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="issuesLabel">
+                <span class="custom-select-label">Selecciona un problema</span>
+              </button>
+              <ul class="custom-select-dropdown" role="listbox" aria-label="Problema" id="issueList">
+                <li role="option" data-value="Portada con mala calidad">Portada con mala calidad</li>
+                <li role="option" data-value="Portada equivocada">Portada equivocada</li>
+                <li role="option" data-value="Portada no carga">Portada no carga</li>
+                <li role="option" data-value="Portada desactualizada">Portada desactualizada</li>
+                <li role="option" data-value="Portada no corresponde a la obra">Portada no corresponde a la obra</li>
+                <li role="option" data-value="Título mal escrito">Título mal escrito</li>
+                <li role="option" data-value="Título equivocado">Título equivocado</li>
+                <li role="option" data-value="Título incompleto">Título incompleto</li>
+                <li role="option" data-value="Título alternativo incorrecto">Título alternativo incorrecto</li>
+                <li role="option" data-value="Autor incorrecto">Autor incorrecto</li>
+                <li role="option" data-value="Autor faltante">Autor faltante</li>
+                <li role="option" data-value="Artista incorrecto">Artista incorrecto</li>
+                <li role="option" data-value="Sinopsis incorrecta">Sinopsis incorrecta</li>
+                <li role="option" data-value="Sinopsis incompleta">Sinopsis incompleta</li>
+                <li role="option" data-value="Género incorrecto">Género incorrecto</li>
+                <li role="option" data-value="Género faltante">Género faltante</li>
+                <li role="option" data-value="Etiqueta incorrecta">Etiqueta incorrecta</li>
+                <li role="option" data-value="Etiqueta faltante">Etiqueta faltante</li>
+                <li role="option" data-value="Tipo de obra incorrecto">Tipo de obra incorrecto</li>
+                <li role="option" data-value="Estado de la obra incorrecto">Estado de la obra incorrecto</li>
+                <li role="option" data-value="Número de capítulos incorrecto">Número de capítulos incorrecto</li>
+                <li role="option" data-value="Enlace incorrecto">Enlace incorrecto</li>
+                <li role="option" data-value="Obra duplicada">Obra duplicada</li>
+                <li role="option" data-value="Información desactualizada">Información desactualizada</li>
+                <li role="option" data-value="Reseña incorrecta">Reseña incorrecta</li>
+                <li role="option" data-value="Reseña no corresponde a la obra">Reseña no corresponde a la obra</li>
+                <li role="option" data-value="Botón que no funciona">Botón que no funciona</li>
+                <li role="option" data-value="Página que no carga">Página que no carga</li>
+                <li role="option" data-value="Error de navegación">Error de navegación</li>
+                <li role="option" data-value="Error de traducción">Error de traducción</li>
+                <li role="option" data-value="Otro problema">Otro problema</li>
+              </ul>
+            </div>
+
+          </div>
+
+
+          <!-- Información adicional -->
+
+          <div class="field">
+
+            <label for="reportDetails">
+              Cuéntanos más
+            </label>
+
+            <textarea
+              id="reportDetails"
+              name="reportDetails"
+              placeholder="Explícanos qué ocurre o qué debería corregirse..."
+              maxlength="2000"
+            ></textarea>
+
+            <div class="field-note">
+              Este campo es opcional.
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MENSAJE GENERAL
+        ================================================== -->
+
+        <div class="form-section" id="generalMessageSection">
+
+          <div class="form-section-heading">
+
+            <span class="form-section-number">
+              03
+            </span>
+
+            <span class="form-section-title">
+              Tu mensaje
+            </span>
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="message">
+              Mensaje <span class="required"></span>
+            </label>
+
+            <textarea
+              id="message"
+              name="message"
+              placeholder="Escribe aquí tu mensaje..."
+              maxlength="3000"
+              required
+            ></textarea>
+
+          </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MENSAJE DE ESTADO
+        ================================================== -->
+
+        <div
+          class="form-message"
+          id="formMessage"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+
+        <!-- =================================================
+             FOOTER FORM
+        ================================================== -->
+
+        <div class="form-footer">
+
+          <p class="form-disclaimer">
+            Utilizaremos los datos proporcionados únicamente para
+            responder a tu mensaje y gestionar tu solicitud.
+          </p>
+
+          <button
+            type="submit"
+            class="submit-button"
+            id="submitButton"
+          >
+            Enviar mensaje →
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </div>
+
+</main>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer>
+
+  <div class="footer-inner">
+
+    <div class="footer-top">
+
+      <div>
+
+        <div class="footer-brand">
+
+          <img
+            src="assets/logo.png"
+            alt="Overclock"
+          >
+
+          <span>
+            Overclock
+          </span>
+
+        </div>
+
+        <p class="footer-tagline">
+          Reseñas curadas de anime, manga, manhwa y novelas —
+          sin relleno y sin spoilers.
+        </p>
+
+      </div>
+
+
+      <div class="footer-links">
+
+        <div class="footer-col">
+
+          <h4>
+            Explorar
+          </h4>
+
+          <a href="biblioteca.html">
+            Biblioteca
+          </a>
+
+          <a href="guia.html">
+            Guía
+          </a>
+
+          <a href="actualizaciones.html">
+            Actualización
+          </a>
+
+        </div>
+
+
+        <div class="footer-col">
+
+          <h4>
+            Comunidad
+          </h4>
+
+          <a href="foro.html">
+            Foro
+          </a>
+
+          <a href="contacto.html">
+            Contacto
+          </a>
+
+          <a href="creditos.html">
+            Crédito
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+      <span>
+        © 2026 Overclock. Todos los derechos reservados.
+      </span>
+
+      <div class="footer-legal">
+
+        <a href="privacidad.html">
+          Privacidad
+        </a>
+
+        <a href="terminos.html">
+          Términos
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</footer>
+
+
+<!-- =========================================================
+     SUPABASE
+========================================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="auth.js"></script>
+
+<script src="components.js"></script>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', async () => {
+
+  const contactForm =
+    document.getElementById('contactForm');
+
+  const reportPanel =
+    document.getElementById('reportPanel');
+
+  const generalMessageSection =
+    document.getElementById('generalMessageSection');
+
+  const userStatus =
+    document.getElementById('userStatus');
+
+  const formMessage =
+    document.getElementById('formMessage');
+
+  const submitButton =
+    document.getElementById('submitButton');
+
+  const nameInput =
+    document.getElementById('name');
+
+  const emailInput =
+    document.getElementById('email');
+
+  const messageInput =
+    document.getElementById('message');
+
+  const workTitle =
+    document.getElementById('workTitle');
+
+
+  /* ========================================================
+     DETECTAR TIPO DE CONTACTO
+  ======================================================== */
+
+  const typeInputs =
+    document.querySelectorAll(
+      'input[name="contactType"]'
+    );
+
+
+  function updateContactType(){
+
+    const selected =
+      document.querySelector(
+        'input[name="contactType"]:checked'
+      );
+
+    if(!selected) return;
+
+
+    if(selected.value === 'reporte'){
+
+      reportPanel.classList.add('visible');
+
+      generalMessageSection.style.display = 'none';
+
+      messageInput.required = false;
+
+      workTitle.required = true;
+
+    }else{
+
+      reportPanel.classList.remove('visible');
+
+      generalMessageSection.style.display = '';
+
+      messageInput.required = true;
+
+      workTitle.required = false;
+
+    }
+
+  }
+
+
+  typeInputs.forEach(input => {
+
+    input.addEventListener(
+      'change',
+      updateContactType
+    );
+
+  });
+
+
+  updateContactType();
+
+
+  /* ========================================================
+     CATEGORÍA DE LA OBRA (chip-group de opción única)
+  ======================================================== */
+
+  let selectedWorkCategory = '';
+
+  const workCategoryGroup =
+    document.getElementById('workCategoryGroup');
+
+  workCategoryGroup.addEventListener(
+    'click',
+    (event) => {
+
+      const btn =
+        event.target.closest('.report-chip');
+
+      if(!btn) return;
+
+      workCategoryGroup
+        .querySelectorAll('.report-chip')
+        .forEach(b => {
+          b.classList.remove('selected');
+          b.setAttribute('aria-checked', 'false');
+        });
+
+      btn.classList.add('selected');
+      btn.setAttribute('aria-checked', 'true');
+
+      selectedWorkCategory = btn.dataset.value;
+
+    }
+  );
+
+
+  function resetWorkCategory(){
+
+    selectedWorkCategory = '';
+
+    workCategoryGroup
+      .querySelectorAll('.report-chip')
+      .forEach(b => {
+        b.classList.remove('selected');
+        b.setAttribute('aria-checked', 'false');
+      });
+
+  }
+
+
+  /* ========================================================
+     PROBLEMA (dropdown de opción única)
+  ======================================================== */
+
+  let selectedIssue = '';
+
+  const issueSelect =
+    document.getElementById('issueSelect');
+
+  const issueToggle =
+    document.getElementById('issueToggle');
+
+  const issueList =
+    document.getElementById('issueList');
+
+  const issueLabel =
+    issueSelect.querySelector('.custom-select-label');
+
+
+  issueToggle.addEventListener(
+    'click',
+    (event) => {
+
+      event.stopPropagation();
+
+      const willOpen =
+        !issueSelect.classList.contains('open');
+
+      issueSelect.classList.toggle('open', willOpen);
+
+      issueToggle.setAttribute(
+        'aria-expanded',
+        String(willOpen)
+      );
+
+    }
+  );
+
+
+  issueList.addEventListener(
+    'click',
+    (event) => {
+
+      const li =
+        event.target.closest('li');
+
+      if(!li) return;
+
+      issueList
+        .querySelectorAll('li')
+        .forEach(o => o.classList.remove('active'));
+
+      li.classList.add('active');
+
+      issueLabel.textContent =
+        li.textContent;
+
+      issueSelect.classList.remove('open');
+
+      issueToggle.setAttribute('aria-expanded', 'false');
+
+      selectedIssue = li.dataset.value;
+
+    }
+  );
+
+
+  document.addEventListener('click', (event) => {
+
+    if(!issueSelect.contains(event.target)){
+
+      issueSelect.classList.remove('open');
+
+      issueToggle.setAttribute('aria-expanded', 'false');
+
+    }
+
+  });
+
+
+  document.addEventListener('keydown', (event) => {
+
+    if(event.key === 'Escape'){
+
+      issueSelect.classList.remove('open');
+
+      issueToggle.setAttribute('aria-expanded', 'false');
+
+    }
+
+  });
+
+
+  function resetIssues(){
+
+    selectedIssue = '';
+
+    issueLabel.textContent = 'Selecciona un problema';
+
+    issueList
+      .querySelectorAll('li')
+      .forEach(o => o.classList.remove('active'));
+
+  }
+
+
+  /* ========================================================
+     SUPABASE
+  ======================================================== */
+
+  let supabaseClient = null;
+
+  /*
+     auth.js debe contener la configuración de Supabase
+     utilizada por el resto de Overclock.
+
+     Si auth.js expone el cliente como "supabaseClient",
+     se reutiliza automáticamente.
+  */
+
+  if(
+    typeof window.supabaseClient !== 'undefined'
+  ){
+
+    supabaseClient =
+      window.supabaseClient;
+
+  }
+
+
+  /*
+     También se intenta detectar un cliente global
+     creado por auth.js.
+  */
+
+  if(
+    !supabaseClient &&
+    typeof window.supabase !== 'undefined' &&
+    typeof window.supabase.auth !== 'undefined'
+  ){
+
+    supabaseClient =
+      window.supabase;
+
+  }
+
+
+  /* ========================================================
+     CARGAR USUARIO
+  ======================================================== */
+
+  async function loadUser(){
+
+    try{
+
+      if(
+        supabaseClient &&
+        supabaseClient.auth &&
+        typeof supabaseClient.auth.getUser === 'function'
+      ){
+
+        const result =
+          await supabaseClient.auth.getUser();
+
+        const user =
+          result.data?.user;
+
+
+        if(user){
+
+          const metadata =
+            user.user_metadata || {};
+
+          const displayName =
+            metadata.name ||
+            metadata.full_name ||
+            metadata.user_name ||
+            'Usuario';
+
+
+          userStatus.innerHTML =
+            'Sesión iniciada como <strong>' +
+            escapeHTML(displayName) +
+            '</strong>.';
+
+
+          if(!nameInput.value){
+
+            nameInput.value =
+              displayName;
+
+          }
+
+
+          if(!emailInput.value){
+
+            emailInput.value =
+              user.email || '';
+
+          }
+
+          return;
+
+        }
+
+      }
+
+
+      userStatus.innerHTML =
+        'Puedes escribirnos aunque no tengas una cuenta. ' +
+        '<strong>Completa tus datos de contacto arriba.</strong>';
+
+    }catch(error){
+
+      console.warn(
+        'No se pudo comprobar la sesión:',
+        error
+      );
+
+      userStatus.innerHTML =
+        'Completa tus datos de contacto para poder responder a tu mensaje.';
+
+    }
+
+  }
+
+
+  loadUser();
+
+
+  /* ========================================================
+     ENVIAR
+  ======================================================== */
+
+  contactForm.addEventListener(
+    'submit',
+    async (event) => {
+
+      event.preventDefault();
+
+
+      clearMessage();
+
+
+      const selectedType =
+        document.querySelector(
+          'input[name="contactType"]:checked'
+        )?.value;
+
+
+      const name =
+        nameInput.value.trim();
+
+      const email =
+        emailInput.value.trim();
+
+
+      if(!name){
+
+        showMessage(
+          'error',
+          'Escribe tu nombre.'
+        );
+
+        nameInput.focus();
+
+        return;
+
+      }
+
+
+      if(!email){
+
+        showMessage(
+          'error',
+          'Escribe tu correo electrónico.'
+        );
+
+        emailInput.focus();
+
+        return;
+
+      }
+
+
+      /* ====================================================
+         REPORTE
+      ==================================================== */
+
+      if(selectedType === 'reporte'){
+
+        const category =
+          selectedWorkCategory;
+
+        const title =
+          workTitle.value.trim();
+
+
+        const issuesPayload =
+          selectedIssue ? [selectedIssue] : [];
+
+
+        if(!category){
+
+          showMessage(
+            'error',
+            'Selecciona la categoría de la obra.'
+          );
+
+          workCategoryGroup
+            .scrollIntoView({
+              behavior:'smooth',
+              block:'center'
+            });
+
+          return;
+
+        }
+
+
+        if(!title){
+
+          showMessage(
+            'error',
+            'Escribe el título de la obra.'
+          );
+
+          workTitle.focus();
+
+          return;
+
+        }
+
+
+        if(issuesPayload.length === 0){
+
+          showMessage(
+            'error',
+            'Selecciona el problema que encontraste.'
+          );
+
+          issueSelect
+            .scrollIntoView({
+              behavior:'smooth',
+              block:'center'
+            });
+
+          return;
+
+        }
+
+
+        const details =
+          document
+            .getElementById('reportDetails')
+            .value
+            .trim();
+
+
+        const reportPayload = {
+
+          type:'reporte',
+
+          name:name,
+
+          email:email,
+
+          category:category,
+
+          title:title,
+
+          issues:issuesPayload,
+
+          details:details,
+
+          created_at:
+            new Date().toISOString()
+
+        };
+
+
+        await submitContact(
+          reportPayload
+        );
+
+
+        return;
+
+      }
+
+
+      /* ====================================================
+         CONTACTO GENERAL
+      ==================================================== */
+
+      const message =
+        messageInput.value.trim();
+
+
+      if(!message){
+
+        showMessage(
+          'error',
+          'Escribe tu mensaje.'
+        );
+
+        messageInput.focus();
+
+        return;
+
+      }
+
+
+      const generalPayload = {
+
+        type:'general',
+
+        name:name,
+
+        email:email,
+
+        message:message,
+
+        created_at:
+          new Date().toISOString()
+
+      };
+
+
+      await submitContact(
+        generalPayload
+      );
+
+    }
+  );
+
+
+  /* ========================================================
+     GUARDAR CONTACTO
+  ======================================================== */
+
+  async function submitContact(payload){
+
+    submitButton.disabled = true;
+
+    submitButton.textContent =
+      'Enviando…';
+
+
+    try{
+
+      /*
+         IMPORTANTE:
+
+         Esta página intenta utilizar la tabla
+         "contact_messages".
+
+         Si todavía no existe en Supabase,
+         el formulario no inventará otra tabla
+         ni modificará automáticamente tu base de datos.
+      */
+
+      if(!supabaseClient){
+
+        throw new Error(
+          'Supabase no está disponible.'
+        );
+
+      }
+
+
+      const result =
+        await supabaseClient
+          .from('contact_messages')
+          .insert([payload]);
+
+
+      if(result.error){
+
+        throw result.error;
+
+      }
+
+
+      showMessage(
+        'success',
+        'Tu mensaje fue enviado correctamente. Gracias por ponerte en contacto con Overclock.'
+      );
+
+
+      contactForm.reset();
+
+      resetWorkCategory();
+
+      resetIssues();
+
+      updateContactType();
+
+
+      /*
+         Restaurar estado del usuario después del reset.
+      */
+
+      loadUser();
+
+
+    }catch(error){
+
+      console.error(
+        'Error enviando contacto:',
+        error
+      );
+
+
+      showMessage(
+        'error',
+        'No pudimos enviar el mensaje en este momento. Revisa la conexión con el sistema de contacto e inténtalo nuevamente.'
+      );
+
+
+    }finally{
+
+      submitButton.disabled = false;
+
+      submitButton.textContent =
+        'Enviar mensaje →';
+
+    }
+
+  }
+
+
+  /* ========================================================
+     MENSAJES
+  ======================================================== */
+
+  function showMessage(type,text){
+
+    formMessage.className =
+      'form-message visible ' + type;
+
+    formMessage.textContent =
+      text;
+
+    formMessage.scrollIntoView({
+      behavior:'smooth',
+      block:'nearest'
+    });
+
+  }
+
+
+  function clearMessage(){
+
+    formMessage.className =
+      'form-message';
+
+    formMessage.textContent =
+      '';
+
+  }
+
+
+  /* ========================================================
+     SEGURIDAD
+  ======================================================== */
+
+  function escapeHTML(value){
+
+    return String(value)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#039;');
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
