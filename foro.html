@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Foro — Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a;
+    --bg-alt:#141414;
+    --accent:#e4293b;
+    --text:#eaeaea;
+    --text-dim:#9a9a9a;
+    --border:#262626;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Lora', serif; line-height:1.6;
+  }
+  a{color:inherit;}
+
+  /* ===== NOTA: pega aquí el bloque CSS real del menú (.menu, .menu-toggle,
+     .menu-dropdown, .login-link, .menu-item-profile/login/logout) que ya
+     usas en contacto.html / biblioteca.html, para que el header se vea
+     idéntico en todo el sitio. Este es un placeholder funcional mínimo. ===== */
+  header.site-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px; border-bottom:1px solid var(--border);
+  }
+
+  main{max-width:640px; margin:0 auto; padding:24px 16px 80px;}
+
+  h1.page-title{font-size:1.4rem; font-weight:600; margin:0 0 20px;}
+
+  /* ---- filtros de etiqueta ---- */
+  .tag-bar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px;}
+  .tag-chip{
+    padding:6px 14px; border:1px solid var(--border); border-radius:999px;
+    font-size:0.85rem; color:var(--text-dim); cursor:pointer; background:none;
+    font-family:'Lora',serif; transition:border-color .15s, color .15s;
+  }
+  .tag-chip:hover{color:var(--text);}
+  .tag-chip.active{border-color:var(--accent); color:var(--accent);}
+
+  /* ---- compositor ---- */
+  .composer{
+    border:1px solid var(--border); border-radius:12px; padding:14px;
+    margin-bottom:28px; background:var(--bg-alt);
+  }
+  .composer textarea{
+    width:100%; min-height:70px; background:none; border:none; color:var(--text);
+    font-family:'Lora',serif; font-size:1rem; resize:vertical; outline:none;
+  }
+  .composer-row{display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:10px; flex-wrap:wrap;}
+  /* ---- dropdown propio de etiqueta (reemplaza <select> nativo) ---- */
+  .custom-dropdown{position:relative;}
+  .dropdown-trigger{
+    display:flex; align-items:center; gap:8px; background:var(--bg); color:var(--text);
+    border:1px solid var(--border); border-radius:6px; padding:6px 12px;
+    font-family:'Lora',serif; font-size:0.85rem; cursor:pointer;
+  }
+  .dropdown-trigger:hover, .dropdown-trigger.open{border-color:var(--accent);}
+  .dropdown-arrow{color:var(--text-dim); font-size:0.75rem;}
+  .dropdown-menu{
+    position:absolute; bottom:calc(100% + 6px); left:0; min-width:160px;
+    background:var(--bg-alt); border:1px solid var(--border); border-radius:8px;
+    list-style:none; margin:0; padding:4px; z-index:20;
+    box-shadow:0 8px 24px rgba(0,0,0,0.5);
+  }
+  .dropdown-menu li{
+    padding:8px 12px; border-radius:6px; font-size:0.85rem; color:var(--text);
+    cursor:pointer;
+  }
+  .dropdown-menu li:hover{background:rgba(228,41,59,0.12);}
+  .dropdown-menu li.active{color:var(--accent);}
+
+  .spoiler-toggle{display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--text-dim); cursor:pointer;}
+  .spoiler-toggle input[type="checkbox"]{accent-color:var(--accent); width:16px; height:16px;}
+  .image-input-label{font-size:0.85rem; color:var(--text-dim); cursor:pointer; text-decoration:underline;}
+  #imagePreview{max-width:100%; margin-top:10px; border-radius:8px; display:none;}
+  .publish-btn{
+    background:var(--accent); color:#fff; border:none; border-radius:8px;
+    padding:8px 20px; font-family:'Lora',serif; font-weight:600; cursor:pointer;
+  }
+  .publish-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .composer-note{font-size:0.78rem; color:var(--text-dim); margin-top:8px;}
+
+  /* ---- feed ---- */
+  .post{border-bottom:1px solid var(--border); padding:18px 4px;}
+  .post-meta{display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--text-dim); margin-bottom:6px;}
+  .post-tag{color:var(--accent);}
+  .post-content{white-space:pre-wrap;}
+  .post-content.spoiler{color:var(--accent); background:rgba(228,41,59,0.08); padding:10px; border-radius:8px;}
+  .spoiler-banner{font-size:0.78rem; font-weight:600; color:var(--accent); margin-bottom:6px; text-transform:none;}
+  .spoiler-actions{display:flex; gap:10px; margin-top:8px;}
+  .spoiler-actions button{
+    background:none; border:1px solid var(--border); color:var(--text-dim);
+    border-radius:6px; padding:4px 12px; font-family:'Lora',serif; font-size:0.8rem; cursor:pointer;
+  }
+  .post img.post-image{max-width:100%; border-radius:8px; margin-top:10px; display:block;}
+  .post-actions{margin-top:8px;}
+  .report-link{font-size:0.78rem; color:var(--text-dim); cursor:pointer; text-decoration:underline; background:none; border:none; font-family:'Lora',serif;}
+  .empty-state{color:var(--text-dim); text-align:center; padding:40px 0; font-size:0.9rem;}
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+<div id="auth-container"></div>
+
+<main>
+  <h1 class="page-title">Foro</h1>
+
+  <div class="tag-bar" id="tagBar">
+    <button class="tag-chip active" data-tag="">Todas</button>
+    <button class="tag-chip" data-tag="general">General</button>
+    <button class="tag-chip" data-tag="debate">Abrir Debate</button>
+    <button class="tag-chip" data-tag="teoria">Teoría</button>
+    <button class="tag-chip" data-tag="arte">Mi arte</button>
+    <button class="tag-chip" data-tag="pregunta">Pregunta</button>
+    <button class="tag-chip" data-tag="ayuda">Ayuda</button>
+  </div>
+
+  <div class="composer">
+    <textarea id="postContent" placeholder="¿Qué estás pensando sobre anime, manga, manhwa o novelas?" maxlength="1000"></textarea>
+    <img id="imagePreview" alt="Vista previa">
+    <div class="composer-row">
+      <div class="custom-dropdown" id="tagDropdown">
+        <button type="button" class="dropdown-trigger" id="tagDropdownTrigger">
+          <span id="tagDropdownLabel">General</span>
+          <span class="dropdown-arrow">▾</span>
+        </button>
+        <ul class="dropdown-menu" id="tagDropdownMenu" hidden>
+          <li data-value="general" class="active">General</li>
+          <li data-value="debate">Abrir Debate</li>
+          <li data-value="teoria">Teoría</li>
+          <li data-value="arte">Mi arte</li>
+          <li data-value="pregunta">Pregunta</li>
+          <li data-value="ayuda">Ayuda</li>
+        </ul>
+      </div>
+      <label class="spoiler-toggle">
+        <input type="checkbox" id="postSpoiler"> ¿Tiene spoilers?
+      </label>
+      <label class="image-input-label">
+        Añadir imagen
+        <input type="file" id="postImage" accept="image/*" style="display:none;">
+      </label>
+      <button class="publish-btn" id="publishBtn">Publicar</button>
+    </div>
+    <p class="composer-note" id="composerNote"></p>
+  </div>
+
+  <div id="feed">
+    <p class="empty-state">Cargando publicaciones…</p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="components.js"></script>
+<script src="foro.js"></script>
+</body>
+</html>
