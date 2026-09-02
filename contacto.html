@@ -1640,8 +1640,7 @@ footer{
 
 <script src="components.js"></script>
 
-
-<script>
+  <script>
 
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -1675,16 +1674,43 @@ document.addEventListener('DOMContentLoaded', async () => {
   const workTitle =
     document.getElementById('workTitle');
 
-
-  /* ========================================================
-     DETECTAR TIPO DE CONTACTO
-  ======================================================== */
+  const reportDetails =
+    document.getElementById('reportDetails');
 
   const typeInputs =
     document.querySelectorAll(
       'input[name="contactType"]'
     );
 
+
+  /* ========================================================
+     SUPABASE
+  ======================================================== */
+
+  let supabaseClient = null;
+
+  if(typeof window.supabaseClient !== 'undefined'){
+
+    supabaseClient =
+      window.supabaseClient;
+
+  }
+
+  if(
+    !supabaseClient &&
+    typeof window.supabase !== 'undefined' &&
+    typeof window.supabase.auth !== 'undefined'
+  ){
+
+    supabaseClient =
+      window.supabase;
+
+  }
+
+
+  /* ========================================================
+     TIPO DE CONTACTO
+  ======================================================== */
 
   function updateContactType(){
 
@@ -1735,13 +1761,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   /* ========================================================
-     CATEGORÍA DE LA OBRA (chip-group de opción única)
+     CATEGORÍA DE LA OBRA
   ======================================================== */
 
   let selectedWorkCategory = '';
 
   const workCategoryGroup =
     document.getElementById('workCategoryGroup');
+
 
   workCategoryGroup.addEventListener(
     'click',
@@ -1752,17 +1779,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if(!btn) return;
 
+
       workCategoryGroup
         .querySelectorAll('.report-chip')
         .forEach(b => {
+
           b.classList.remove('selected');
-          b.setAttribute('aria-checked', 'false');
+
+          b.setAttribute(
+            'aria-checked',
+            'false'
+          );
+
         });
 
-      btn.classList.add('selected');
-      btn.setAttribute('aria-checked', 'true');
 
-      selectedWorkCategory = btn.dataset.value;
+      btn.classList.add('selected');
+
+      btn.setAttribute(
+        'aria-checked',
+        'true'
+      );
+
+
+      selectedWorkCategory =
+        btn.dataset.value;
 
     }
   );
@@ -1775,15 +1816,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     workCategoryGroup
       .querySelectorAll('.report-chip')
       .forEach(b => {
+
         b.classList.remove('selected');
-        b.setAttribute('aria-checked', 'false');
+
+        b.setAttribute(
+          'aria-checked',
+          'false'
+        );
+
       });
 
   }
 
 
   /* ========================================================
-     PROBLEMA (dropdown de opción única)
+     PROBLEMA
   ======================================================== */
 
   let selectedIssue = '';
@@ -1798,7 +1845,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('issueList');
 
   const issueLabel =
-    issueSelect.querySelector('.custom-select-label');
+    issueSelect.querySelector(
+      '.custom-select-label'
+    );
 
 
   issueToggle.addEventListener(
@@ -1807,10 +1856,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       event.stopPropagation();
 
+
       const willOpen =
         !issueSelect.classList.contains('open');
 
-      issueSelect.classList.toggle('open', willOpen);
+
+      issueSelect.classList.toggle(
+        'open',
+        willOpen
+      );
+
 
       issueToggle.setAttribute(
         'aria-expanded',
@@ -1830,101 +1885,98 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if(!li) return;
 
+
       issueList
         .querySelectorAll('li')
-        .forEach(o => o.classList.remove('active'));
+        .forEach(o => {
+
+          o.classList.remove('active');
+
+        });
+
 
       li.classList.add('active');
+
 
       issueLabel.textContent =
         li.textContent;
 
-      issueSelect.classList.remove('open');
 
-      issueToggle.setAttribute('aria-expanded', 'false');
+      issueSelect.classList.remove(
+        'open'
+      );
 
-      selectedIssue = li.dataset.value;
+
+      issueToggle.setAttribute(
+        'aria-expanded',
+        'false'
+      );
+
+
+      selectedIssue =
+        li.dataset.value;
 
     }
   );
 
 
-  document.addEventListener('click', (event) => {
+  document.addEventListener(
+    'click',
+    (event) => {
 
-    if(!issueSelect.contains(event.target)){
+      if(!issueSelect.contains(event.target)){
 
-      issueSelect.classList.remove('open');
+        issueSelect.classList.remove(
+          'open'
+        );
 
-      issueToggle.setAttribute('aria-expanded', 'false');
+        issueToggle.setAttribute(
+          'aria-expanded',
+          'false'
+        );
 
-    }
-
-  });
-
-
-  document.addEventListener('keydown', (event) => {
-
-    if(event.key === 'Escape'){
-
-      issueSelect.classList.remove('open');
-
-      issueToggle.setAttribute('aria-expanded', 'false');
+      }
 
     }
+  );
 
-  });
+
+  document.addEventListener(
+    'keydown',
+    (event) => {
+
+      if(event.key === 'Escape'){
+
+        issueSelect.classList.remove(
+          'open'
+        );
+
+        issueToggle.setAttribute(
+          'aria-expanded',
+          'false'
+        );
+
+      }
+
+    }
+  );
 
 
   function resetIssues(){
 
     selectedIssue = '';
 
-    issueLabel.textContent = 'Selecciona un problema';
+    issueLabel.textContent =
+      'Selecciona un problema';
+
 
     issueList
       .querySelectorAll('li')
-      .forEach(o => o.classList.remove('active'));
+      .forEach(o => {
 
-  }
+        o.classList.remove('active');
 
-
-  /* ========================================================
-     SUPABASE
-  ======================================================== */
-
-  let supabaseClient = null;
-
-  /*
-     auth.js debe contener la configuración de Supabase
-     utilizada por el resto de Overclock.
-
-     Si auth.js expone el cliente como "supabaseClient",
-     se reutiliza automáticamente.
-  */
-
-  if(
-    typeof window.supabaseClient !== 'undefined'
-  ){
-
-    supabaseClient =
-      window.supabaseClient;
-
-  }
-
-
-  /*
-     También se intenta detectar un cliente global
-     creado por auth.js.
-  */
-
-  if(
-    !supabaseClient &&
-    typeof window.supabase !== 'undefined' &&
-    typeof window.supabase.auth !== 'undefined'
-  ){
-
-    supabaseClient =
-      window.supabase;
+      });
 
   }
 
@@ -1955,6 +2007,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           const metadata =
             user.user_metadata || {};
 
+
           const displayName =
             metadata.name ||
             metadata.full_name ||
@@ -1983,6 +2036,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           }
 
+
           return;
 
         }
@@ -1994,12 +2048,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         'Puedes escribirnos aunque no tengas una cuenta. ' +
         '<strong>Completa tus datos de contacto arriba.</strong>';
 
+
     }catch(error){
 
       console.warn(
         'No se pudo comprobar la sesión:',
         error
       );
+
 
       userStatus.innerHTML =
         'Completa tus datos de contacto para poder responder a tu mensaje.';
@@ -2013,7 +2069,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   /* ========================================================
-     ENVIAR
+     ENVIAR FORMULARIO
   ======================================================== */
 
   contactForm.addEventListener(
@@ -2021,7 +2077,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     async (event) => {
 
       event.preventDefault();
-
 
       clearMessage();
 
@@ -2035,9 +2090,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       const name =
         nameInput.value.trim();
 
+
       const email =
         emailInput.value.trim();
 
+
+      /* ====================================================
+         DATOS GENERALES
+      ==================================================== */
 
       if(!name){
 
@@ -2068,7 +2128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
       /* ====================================================
-         REPORTE
+         REPORTAR UN PROBLEMA
       ==================================================== */
 
       if(selectedType === 'reporte'){
@@ -2076,13 +2136,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const category =
           selectedWorkCategory;
 
+
         const title =
           workTitle.value.trim();
 
 
-        const issuesPayload =
-          selectedIssue ? [selectedIssue] : [];
+        const details =
+          reportDetails.value.trim();
 
+
+        /* -------------------------------
+           Validar categoría
+        -------------------------------- */
 
         if(!category){
 
@@ -2091,16 +2156,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             'Selecciona la categoría de la obra.'
           );
 
-          workCategoryGroup
-            .scrollIntoView({
-              behavior:'smooth',
-              block:'center'
-            });
+
+          workCategoryGroup.scrollIntoView({
+            behavior:'smooth',
+            block:'center'
+          });
+
 
           return;
 
         }
 
+
+        /* -------------------------------
+           Validar título
+        -------------------------------- */
 
         if(!title){
 
@@ -2109,61 +2179,99 @@ document.addEventListener('DOMContentLoaded', async () => {
             'Escribe el título de la obra.'
           );
 
+
           workTitle.focus();
+
 
           return;
 
         }
 
 
-        if(issuesPayload.length === 0){
+        /* -------------------------------
+           Validar problema
+        -------------------------------- */
+
+        if(!selectedIssue){
 
           showMessage(
             'error',
             'Selecciona el problema que encontraste.'
           );
 
-          issueSelect
-            .scrollIntoView({
-              behavior:'smooth',
-              block:'center'
-            });
+
+          issueSelect.scrollIntoView({
+            behavior:'smooth',
+            block:'center'
+          });
+
 
           return;
 
         }
 
 
-        const details =
-          document
-            .getElementById('reportDetails')
-            .value
-            .trim();
+        /* -------------------------------
+           Obtener usuario actual
+        -------------------------------- */
 
+        let user = null;
+
+
+        try{
+
+          if(
+            supabaseClient &&
+            supabaseClient.auth &&
+            typeof supabaseClient.auth.getUser === 'function'
+          ){
+
+            const result =
+              await supabaseClient.auth.getUser();
+
+            user =
+              result.data?.user || null;
+
+          }
+
+        }catch(error){
+
+          console.warn(
+            'No se pudo obtener el usuario:',
+            error
+          );
+
+        }
+
+
+        /* -------------------------------
+           Datos para tabla REPORTS
+        -------------------------------- */
 
         const reportPayload = {
 
-          type:'reporte',
+          title: title,
 
-          name:name,
+          work_id: null,
 
-          email:email,
+          content_type: category,
 
-          category:category,
+          problem: selectedIssue,
 
-          title:title,
+          comment: details,
 
-          issues:issuesPayload,
+          page: window.location.href,
 
-          details:details,
+          user_id:
+            user?.id || null,
 
-          created_at:
-            new Date().toISOString()
+          user_email:
+            user?.email || email
 
         };
 
 
-        await submitContact(
+        await submitReport(
           reportPayload
         );
 
@@ -2188,22 +2296,26 @@ document.addEventListener('DOMContentLoaded', async () => {
           'Escribe tu mensaje.'
         );
 
+
         messageInput.focus();
+
 
         return;
 
       }
 
 
+      /* -------------------------------
+         Datos para CONTACT_MESSAGES
+      -------------------------------- */
+
       const generalPayload = {
 
-        type:'general',
+        name: name,
 
-        name:name,
+        email: email,
 
-        email:email,
-
-        message:message,
+        message: message,
 
         created_at:
           new Date().toISOString()
@@ -2220,88 +2332,103 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   /* ========================================================
-     GUARDAR CONTACTO
+     GUARDAR REPORTE
+     
+     Tabla:
+     reports
   ======================================================== */
 
   async function submitReport(payload){
 
-  submitButton.disabled = true;
-
-  submitButton.textContent =
-    'Enviando…';
-
-  try{
-
-    if(!supabaseClient){
-
-      throw new Error(
-        'Supabase no está disponible.'
-      );
-
-    }
-
-    const result =
-      await supabaseClient
-        .from('reports')
-        .insert([payload]);
-
-    if(result.error){
-
-      throw result.error;
-
-    }
-
-    showMessage(
-      'success',
-      'Tu reporte fue enviado correctamente. Gracias por ayudarnos a mejorar Overclock.'
-    );
-
-    contactForm.reset();
-
-    resetWorkCategory();
-
-    resetIssues();
-
-    updateContactType();
-
-    loadUser();
-
-  }catch(error){
-
-    console.error(
-      'Error enviando reporte:',
-      error
-    );
-
-    showMessage(
-      'error',
-      'No pudimos enviar el reporte en este momento. Inténtalo nuevamente en unos minutos.'
-    );
-
-  }finally{
-
-    submitButton.disabled = false;
+    submitButton.disabled = true;
 
     submitButton.textContent =
-      'Enviar mensaje →';
-
-  }
-
-  }
+      'Enviando…';
 
 
     try{
 
-      /*
-         IMPORTANTE:
+      if(!supabaseClient){
 
-         Esta página intenta utilizar la tabla
-         "contact_messages".
+        throw new Error(
+          'Supabase no está disponible.'
+        );
 
-         Si todavía no existe en Supabase,
-         el formulario no inventará otra tabla
-         ni modificará automáticamente tu base de datos.
-      */
+      }
+
+
+      const result =
+        await supabaseClient
+          .from('reports')
+          .insert([payload]);
+
+
+      if(result.error){
+
+        throw result.error;
+
+      }
+
+
+      showMessage(
+        'success',
+        'Tu reporte fue enviado correctamente. Gracias por ayudarnos a mejorar Overclock.'
+      );
+
+
+      contactForm.reset();
+
+      resetWorkCategory();
+
+      resetIssues();
+
+      updateContactType();
+
+      loadUser();
+
+
+    }catch(error){
+
+      console.error(
+        'Error enviando reporte:',
+        error
+      );
+
+
+      showMessage(
+        'error',
+        'No pudimos enviar el reporte en este momento. Inténtalo nuevamente en unos minutos.'
+      );
+
+
+    }finally{
+
+      submitButton.disabled = false;
+
+      submitButton.textContent =
+        'Enviar mensaje →';
+
+    }
+
+  }
+
+
+  /* ========================================================
+     GUARDAR CONTACTO GENERAL
+     
+     Tabla:
+     contact_messages
+  ======================================================== */
+
+  async function submitContact(payload){
+
+    submitButton.disabled = true;
+
+    submitButton.textContent =
+      'Enviando…';
+
+
+    try{
 
       if(!supabaseClient){
 
@@ -2338,11 +2465,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       resetIssues();
 
       updateContactType();
-
-
-      /*
-         Restaurar estado del usuario después del reset.
-      */
 
       loadUser();
 
@@ -2382,8 +2504,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     formMessage.className =
       'form-message visible ' + type;
 
+
     formMessage.textContent =
       text;
+
 
     formMessage.scrollIntoView({
       behavior:'smooth',
@@ -2397,6 +2521,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     formMessage.className =
       'form-message';
+
 
     formMessage.textContent =
       '';
@@ -2421,7 +2546,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 });
 
-</script>
+  </script>
 
 </body>
 </html>
