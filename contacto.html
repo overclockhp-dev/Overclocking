@@ -2223,12 +2223,71 @@ document.addEventListener('DOMContentLoaded', async () => {
      GUARDAR CONTACTO
   ======================================================== */
 
-  async function submitContact(payload){
+  async function submitReport(payload){
 
-    submitButton.disabled = true;
+  submitButton.disabled = true;
+
+  submitButton.textContent =
+    'Enviando…';
+
+  try{
+
+    if(!supabaseClient){
+
+      throw new Error(
+        'Supabase no está disponible.'
+      );
+
+    }
+
+    const result =
+      await supabaseClient
+        .from('reports')
+        .insert([payload]);
+
+    if(result.error){
+
+      throw result.error;
+
+    }
+
+    showMessage(
+      'success',
+      'Tu reporte fue enviado correctamente. Gracias por ayudarnos a mejorar Overclock.'
+    );
+
+    contactForm.reset();
+
+    resetWorkCategory();
+
+    resetIssues();
+
+    updateContactType();
+
+    loadUser();
+
+  }catch(error){
+
+    console.error(
+      'Error enviando reporte:',
+      error
+    );
+
+    showMessage(
+      'error',
+      'No pudimos enviar el reporte en este momento. Inténtalo nuevamente en unos minutos.'
+    );
+
+  }finally{
+
+    submitButton.disabled = false;
 
     submitButton.textContent =
-      'Enviando…';
+      'Enviar mensaje →';
+
+  }
+
+  }
 
 
     try{
