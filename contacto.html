@@ -1643,7 +1643,74 @@ footer{
 <script src="components.js"></script>
 
   <script>
+document.addEventListener(
+  'overclock:components-ready',
+  () => {
 
+    const loginTrigger =
+      document.getElementById('loginTrigger');
+
+    const menuItemLogin =
+      document.getElementById('menuItemLogin');
+
+
+    /* ==========================================
+       INICIAR SESIÓN DESDE CONTACTO.HTML
+    ========================================== */
+
+    loginTrigger?.addEventListener(
+      'click',
+      (event) => {
+
+        if (
+          window.ocAuth &&
+          !window.ocAuth.currentUser
+        ) {
+
+          event.preventDefault();
+
+          window.ocAuth.openAuth('login');
+
+        }
+
+      }
+    );
+
+
+    menuItemLogin?.addEventListener(
+      'click',
+      (event) => {
+
+        if (
+          window.ocAuth &&
+          !window.ocAuth.currentUser
+        ) {
+
+          event.preventDefault();
+
+          window.ocAuth.openAuth('login');
+
+        }
+
+      }
+    );
+
+
+    /* ==========================================
+       PERFIL SIEMPRE VISIBLE
+    ========================================== */
+
+    const menuItemProfile =
+      document.getElementById('menuItemProfile');
+
+    menuItemProfile?.classList.add('visible');
+
+  },
+  { once: true }
+);
+  </script>
+
+  <script>
 document.addEventListener('DOMContentLoaded', async () => {
 
   const contactForm =
