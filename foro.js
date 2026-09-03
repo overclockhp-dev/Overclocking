@@ -1,6 +1,6 @@
 // foro.js — lógica del foro de Overclock
-// Requiere que auth.js ya haya corrido antes (expone window.ocAuth) y que el
-// SDK de supabase-js esté cargado antes de este script.
+// Requiere: auth.js (window.ocAuth), components.js, avatars-data.js,
+// y el SDK de supabase-js, cargados antes que este script.
 
 const FORUM_FUNCTIONS_URL = "https://jhqjzxotxyxhvxdtuzxu.functions.supabase.co/create-post";
 const FORUM_IMAGES_BUCKET = "forum-images";
@@ -20,14 +20,15 @@ function getSupabaseClient() {
   if (window.ocAuth && window.ocAuth.supabase && window.ocAuth.supabase.from) return window.ocAuth.supabase;
   if (window.ocAuth && window.ocAuth.client && window.ocAuth.client.from) return window.ocAuth.client;
   if (window.supabaseClient && window.supabaseClient.from) return window.supabaseClient;
-  if (window.supabase && window.supabase.from) return window.supabase; // ya fue sobrescrito con la instancia
-  console.error("foro.js: no se encontró el cliente de Supabase. Revisa cómo lo expone auth.js y ajusta getSupabaseClient().");
+  if (window.supabase && window.supabase.from) return window.supabase;
+  console.error("foro.js: no se encontró el cliente de Supabase. Ajusta getSupabaseClient().");
   return null;
 }
 
 let currentTag = "";
-let selectedPostTag = "general"; // valor elegido en el dropdown propio del compositor
+let selectedPostTag = "general";
 let sb = null;
+let profilesCache = {}; // author_id -> fila de profiles
 
 document.addEventListener("DOMContentLoaded", () => {
   sb = getSupabaseClient();
@@ -79,6 +80,62 @@ function setupTagBar() {
   });
 }
 
+// ---------- Modal propio (reemplaza prompt()/confirm() nativos) ----------
+function showSiteModal({ title, message, showTextarea = false, confirmLabel = "Aceptar", cancelLabel = "Cancelar" }) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById("siteModalOverlay");
+    const textarea = document.getElementById("siteModalTextarea");
+
+    document.getElementById("siteModalTitle").textContent = title || "";
+    document.getElementById("siteModalMessage").textContent = message || "";
+    document.getElementById("siteModalConfirm").textContent = confirmLabel;
+    document.getElementById("siteModalCancel").textContent = cancelLabel;
+    textarea.style.display = showTextarea ? "block" : "none";
+    textarea.value = "";
+
+    overlay.classList.add("open");
+    if (showTextarea) setTimeout(() => textarea.focus(), 50);
+
+    function cleanup(result) {
+      overlay.classList.remove("open");
+      document.getElementById("siteModalConfirm").onclick = null;
+      document.getElementById("siteModalCancel").onclick = null;
+      overlay.onclick = null;
+      resolve(result);
+    }
+
+    document.getElementById("siteModalConfirm").onclick = () => cleanup(showTextarea ? (textarea.value.trim() || "") : true);
+    document.getElementById("siteModalCancel").onclick = () => cleanup(null);
+    overlay.onclick = (e) => { if (e.target === overlay) cleanup(null); };
+  });
+}
+
+// ---------- Tiempo relativo ----------
+function timeAgo(dateStr) {
+  const diffMs = Date.now() - new Date(dateStr).getTime();
+  const min = Math.floor(diffMs / 60000);
+  if (min < 1) return "justo ahora";
+  if (min < 60) return `hace ${min} min`;
+  const hrs = Math.floor(min / 60);
+  if (hrs < 24) return `hace ${hrs} h`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `hace ${days} d`;
+  return new Date(dateStr).toLocaleDateString("es", { day: "numeric", month: "short" });
+}
+
+// ---------- Estrellas ----------
+function starSvg(filled, size = 13) {
+  const cls = filled ? "star-filled" : "star-empty";
+  return `<svg class="${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+}
+function reputationStarsHtml(points) {
+  const filled = Math.min(5, Math.floor((points || 0) / 5));
+  let html = '<div class="post-stars">';
+  for (let i = 0; i < 5; i++) html += starSvg(i < filled);
+  html += "</div>";
+  return html;
+}
+
 // ---------- Cargar y pintar el feed ----------
 async function loadFeed() {
   const feed = document.getElementById("feed");
@@ -106,34 +163,84 @@ async function loadFeed() {
     return;
   }
 
+  // Traer perfiles de los autores presentes en este lote
+  const authorIds = [...new Set(data.map((p) => p.author_id))];
+  const { data: profilesData } = await sb.from("profiles").select("*").in("id", authorIds);
+  profilesCache = {};
+  (profilesData || []).forEach((p) => { profilesCache[p.id] = p; });
+
+  // Traer mis propias calificaciones para estos posts (si hay sesión)
+  let myRatings = {};
+  const currentUser = window.ocAuth && window.ocAuth.currentUser;
+  if (currentUser) {
+    const postIds = data.map((p) => p.id);
+    const { data: ratingsData } = await sb
+      .from("post_ratings")
+      .select("post_id, stars")
+      .eq("rater_id", currentUser.id)
+      .in("post_id", postIds);
+    (ratingsData || []).forEach((r) => { myRatings[r.post_id] = r.stars; });
+  }
+
   feed.innerHTML = "";
-  data.forEach((post) => feed.appendChild(renderPost(post)));
+  data.forEach((post) => feed.appendChild(renderPost(post, myRatings[post.id])));
 }
 
-function renderPost(post) {
+function renderPost(post, myRating) {
+  const profile = profilesCache[post.author_id] || {};
+  const displayName = profile.display_name || "Usuario";
+  const username = profile.username || "usuario";
+  const avatarMeta = window.ocGetAvatar ? window.ocGetAvatar(profile.avatar_id || "neko1") : null;
+  const avatarSrc = avatarMeta ? avatarMeta.image : "";
+  const avatarFallback = window.ocPlaceholderAvatar ? window.ocPlaceholderAvatar(displayName) : "";
+  const profileUrl = `perfil-publico.html?u=${encodeURIComponent(post.author_id)}`;
+  const currentUser = window.ocAuth && window.ocAuth.currentUser;
+  const isOwnPost = currentUser && currentUser.id === post.author_id;
+
   const el = document.createElement("article");
   el.className = "post";
 
-  const date = new Date(post.created_at).toLocaleString("es", { dateStyle: "medium", timeStyle: "short" });
-
   el.innerHTML = `
-    <div class="post-meta">
-      <span class="post-tag">${TAG_LABELS[post.tag] ?? post.tag}</span>
-      <span>·</span>
-      <span>${date}</span>
+    <div class="post-head">
+      <a class="post-avatar-link" href="${profileUrl}">
+        <img class="post-avatar" src="${avatarSrc}" alt="" onerror="this.onerror=null;this.src='${avatarFallback}'">
+      </a>
+      <div class="post-author-block">
+        <div class="post-author-line">
+          <a class="post-author-name" href="${profileUrl}">${escapeHtml(displayName)}</a>
+          <a class="post-author-username" href="${profileUrl}">@${escapeHtml(username)}</a>
+          <span class="post-time">· ${timeAgo(post.created_at)}</span>
+        </div>
+        ${reputationStarsHtml(profile.social_reputation_points)}
+      </div>
     </div>
-    ${post.has_spoiler ? '<div class="spoiler-banner">⚠ Alerta de spoilers</div>' : ""}
-    <div class="post-content ${post.has_spoiler ? "spoiler" : ""}" data-revealed="${post.has_spoiler ? "false" : "true"}">
-      ${post.has_spoiler ? "Este mensaje contiene spoilers." : escapeHtml(post.content)}
-    </div>
-    ${post.has_spoiler ? `
-      <div class="spoiler-actions">
-        <button class="ignore-btn">Ignorar</button>
-        <button class="reveal-btn">Ver spoilers</button>
-      </div>` : ""}
-    ${post.image_url && post.image_status !== "flagged_nsfw" ? `<img class="post-image" src="${post.image_url}" alt="Imagen de la publicación">` : ""}
-    <div class="post-actions">
-      <button class="report-link">Reportar</button>
+
+    <div class="post-body">
+      ${post.has_spoiler ? '<div class="spoiler-banner">⚠ Alerta de spoilers</div>' : ""}
+      <div class="post-content ${post.has_spoiler ? "spoiler" : ""}" data-revealed="${post.has_spoiler ? "false" : "true"}">
+        ${post.has_spoiler ? "Este mensaje contiene spoilers." : escapeHtml(post.content)}
+      </div>
+      ${post.has_spoiler ? `
+        <div class="spoiler-actions">
+          <button class="ignore-btn">Ignorar</button>
+          <button class="reveal-btn">Ver spoilers</button>
+        </div>` : ""}
+      ${post.image_url && post.image_status !== "flagged_nsfw" ? `<img class="post-image" src="${post.image_url}" alt="Imagen de la publicación">` : ""}
+
+      <div class="post-footer">
+        <span class="post-tag">${TAG_LABELS[post.tag] ?? post.tag}</span>
+        <div class="rate-widget" data-post-id="${post.id}">
+          ${[1, 2, 3, 4, 5].map((n) => `
+            <button type="button" class="rate-star${myRating && n <= myRating ? " filled" : ""}" data-value="${n}" ${isOwnPost ? "disabled title=\"No puedes calificar tu propia publicación\"" : "title=\"Calificar\""}>
+              ${starSvg(!!(myRating && n <= myRating), 16)}
+            </button>
+          `).join("")}
+        </div>
+        <div class="post-actions-right">
+          <button class="report-link">Reportar</button>
+          ${isOwnPost ? '<button class="delete-link">Eliminar</button>' : ""}
+        </div>
+      </div>
     </div>
   `;
 
@@ -143,12 +250,18 @@ function renderPost(post) {
       contentEl.textContent = post.content;
       contentEl.dataset.revealed = "true";
     });
-    el.querySelector(".ignore-btn").addEventListener("click", () => {
-      // se queda oculto, no hace nada más
-    });
+    el.querySelector(".ignore-btn").addEventListener("click", () => {});
   }
 
   el.querySelector(".report-link").addEventListener("click", () => reportPost(post));
+  const deleteBtn = el.querySelector(".delete-link");
+  if (deleteBtn) deleteBtn.addEventListener("click", () => deletePost(post));
+
+  if (!isOwnPost) {
+    el.querySelectorAll(".rate-star").forEach((btn) => {
+      btn.addEventListener("click", () => ratePost(post, parseInt(btn.dataset.value, 10)));
+    });
+  }
 
   return el;
 }
@@ -159,14 +272,37 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// ---------- Calificar publicación ----------
+async function ratePost(post, stars) {
+  const currentUser = window.ocAuth && window.ocAuth.currentUser;
+  if (!currentUser) {
+    window.ocAuth?.openAuth?.("login", "Inicia sesión para calificar publicaciones.");
+    return;
+  }
+  const { error } = await sb.from("post_ratings").upsert(
+    { post_id: post.id, rater_id: currentUser.id, stars },
+    { onConflict: "post_id,rater_id" }
+  );
+  if (error) {
+    alert("No se pudo calificar: " + error.message);
+    return;
+  }
+  loadFeed();
+}
+
 // ---------- Reportar publicación/usuario ----------
 async function reportPost(post) {
   if (!window.ocAuth || !window.ocAuth.currentUser) {
     window.ocAuth?.openAuth?.("login", "Inicia sesión para reportar publicaciones.");
     return;
   }
-  const reason = prompt("¿Por qué reportas esta publicación? (opcional)");
-  if (reason === null) return; // canceló
+  const reason = await showSiteModal({
+    title: "Reportar publicación",
+    message: "¿Por qué reportas esta publicación? (opcional)",
+    showTextarea: true,
+    confirmLabel: "Reportar",
+  });
+  if (reason === null) return;
 
   const { error } = await sb.from("forum_reports").insert({
     reporter_id: window.ocAuth.currentUser.id,
@@ -182,6 +318,23 @@ async function reportPost(post) {
     return;
   }
   alert("Reporte enviado. Gracias por ayudar a mantener la comunidad.");
+}
+
+// ---------- Eliminar publicación propia ----------
+async function deletePost(post) {
+  const confirmed = await showSiteModal({
+    title: "¿Eliminar publicación?",
+    message: "Esta acción no se puede deshacer.",
+    confirmLabel: "Eliminar",
+  });
+  if (!confirmed) return;
+
+  const { error } = await sb.from("forum_posts").delete().eq("id", post.id);
+  if (error) {
+    alert("No se pudo eliminar: " + error.message);
+    return;
+  }
+  loadFeed();
 }
 
 // ---------- Compositor: publicar ----------
