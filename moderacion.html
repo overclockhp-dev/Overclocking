@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moderación — Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#000000; --fg:#F4F4F1; --fg-dim:#8A8A85; --line:#1E1E1C;
+    --accent:#E4293B; --accent-glow:rgba(228,41,59,0.35);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg); font-family:'Lora', serif; }
+
+  header{ background:#000000; position:sticky; top:0; z-index:100; }
+  header::after{ content:""; display:block; height:2px; background:linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%); opacity:0.8; }
+  .header-inner{ max-width:1200px; margin:0 auto; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--fg); }
+  .brand img{ height:36px; width:36px; display:block; border-radius:50%; }
+  .brand span{ font-family:'Lora', serif; font-weight:600; font-size:1.25rem; letter-spacing:0.02em; }
+  .header-right{ display:flex; align-items:center; gap:28px; font-family:'Lora', serif; }
+  .menu{ position:relative; }
+  .menu-toggle{ background:none; border:none; border-bottom:2px solid transparent; font-family:'Lora', serif; font-size:1rem; color:var(--fg); display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 4px; }
+  .menu.open .menu-toggle{ border-bottom-color:var(--accent); }
+  .menu-toggle:hover{ color:var(--accent); }
+  .menu-indicator{ font-size:0.85rem; color:var(--fg-dim); }
+  .menu-dropdown{ position:absolute; top:calc(100% + 14px); right:0; min-width:200px; background:#0A0A0A; border:1px solid var(--line); padding:8px; display:none; flex-direction:column; }
+  .menu.open .menu-dropdown{ display:flex; }
+  .menu-dropdown a{ color:var(--fg); text-decoration:none; font-size:0.95rem; padding:10px 12px; }
+  .menu-dropdown a:hover{ background:#161614; color:var(--accent); }
+  .menu-dropdown a.menu-item-profile{ display:none; border-top:1px solid var(--line); margin-top:6px; padding-top:12px; color:var(--accent); font-weight:600; }
+  .menu-dropdown a.menu-item-profile.visible{ display:block; }
+  .menu-dropdown a.menu-item-logout{ display:none; color:var(--fg-dim); font-size:0.88rem; }
+  .menu-dropdown a.menu-item-logout.visible{ display:block; }
+  .menu-dropdown a.menu-item-login.hidden{ display:none; }
+  body.menu-open{ overflow:hidden; height:100%; }
+  .login-link{ color:var(--fg); text-decoration:none; font-size:1rem; font-weight:500; background:var(--accent); padding:9px 20px; }
+
+  @media (max-width:560px){
+    .header-inner{ padding:16px 18px; }
+    .brand span{ font-size:1.05rem; }
+    .header-right{ gap:16px; }
+    .login-link{ padding:7px 14px; font-size:0.9rem; }
+  }
+
+  main{ max-width:760px; margin:0 auto; padding:40px 24px 80px; }
+  h1.page-title{ font-family:'Lora', serif; font-weight:600; font-size:1.8rem; margin:0 0 8px; }
+  .subtitle{ color:var(--fg-dim); font-size:0.9rem; margin:0 0 32px; }
+
+  section.mod-section{ margin-bottom:44px; }
+  section.mod-section h2{ font-size:1.1rem; font-weight:600; margin:0 0 4px; }
+  section.mod-section .count{ color:var(--fg-dim); font-size:0.82rem; margin-bottom:16px; }
+
+  .mod-card{ border:1px solid var(--line); padding:16px; margin-bottom:12px; background:#0A0A0A; }
+  .mod-card-top{ display:flex; justify-content:space-between; gap:10px; font-size:0.82rem; color:var(--fg-dim); margin-bottom:8px; flex-wrap:wrap; }
+  .mod-card-top strong{ color:var(--fg); }
+  .mod-card-content{ font-size:0.92rem; white-space:pre-wrap; margin-bottom:12px; }
+  .mod-card-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .mod-btn{
+    background:none; border:1px solid var(--line); color:var(--fg-dim);
+    padding:6px 14px; font-family:'Lora',serif; font-size:0.82rem; cursor:pointer;
+  }
+  .mod-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .mod-btn.primary{ background:var(--accent); color:#fff; border-color:var(--accent); }
+  .mod-btn.primary:hover{ background:#FF3B4E; }
+  .mod-btn.danger{ border-color:#C9705A; color:#C9705A; }
+  .mod-btn.danger:hover{ background:rgba(201,112,90,0.12); }
+
+  .empty-state{ color:var(--fg-dim); font-size:0.88rem; padding:16px 0; }
+  .loading, .not-authorized{ color:var(--fg-dim); text-align:center; padding:80px 20px; }
+
+  /* ============ MODAL: INICIAR SESIÓN / CREAR CUENTA ============ */
+  .auth-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(3px); display:none; align-items:center; justify-content:center; padding:24px; z-index:200; }
+  .auth-overlay.open{ display:flex; }
+  .auth-card{
+    position:relative; width:100%; max-width:380px;
+    background:radial-gradient(circle at 50% 0%, rgba(228,41,59,0.22), transparent 55%), #0A0A0A;
+    border:1px solid var(--line); padding:40px 32px 34px; box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+  .auth-close{ position:absolute; top:16px; right:16px; background:none; border:none; color:var(--fg-dim); font-size:1.3rem; line-height:1; cursor:pointer; padding:4px; }
+  .auth-close:hover{ color:var(--accent); }
+  .auth-brand{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:26px; }
+  .auth-brand img{ width:44px; height:44px; border-radius:50%; }
+  .auth-brand span{ font-family:'Lora', serif; font-size:0.78rem; font-weight:600; letter-spacing:0.22em; color:var(--fg-dim); }
+  .auth-heading{ text-align:center; font-family:'Lora', serif; font-size:1.5rem; font-weight:700; margin-bottom:6px; }
+  .auth-subheading{ text-align:center; font-size:0.9rem; color:var(--fg-dim); margin-bottom:26px; }
+  .auth-tabs{ display:flex; border:1px solid var(--line); margin-bottom:24px; }
+  .auth-tab{ flex:1; background:none; border:none; color:var(--fg-dim); font-family:'Lora', serif; font-size:0.92rem; font-weight:500; padding:11px 0; cursor:pointer; }
+  .auth-tab.active{ background:var(--accent); color:var(--fg); }
+  .auth-form{ display:none; flex-direction:column; gap:16px; }
+  .auth-form.active{ display:flex; }
+  .auth-oauth{ display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#fff; color:#0d0d0d; border:none; font-family:'Lora', serif; font-size:0.95rem; font-weight:500; padding:12px 0; cursor:pointer; }
+  .auth-oauth svg{ width:19px; height:19px; }
+  .auth-divider{ display:flex; align-items:center; gap:14px; color:var(--fg-dim); font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase; margin:22px 0 18px; }
+  .auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+  .auth-error{ display:none; background:rgba(228,41,59,0.1); border:1px solid rgba(228,41,59,0.4); color:#ff8a95; font-size:0.85rem; line-height:1.5; padding:10px 14px; margin:-4px 0 18px; }
+  .auth-error.visible{ display:block; }
+  .auth-field label{ display:block; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--fg-dim); margin-bottom:8px; }
+  .auth-field input{ width:100%; background:#050505; border:1px solid var(--line); color:var(--fg); font-family:'Lora', serif; font-size:0.95rem; padding:12px 14px; }
+  .auth-field input:focus{ outline:none; border-color:var(--accent); }
+  .auth-submit{ background:var(--accent); color:var(--fg); border:none; font-family:'Lora', serif; font-size:0.98rem; font-weight:500; padding:13px 0; cursor:pointer; margin-top:4px; }
+  .auth-switch{ text-align:center; font-size:0.85rem; color:var(--fg-dim); margin-top:20px; }
+  .auth-switch button{ background:none; border:none; color:var(--accent); font-family:'Lora', serif; font-size:0.85rem; cursor:pointer; text-decoration:underline; padding:0; }
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+<div id="auth-container"></div>
+
+<main id="mainContent">
+  <p class="loading">Verificando acceso…</p>
+</main>
+
+<script src="auth.js"></script>
+<script src="components.js"></script>
+<script>
+function getSupabaseClient() {
+  if (window.ocAuth && window.ocAuth.supabase && window.ocAuth.supabase.from) return window.ocAuth.supabase;
+  if (window.supabase && window.supabase.from) return window.supabase;
+  return null;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleString('es', { dateStyle: 'medium', timeStyle: 'short' });
+}
+
+let sb = null;
+
+async function init() {
+  sb = getSupabaseClient();
+  const main = document.getElementById('mainContent');
+
+  if (!window.ocAuth || !window.ocAuth.currentUser) {
+    main.innerHTML = '<p class="not-authorized">Inicia sesión para continuar.</p>';
+    window.ocAuth?.openAuth?.('login');
+    return;
+  }
+
+  const { data: isAdmin, error } = await sb.rpc('is_admin');
+  if (error || !isAdmin) {
+    main.innerHTML = '<p class="not-authorized">No tienes acceso a esta página.</p>';
+    return;
+  }
+
+  renderShell();
+  loadReports();
+  loadPendingPosts();
+  loadSuspended();
+}
+
+function renderShell() {
+  document.getElementById('mainContent').innerHTML = `
+    <h1 class="page-title">Moderación</h1>
+    <p class="subtitle">Reportes, publicaciones en revisión y usuarios suspendidos.</p>
+
+    <section class="mod-section">
+      <h2>Publicaciones en revisión</h2>
+      <div class="count" id="pendingCount"></div>
+      <div id="pendingList"></div>
+    </section>
+
+    <section class="mod-section">
+      <h2>Reportes recientes</h2>
+      <div class="count" id="reportsCount"></div>
+      <div id="reportsList"></div>
+    </section>
+
+    <section class="mod-section">
+      <h2>Usuarios suspendidos</h2>
+      <div class="count" id="suspendedCount"></div>
+      <div id="suspendedList"></div>
+    </section>
+  `;
+}
+
+// ---------- Publicaciones en revisión ----------
+async function loadPendingPosts() {
+  const list = document.getElementById('pendingList');
+  const { data, error } = await sb
+    .from('forum_posts')
+    .select('*')
+    .eq('status', 'pending_review')
+    .order('created_at', { ascending: false });
+
+  if (error) { list.innerHTML = `<p class="empty-state">Error: ${escapeHtml(error.message)}</p>`; return; }
+  document.getElementById('pendingCount').textContent = `${data.length} pendiente(s)`;
+  if (!data.length) { list.innerHTML = '<p class="empty-state">No hay publicaciones en revisión.</p>'; return; }
+
+  const authorIds = [...new Set(data.map(p => p.author_id))];
+  const { data: profiles } = await sb.from('profiles').select('id, display_name, username').in('id', authorIds);
+  const profileMap = Object.fromEntries((profiles || []).map(p => [p.id, p]));
+
+  list.innerHTML = data.map(post => {
+    const author = profileMap[post.author_id];
+    const authorLabel = author ? `${author.display_name} (@${author.username})` : post.author_id;
+    return `
+      <div class="mod-card" data-id="${post.id}">
+        <div class="mod-card-top">
+          <span><strong>${escapeHtml(authorLabel)}</strong> · ${escapeHtml(post.tag)}</span>
+          <span>${fmtDate(post.created_at)}</span>
+        </div>
+        <div class="mod-card-content">${escapeHtml(post.content)}</div>
+        ${post.image_url ? `<img src="${escapeHtml(post.image_url)}" style="max-width:100%;margin-bottom:12px;display:block;">` : ''}
+        <div class="mod-card-actions">
+          <button class="mod-btn primary" data-action="approve">Aprobar</button>
+          <button class="mod-btn danger" data-action="block">Bloquear</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('.mod-card').forEach(card => {
+    const id = card.dataset.id;
+    card.querySelector('[data-action="approve"]').onclick = () => updatePostStatus(id, 'published', card);
+    card.querySelector('[data-action="block"]').onclick = () => updatePostStatus(id, 'blocked', card);
+  });
+}
+
+async function updatePostStatus(id, status, card) {
+  const { error } = await sb.from('forum_posts').update({ status }).eq('id', id);
+  if (error) { alert('Error: ' + error.message); return; }
+  card.remove();
+}
+
+// ---------- Reportes ----------
+async function loadReports() {
+  const list = document.getElementById('reportsList');
+  const { data, error } = await sb
+    .from('forum_reports')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(50);
+
+  if (error) { list.innerHTML = `<p class="empty-state">Error: ${escapeHtml(error.message)}</p>`; return; }
+  document.getElementById('reportsCount').textContent = `${data.length} reporte(s)`;
+  if (!data.length) { list.innerHTML = '<p class="empty-state">No hay reportes.</p>'; return; }
+
+  const userIds = [...new Set(data.flatMap(r => [r.reporter_id, r.reported_user_id]))];
+  const { data: profiles } = await sb.from('profiles').select('id, display_name, username').in('id', userIds);
+  const profileMap = Object.fromEntries((profiles || []).map(p => [p.id, p]));
+  const nameOf = (id) => profileMap[id] ? `${profileMap[id].display_name} (@${profileMap[id].username})` : id;
+
+  list.innerHTML = data.map(r => `
+    <div class="mod-card" data-id="${r.id}" style="opacity:${r.resolved ? 0.5 : 1}">
+      <div class="mod-card-top">
+        <span><strong>${escapeHtml(nameOf(r.reporter_id))}</strong> reportó a <strong>${escapeHtml(nameOf(r.reported_user_id))}</strong></span>
+        <span>${fmtDate(r.created_at)}</span>
+      </div>
+      <div class="mod-card-content">${r.reason ? escapeHtml(r.reason) : '(sin motivo especificado)'}</div>
+      <div class="mod-card-actions">
+        ${r.resolved ? '<span class="empty-state">Revisado</span>' : '<button class="mod-btn" data-action="resolve">Marcar como revisado</button>'}
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('[data-action="resolve"]').forEach(btn => {
+    btn.onclick = async () => {
+      const card = btn.closest('.mod-card');
+      const { error } = await sb.from('forum_reports').update({ resolved: true }).eq('id', card.dataset.id);
+      if (error) { alert('Error: ' + error.message); return; }
+      loadReports();
+    };
+  });
+}
+
+// ---------- Usuarios suspendidos ----------
+async function loadSuspended() {
+  const list = document.getElementById('suspendedList');
+  const { data, error } = await sb
+    .from('user_reputation')
+    .select('*')
+    .not('suspended_until', 'is', null)
+    .order('updated_at', { ascending: false });
+
+  if (error) { list.innerHTML = `<p class="empty-state">Error: ${escapeHtml(error.message)}</p>`; return; }
+
+  const active = (data || []).filter(u => new Date(u.suspended_until) > new Date());
+  document.getElementById('suspendedCount').textContent = `${active.length} suspendido(s)`;
+  if (!active.length) { list.innerHTML = '<p class="empty-state">No hay usuarios suspendidos.</p>'; return; }
+
+  const userIds = active.map(u => u.user_id);
+  const { data: profiles } = await sb.from('profiles').select('id, display_name, username').in('id', userIds);
+  const profileMap = Object.fromEntries((profiles || []).map(p => [p.id, p]));
+
+  list.innerHTML = active.map(u => {
+    const author = profileMap[u.user_id];
+    const label = author ? `${author.display_name} (@${author.username})` : u.user_id;
+    return `
+      <div class="mod-card" data-user="${u.user_id}">
+        <div class="mod-card-top">
+          <span><strong>${escapeHtml(label)}</strong></span>
+          <span>${u.points} pts · ${u.report_count} reportes</span>
+        </div>
+        <div class="mod-card-content">Suspendido hasta: ${fmtDate(u.suspended_until)}</div>
+        <div class="mod-card-actions">
+          <button class="mod-btn primary" data-action="lift">Levantar suspensión</button>
+          <button class="mod-btn" data-action="reset">Restablecer reputación (100 pts)</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('.mod-card').forEach(card => {
+    const userId = card.dataset.user;
+    card.querySelector('[data-action="lift"]').onclick = async () => {
+      const { error } = await sb.from('user_reputation').update({ suspended_until: null }).eq('user_id', userId);
+      if (error) { alert('Error: ' + error.message); return; }
+      card.remove();
+    };
+    card.querySelector('[data-action="reset"]').onclick = async () => {
+      const { error } = await sb.from('user_reputation').update({ suspended_until: null, points: 100, report_count: 0 }).eq('user_id', userId);
+      if (error) { alert('Error: ' + error.message); return; }
+      card.remove();
+    };
+  });
+}
+
+if (window.ocAuth) {
+  ocAuth.onChange(() => init());
+} else {
+  init();
+}
+</script>
+</body>
+</html>
