@@ -81,15 +81,17 @@ function setupTagBar() {
 }
 
 // ---------- Modal propio (reemplaza prompt()/confirm() nativos) ----------
-function showSiteModal({ title, message, showTextarea = false, confirmLabel = "Aceptar", cancelLabel = "Cancelar" }) {
+function showSiteModal({ title, message, showTextarea = false, confirmLabel = "Aceptar", cancelLabel = "Cancelar", hideCancel = false }) {
   return new Promise((resolve) => {
     const overlay = document.getElementById("siteModalOverlay");
     const textarea = document.getElementById("siteModalTextarea");
+    const cancelBtn = document.getElementById("siteModalCancel");
 
     document.getElementById("siteModalTitle").textContent = title || "";
     document.getElementById("siteModalMessage").textContent = message || "";
     document.getElementById("siteModalConfirm").textContent = confirmLabel;
-    document.getElementById("siteModalCancel").textContent = cancelLabel;
+    cancelBtn.textContent = cancelLabel;
+    cancelBtn.style.display = hideCancel ? "none" : "";
     textarea.style.display = showTextarea ? "block" : "none";
     textarea.value = "";
 
@@ -99,15 +101,20 @@ function showSiteModal({ title, message, showTextarea = false, confirmLabel = "A
     function cleanup(result) {
       overlay.classList.remove("open");
       document.getElementById("siteModalConfirm").onclick = null;
-      document.getElementById("siteModalCancel").onclick = null;
+      cancelBtn.onclick = null;
       overlay.onclick = null;
       resolve(result);
     }
 
     document.getElementById("siteModalConfirm").onclick = () => cleanup(showTextarea ? (textarea.value.trim() || "") : true);
-    document.getElementById("siteModalCancel").onclick = () => cleanup(null);
+    cancelBtn.onclick = () => cleanup(null);
     overlay.onclick = (e) => { if (e.target === overlay) cleanup(null); };
   });
+}
+
+// Aviso simple de una sola opción — reemplaza alert()
+function showSiteAlert(message, title = "Aviso") {
+  return showSiteModal({ title, message, confirmLabel: "Aceptar", hideCancel: true });
 }
 
 // ---------- Tiempo relativo ----------
@@ -284,7 +291,7 @@ async function ratePost(post, stars) {
     { onConflict: "post_id,rater_id" }
   );
   if (error) {
-    alert("No se pudo calificar: " + error.message);
+    await showSiteAlert("No se pudo calificar: " + error.message);
     return;
   }
   loadFeed();
@@ -312,12 +319,13 @@ async function reportPost(post) {
   });
 
   if (error) {
-    alert(error.message.includes("últimas 24 horas")
-      ? "Ya reportaste a este usuario en las últimas 24 horas."
-      : "No se pudo enviar el reporte.");
+    let msg = "No se pudo enviar el reporte.";
+    if (error.message.includes("últimas 24 horas")) msg = "Ya reportaste a este usuario en las últimas 24 horas.";
+    else if (error.message.includes("no_self_report")) msg = "No puedes reportar tu propia publicación.";
+    await showSiteAlert(msg);
     return;
   }
-  alert("Reporte enviado. Gracias por ayudar a mantener la comunidad.");
+  await showSiteAlert("Reporte enviado. Gracias por ayudar a mantener la comunidad.");
 }
 
 // ---------- Eliminar publicación propia ----------
@@ -331,7 +339,7 @@ async function deletePost(post) {
 
   const { error } = await sb.from("forum_posts").delete().eq("id", post.id);
   if (error) {
-    alert("No se pudo eliminar: " + error.message);
+    await showSiteAlert("No se pudo eliminar: " + error.message);
     return;
   }
   loadFeed();
@@ -422,3 +430,4 @@ async function publishPost() {
     btn.disabled = false;
   }
 }
+
