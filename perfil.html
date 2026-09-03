@@ -298,12 +298,17 @@
     display:flex;
     align-items:center;
     gap:6px;
+    flex-wrap:wrap;
   }
   .name-display h2{
     margin:0;
     font-weight:700;
     font-size:20px;
     color:var(--fg);
+  }
+  .username-tag{
+    font-size:12px;
+    color:var(--fg-mute);
   }
 
   .icon-btn{
@@ -363,6 +368,12 @@
   .social-inline{ display:flex; gap:6px; align-items:center; }
   .social-inline a{ color:var(--fg-dim); display:flex; text-decoration:none; }
   .social-inline a:hover{ color:var(--gold); }
+
+  .stars-row{ display:flex; gap:2px; align-items:center; margin-top:4px; }
+  .stars-row svg{ display:block; }
+  .stars-row .star-filled{ color:var(--gold); }
+  .stars-row .star-empty{ color:var(--line-2); }
+  .sync-note{ font-size:10px; color:var(--fg-mute); margin-top:6px; }
 
   .gallery{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
   .gallery button{
@@ -573,6 +584,7 @@
 
 <script src="auth.js"></script>
 <script src="components.js"></script>
+<script src="avatars-data.js"></script>
 <script>
 /*
   Imágenes / audio (colócalos tú en assets):
@@ -582,6 +594,16 @@
 
   Si no hay archivo, se usa degradado + tono Web Audio de demo.
   Título exclusivo: no editable; cambia al cambiar de foto.
+
+  NOTA (sincronización con Supabase):
+  El catálogo AVATARS ahora vive en avatars-data.js (compartido con foro.html
+  y perfil-publico.html). Este script ya no lo declara, solo lo usa.
+  Además de guardar en localStorage (igual que siempre, para que el perfil
+  siga siendo instantáneo), cada cambio se sincroniza a la tabla "profiles"
+  de Supabase para que el foro y los perfiles públicos puedan mostrarlo.
+  El @usuario se genera automáticamente la primera vez (desde el correo) y
+  por ahora NO es editable desde aquí — si quieres que se pueda editar, lo
+  agregamos después.
 */
 
 const GOLD = '#E4293B';
@@ -607,54 +629,6 @@ function containsBannedWord(text) {
     w.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   ));
 }
-
-const AVATARS = [
-  {
-id: 'neko1',
-    title: '',
-    gradient: 'linear-gradient(135deg, #2b2740 0%, #0a0a0c 65%)',
-    freq: 587.33,
-    image: 'assets/profile/avatars/neko1.jpg',
-    banner: 'assets/profile/banners/neko1.gif',
-    audio: 'assets/profile/audio/neko1.mp3'
-  },
-  {
-    id: 'neko2',
-    title: '',
-    gradient: 'linear-gradient(135deg, #3a2c2c 0%, #0a0a0c 65%)',
-    freq: 493.88,
-    image: 'assets/profile/avatars/neko2.jpg',
-    banner: 'assets/profile/banners/neko2.gif',
-    audio: 'assets/profile/audio/neko2.mp3'
-  },
-  {
-    id: 'neko3',
-    title: '',
-    gradient: 'linear-gradient(135deg, #26313a 0%, #0a0a0c 65%)',
-    freq: 659.25,
-    image: 'assets/profile/avatars/neko3.jpg',
-    banner: 'assets/profile/banners/neko3.gif',
-    audio: 'assets/profile/audio/neko3.mp3'
-  },
-  {
-    id: 'neko4',
-    title: '',
-    gradient: 'linear-gradient(135deg, #33262f 0%, #0a0a0c 65%)',
-    freq: 440.0,
-    image: 'assets/profile/avatars/neko4.jpg',
-    banner: 'assets/profile/banners/neko4.gif',
-    audio: 'assets/profile/audio/neko4.mp3'
-  },
-  {
-    id: 'neko5',
-    title: '',
-    gradient: 'linear-gradient(135deg, #xxxxxx 0%, #0a0a0c 65%)',
-    freq: 523.25,
-    image: 'assets/profile/avatars/neko5.jpg',
-    banner: 'assets/profile/banners/neko5.gif',
-    audio: 'assets/profile/audio/neko5.mp3'
-  }
-];
 
 const SOCIALS = [
   { id: 'instagram', label: 'Instagram', path: 'M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-.9a1.1 1.1 0 110 2.2 1.1 1.1 0 010-2.2zM12 9a3 3 0 110 6 3 3 0 010-6z' },
@@ -688,6 +662,20 @@ function iconSvg(path, size) {
   return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${path}"/></svg>`;
 }
 
+function starSvg(filled, size) {
+  size = size || 14;
+  const cls = filled ? 'star-filled' : 'star-empty';
+  return `<svg class="${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+}
+
+function reputationStarsHtml(points, size) {
+  const filled = Math.min(5, Math.floor((points || 0) / 5));
+  let html = '<div class="stars-row">';
+  for (let i = 0; i < 5; i++) html += starSvg(i < filled, size);
+  html += '</div>';
+  return html;
+}
+
 function escapeHtml(str) {
   return String(str ?? '')
     .replace(/&/g, '&amp;')
@@ -701,6 +689,8 @@ function defaultProfile() {
     name: 'Usuario',
     description: '',
     avatarId: AVATARS[0].id,
+    username: null,               // se llena al sincronizar con Supabase
+    reputationPoints: 0,          // se llena al sincronizar con Supabase
     socials: SOCIALS.reduce((acc, s) => {
       acc[s.id] = { enabled: s.id === 'instagram' || s.id === 'discord', url: '' };
       return acc;
@@ -722,10 +712,50 @@ function loadProfile() {
 
 function saveProfile(data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  syncProfileToSupabase(data);
+}
+
+// ---------- Sincronización con Supabase (tabla "profiles") ----------
+let syncNoteTimer = null;
+function setSyncNote(text) {
+  const el = document.getElementById('syncNote');
+  if (!el) return;
+  el.textContent = text;
+  clearTimeout(syncNoteTimer);
+  if (text) syncNoteTimer = setTimeout(() => { el.textContent = ''; }, 2500);
+}
+
+async function syncProfileToSupabase(data) {
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) return; // sin sesión o sin cliente disponible: solo queda local
+
+  const { error } = await sb.from('profiles').upsert({
+    id: user.id,
+    display_name: data.name,
+    bio: data.description || '',
+    avatar_id: data.avatarId,
+    socials: data.socials
+  });
+
+  setSyncNote(error ? 'No se pudo sincronizar con el servidor.' : 'Sincronizado ✓');
+}
+
+async function fetchRemoteProfile() {
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) return;
+
+  const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  if (error || !data) return;
+
+  profile.username = data.username;
+  profile.reputationPoints = data.social_reputation_points || 0;
+  render();
 }
 
 function getAvatar(id) {
-  return AVATARS.find(a => a.id === id) || AVATARS[0];
+  return ocGetAvatar(id);
 }
 
 let audioCtx = null;
@@ -931,6 +961,7 @@ function render() {
             ` : `
               <div class="name-display">
                 <h2>${escapeHtml(profile.name)}</h2>
+                ${profile.username ? `<span class="username-tag">@${escapeHtml(profile.username)}</span>` : ''}
                 <button type="button" class="icon-btn" id="nameEditBtn" title="Editar nombre" aria-label="Editar nombre">
                   ${iconSvg('M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z', 12)}
                 </button>
@@ -943,6 +974,8 @@ function render() {
               </button>
             </div>
           </div>
+          ${reputationStarsHtml(profile.reputationPoints, 13)}
+          <div class="sync-note" id="syncNote"></div>
         </div>
       </div>
 
@@ -1180,10 +1213,12 @@ function cancelName() {
 
 // El menú (abrir/cerrar, indicador ﹀/︿) ya lo controla auth.js.
 // Aquí solo reaccionamos al estado de sesión: si no hay usuario logueado,
-// esta página no debe mostrarse.
+// esta página no debe mostrarse. Aprovechamos el mismo evento para traer
+// el @usuario y la reputación desde Supabase.
 if (window.ocAuth) {
   ocAuth.onChange((user) => {
     if (!user) window.location.href = 'index.html';
+    else fetchRemoteProfile();
   });
 }
 
@@ -1191,3 +1226,4 @@ render();
 </script>
 </body>
   </html>
+
