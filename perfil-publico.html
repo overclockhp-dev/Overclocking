@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil — Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#0A0A0C; --card:#101012; --fg:#F5F3EE; --fg-dim:#9C9691; --fg-mute:#5c5954;
+    --line:#232326; --gold:#E4293B; --gold-soft:rgba(228,41,59,0.12);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--fg); font-family:'Lora', serif; min-height:100%; }
+
+  header{ background:#000; position:sticky; top:0; z-index:100; }
+  header::after{ content:""; display:block; height:2px; background:linear-gradient(90deg, transparent 0%, var(--gold) 50%, transparent 100%); opacity:0.8; }
+  .header-inner{ max-width:1200px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+  .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--fg); }
+  .brand img{ height:32px; width:32px; border-radius:50%; display:block; }
+  .brand span{ font-weight:600; font-size:1.15rem; }
+  .header-right{ display:flex; align-items:center; gap:20px; }
+  .menu{ position:relative; }
+  .menu-toggle{ background:none; border:none; font-family:'Lora', serif; font-size:0.95rem; color:var(--fg); display:flex; align-items:center; gap:6px; cursor:pointer; padding:6px 2px; }
+  .menu-toggle:hover{ color:var(--gold); }
+  .menu-indicator{ font-size:0.8rem; color:var(--fg-dim); }
+  .menu-dropdown{ position:absolute; top:calc(100% + 12px); right:0; min-width:180px; background:#0A0A0A; border:1px solid #1E1E1C; padding:6px; display:none; flex-direction:column; z-index:50; }
+  .menu.open .menu-dropdown{ display:flex; }
+  .menu-dropdown a{ color:var(--fg); text-decoration:none; font-size:0.92rem; padding:9px 11px; }
+  .menu-dropdown a:hover{ background:#161614; color:var(--gold); }
+  .menu-dropdown a.menu-item-profile{ display:none; border-top:1px solid var(--line); margin-top:6px; padding-top:12px; color:var(--gold); font-weight:600; }
+  .menu-dropdown a.menu-item-profile.visible{ display:block; }
+  .menu-dropdown a.menu-item-logout{ display:none; color:var(--fg-dim); font-size:0.88rem; }
+  .menu-dropdown a.menu-item-logout.visible{ display:block; }
+  .menu-dropdown a.menu-item-login.hidden{ display:none; }
+  body.menu-open{ overflow:hidden; height:100%; }
+  .login-link{ color:var(--fg); text-decoration:none; font-size:0.9rem; font-weight:500; background:var(--gold); padding:8px 16px; }
+  .login-link:hover{ background:#FF3B4E; }
+
+  .page{ padding:32px 16px 80px; display:flex; flex-direction:column; align-items:center; gap:20px; }
+
+  .profile-card{
+    width:100%; max-width:440px; background:var(--card); border-radius:20px; overflow:hidden;
+    border:1px solid var(--line); box-shadow:0 20px 60px rgba(0,0,0,0.55); padding:28px 24px; text-align:center;
+  }
+  .pp-avatar{
+    width:96px; height:96px; border-radius:50%; object-fit:cover; margin:0 auto 14px;
+    display:block; border:3px solid #1a1a1e; outline:2px solid var(--gold); background:#1a1a1e;
+  }
+  .pp-name{ margin:0; font-size:1.3rem; font-weight:700; }
+  .pp-username{ color:var(--fg-mute); font-size:0.9rem; margin-top:2px; }
+  .pp-stars{ display:flex; gap:3px; justify-content:center; margin-top:10px; }
+  .pp-bio{ margin-top:18px; font-size:0.9rem; line-height:1.6; color:var(--fg-dim); white-space:pre-wrap; }
+  .pp-bio.empty{ color:var(--fg-mute); font-style:italic; }
+  .pp-back{ display:inline-block; margin-top:20px; color:var(--gold); text-decoration:underline; font-size:0.85rem; }
+
+  .fav-wrap{ width:100%; max-width:440px; }
+  .fav-block{ margin-bottom:18px; }
+  .fav-header h3{ margin:0 0 8px; font-size:0.9rem; font-weight:600; }
+  .fav-empty{ border:1px dashed var(--line); border-radius:10px; color:var(--fg-mute); font-size:0.82rem; padding:14px; line-height:1.5; }
+
+  .loading, .error-state{ color:var(--fg-dim); text-align:center; padding:60px 20px; font-size:0.9rem; }
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+
+<div class="page" id="page">
+  <p class="loading">Cargando perfil…</p>
+</div>
+
+<script src="auth.js"></script>
+<script src="components.js"></script>
+<script src="avatars-data.js"></script>
+<script>
+function starSvg(filled, size) {
+  size = size || 15;
+  const color = filled ? 'var(--gold)' : '#2a2a2e';
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+}
+function reputationStarsHtml(points) {
+  const filled = Math.min(5, Math.floor((points || 0) / 5));
+  let html = '<div class="pp-stars">';
+  for (let i = 0; i < 5; i++) html += starSvg(i < filled, 16);
+  html += '</div>';
+  return html;
+}
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+function getSupabaseClient() {
+  if (window.ocAuth && window.ocAuth.supabase && window.ocAuth.supabase.from) return window.ocAuth.supabase;
+  if (window.supabase && window.supabase.from) return window.supabase;
+  return null;
+}
+
+async function loadPublicProfile() {
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get('u');
+  const page = document.getElementById('page');
+
+  if (!userId) {
+    page.innerHTML = '<p class="error-state">No se indicó qué perfil mostrar.<br><a class="pp-back" href="foro.html">Volver al foro</a></p>';
+    return;
+  }
+
+  const sb = getSupabaseClient();
+  if (!sb) {
+    page.innerHTML = '<p class="error-state">No se pudo conectar con el servidor.</p>';
+    return;
+  }
+
+  const { data: profile, error } = await sb.from('profiles').select('*').eq('id', userId).maybeSingle();
+
+  if (error || !profile) {
+    page.innerHTML = '<p class="error-state">No se encontró este perfil.<br><a class="pp-back" href="foro.html">Volver al foro</a></p>';
+    return;
+  }
+
+  const avatar = window.ocGetAvatar ? window.ocGetAvatar(profile.avatar_id || 'neko1') : null;
+  const avatarSrc = avatar ? avatar.image : '';
+  const fallback = window.ocPlaceholderAvatar ? window.ocPlaceholderAvatar(profile.display_name) : '';
+
+  page.innerHTML = `
+    <div class="profile-card">
+      <img class="pp-avatar" src="${escapeHtml(avatarSrc)}" alt="" onerror="this.onerror=null;this.src='${fallback}'">
+      <h2 class="pp-name">${escapeHtml(profile.display_name || 'Usuario')}</h2>
+      <div class="pp-username">@${escapeHtml(profile.username || 'usuario')}</div>
+      ${reputationStarsHtml(profile.social_reputation_points)}
+      <p class="pp-bio ${profile.bio ? '' : 'empty'}">${profile.bio ? escapeHtml(profile.bio) : 'Sin descripción'}</p>
+    </div>
+
+    <div class="fav-wrap">
+      <div class="fav-block">
+        <div class="fav-header"><h3>Favoritos</h3></div>
+        <div class="fav-empty">Los favoritos todavía no están disponibles en perfiles públicos — por ahora solo se guardan en el propio dispositivo de cada usuario.</div>
+      </div>
+    </div>
+
+    <a class="pp-back" href="foro.html">← Volver al foro</a>
+  `;
+}
+
+loadPublicProfile();
+</script>
+</body>
+</html>
