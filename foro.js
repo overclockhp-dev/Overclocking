@@ -388,7 +388,8 @@ async function publishPost() {
   try {
     let imageUrl = null;
     if (imageFile) {
-      const path = `${window.ocAuth.currentUser.id}/${Date.now()}-${imageFile.name}`;
+      const safeName = imageFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      const path = `${window.ocAuth.currentUser.id}/${Date.now()}-${safeName}`;
       const { error: uploadError } = await sb.storage.from(FORUM_IMAGES_BUCKET).upload(path, imageFile);
       if (uploadError) throw new Error("No se pudo subir la imagen: " + uploadError.message);
       const { data: pub } = sb.storage.from(FORUM_IMAGES_BUCKET).getPublicUrl(path);
@@ -430,4 +431,3 @@ async function publishPost() {
     btn.disabled = false;
   }
 }
-
