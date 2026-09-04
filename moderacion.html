@@ -209,6 +209,7 @@ async function loadPendingPosts() {
           <span><strong>${escapeHtml(authorLabel)}</strong> · ${escapeHtml(post.tag)}</span>
           <span>${fmtDate(post.created_at)}</span>
         </div>
+        ${post.moderation_reason ? `<div class="count" style="margin-bottom:8px;">Motivo: ${escapeHtml(post.moderation_reason)}</div>` : ""}
         <div class="mod-card-content">${escapeHtml(post.content)}</div>
         ${post.image_url ? `<img src="${escapeHtml(post.image_url)}" style="max-width:100%;margin-bottom:12px;display:block;">` : ''}
         <div class="mod-card-actions">
@@ -323,11 +324,16 @@ async function loadSuspended() {
   });
 }
 
-if (window.ocAuth) {
+// Arrancamos de inmediato con el estado de sesión que haya en este momento,
+// y además nos suscribimos a cambios futuros (login/logout mientras la
+// página está abierta). No dependemos solo del evento de cambio, porque si
+// la sesión ya estaba activa antes de cargar la página, ese evento podría
+// no dispararse nunca.
+init();
+if (window.ocAuth && typeof window.ocAuth.onChange === "function") {
   ocAuth.onChange(() => init());
-} else {
-  init();
 }
 </script>
 </body>
 </html>
+
