@@ -341,10 +341,12 @@ async function loadSuspended() {
 // página está abierta). No dependemos solo del evento de cambio, porque si
 // la sesión ya estaba activa antes de cargar la página, ese evento podría
 // no dispararse nunca.
-init();
-if (window.ocAuth && typeof window.ocAuth.onChange === "function") {
-  ocAuth.onChange(() => init());
-}
+document.addEventListener('DOMContentLoaded', () => {
+  init();
+  if (window.ocAuth && typeof window.ocAuth.onChange === 'function') {
+    ocAuth.onChange(() => init());
+  }
+});
 </script>
 </body>
 </html>
