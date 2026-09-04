@@ -137,25 +137,37 @@ function fmtDate(d) {
 let sb = null;
 
 async function init() {
-  sb = getSupabaseClient();
   const main = document.getElementById('mainContent');
+  try {
+    sb = getSupabaseClient();
+    if (!sb) {
+      main.innerHTML = '<p class="not-authorized">No se encontró el cliente de Supabase (revisa auth.js).</p>';
+      return;
+    }
 
-  if (!window.ocAuth || !window.ocAuth.currentUser) {
-    main.innerHTML = '<p class="not-authorized">Inicia sesión para continuar.</p>';
-    window.ocAuth?.openAuth?.('login');
-    return;
+    if (!window.ocAuth || !window.ocAuth.currentUser) {
+      main.innerHTML = '<p class="not-authorized">Inicia sesión para continuar.</p>';
+      window.ocAuth?.openAuth?.('login');
+      return;
+    }
+
+    const { data: isAdmin, error } = await sb.rpc('is_admin');
+    if (error) {
+      main.innerHTML = `<p class="not-authorized">Error verificando acceso: ${escapeHtml(error.message)}</p>`;
+      return;
+    }
+    if (!isAdmin) {
+      main.innerHTML = '<p class="not-authorized">No tienes acceso a esta página.</p>';
+      return;
+    }
+
+    renderShell();
+    loadReports();
+    loadPendingPosts();
+    loadSuspended();
+  } catch (err) {
+    main.innerHTML = `<p class="not-authorized">Error inesperado: ${escapeHtml(String(err))}</p>`;
   }
-
-  const { data: isAdmin, error } = await sb.rpc('is_admin');
-  if (error || !isAdmin) {
-    main.innerHTML = '<p class="not-authorized">No tienes acceso a esta página.</p>';
-    return;
-  }
-
-  renderShell();
-  loadReports();
-  loadPendingPosts();
-  loadSuspended();
 }
 
 function renderShell() {
