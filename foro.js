@@ -3,7 +3,7 @@
 // y el SDK de supabase-js, cargados antes que este script.
 
 const FORUM_FUNCTIONS_URL = "https://jhqjzxotxyxhvxdtuzxu.functions.supabase.co/create-post";
-const FORUM_REPLIES_FUNCTIONS_URL = "https://jhqjzxotxyxhvxdtuzxu.supabase.co/functions/v1/create-reply";
+const FORUM_REPLIES_FUNCTIONS_URL = "https://jhqjzxotxyxhvxdtuzxu.supabase.co/functions/v1/swift-service";
 const FORUM_IMAGES_BUCKET = "forum-images";
 
 const TAG_LABELS = {
