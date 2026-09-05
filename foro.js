@@ -3,6 +3,7 @@
 // y el SDK de supabase-js, cargados antes que este script.
 
 const FORUM_FUNCTIONS_URL = "https://jhqjzxotxyxhvxdtuzxu.functions.supabase.co/create-post";
+const FORUM_REPLIES_FUNCTIONS_URL = "https://jhqjzxotxyxhvxdtuzxu.functions.supabase.co/create-reply";
 const FORUM_IMAGES_BUCKET = "forum-images";
 
 const TAG_LABELS = {
@@ -41,7 +42,6 @@ function waitForSupabaseClient(maxAttempts = 30, intervalMs = 100) {
 let currentTag = "";
 let selectedPostTag = "general";
 let sb = null;
-let profilesCache = {}; // author_id -> fila de profiles
 
 document.addEventListener("DOMContentLoaded", async () => {
   sb = await waitForSupabaseClient();
@@ -164,7 +164,7 @@ async function loadFeed() {
 
   let query = sb
     .from("forum_posts")
-    .select("*")
+    .select("*, profiles(*), forum_replies(*, profiles(*))")
     .eq("status", "published")
     .order("created_at", { ascending: false })
     .limit(50);
@@ -182,12 +182,6 @@ async function loadFeed() {
     feed.innerHTML = '<p class="empty-state">Todavía no hay publicaciones con esta etiqueta. Sé el primero.</p>';
     return;
   }
-
-  // Traer perfiles de los autores presentes en este lote
-  const authorIds = [...new Set(data.map((p) => p.author_id))];
-  const { data: profilesData } = await sb.from("profiles").select("*").in("id", authorIds);
-  profilesCache = {};
-  (profilesData || []).forEach((p) => { profilesCache[p.id] = p; });
 
   // Traer mis propias calificaciones para estos posts (si hay sesión)
   let myRatings = {};
@@ -207,7 +201,7 @@ async function loadFeed() {
 }
 
 function renderPost(post, myRating) {
-  const profile = profilesCache[post.author_id] || {};
+  const profile = post.profiles || {};
   const displayName = profile.display_name || "Usuario";
   const username = profile.username || "usuario";
   const avatarMeta = window.ocGetAvatar ? window.ocGetAvatar(profile.avatar_id || "neko1") : null;
@@ -216,6 +210,10 @@ function renderPost(post, myRating) {
   const currentUser = window.ocAuth && window.ocAuth.currentUser;
   const isOwnPost = currentUser && currentUser.id === post.author_id;
   const profileUrl = isOwnPost ? "perfil.html" : `perfil-publico.html?u=${encodeURIComponent(post.author_id)}`;
+
+  const replies = (post.forum_replies || [])
+    .filter((r) => r.status === "published" || (currentUser && r.author_id === currentUser.id))
+    .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
   const el = document.createElement("article");
   el.className = "post";
@@ -261,6 +259,17 @@ function renderPost(post, myRating) {
           ${isOwnPost ? '<button class="delete-link">Eliminar</button>' : ""}
         </div>
       </div>
+
+      <button type="button" class="reply-toggle" data-post-id="${post.id}">
+        💬 ${replies.length ? `${replies.length} respuesta${replies.length === 1 ? "" : "s"}` : "Responder"}
+      </button>
+      <div class="replies-wrap" id="replies-${post.id}" hidden>
+        ${replies.map((r) => renderReplyHtml(r)).join("")}
+        <div class="reply-composer">
+          <textarea placeholder="Escribe una respuesta..." maxlength="500"></textarea>
+          <button type="button">Enviar</button>
+        </div>
+      </div>
     </div>
   `;
 
@@ -283,6 +292,23 @@ function renderPost(post, myRating) {
     });
   }
 
+  // ---- hilo de respuestas ----
+  const repliesWrap = el.querySelector(".replies-wrap");
+  el.querySelector(".reply-toggle").addEventListener("click", () => {
+    repliesWrap.hidden = !repliesWrap.hidden;
+  });
+
+  const composerTextarea = el.querySelector(".reply-composer textarea");
+  el.querySelector(".reply-composer button").addEventListener("click", () => submitReply(post, composerTextarea));
+
+  el.querySelectorAll(".reply-item").forEach((item) => {
+    const replyId = item.dataset.replyId;
+    const reply = replies.find((r) => r.id === replyId);
+    item.querySelector(".reply-report-btn").addEventListener("click", () => reportReply(reply));
+    const delBtn = item.querySelector(".reply-delete-btn");
+    if (delBtn) delBtn.addEventListener("click", () => deleteReply(reply));
+  });
+
   return el;
 }
 
@@ -290,6 +316,39 @@ function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
+}
+
+function renderReplyHtml(reply) {
+  const rp = reply.profiles || {};
+  const displayName = rp.display_name || "Usuario";
+  const username = rp.username || "usuario";
+  const avatarMeta = window.ocGetAvatar ? window.ocGetAvatar(rp.avatar_id || "neko1") : null;
+  const avatarSrc = avatarMeta ? avatarMeta.image : "";
+  const avatarFallback = window.ocPlaceholderAvatar ? window.ocPlaceholderAvatar(displayName) : "";
+  const currentUser = window.ocAuth && window.ocAuth.currentUser;
+  const isOwn = currentUser && currentUser.id === reply.author_id;
+  const profileUrl = isOwn ? "perfil.html" : `perfil-publico.html?u=${encodeURIComponent(reply.author_id)}`;
+
+  return `
+    <div class="reply-item" data-reply-id="${reply.id}">
+      <a href="${profileUrl}"><img class="reply-avatar" src="${avatarSrc}" alt="" onerror="this.onerror=null;this.src='${avatarFallback}'"></a>
+      <div class="reply-body">
+        <div class="reply-head">
+          <a class="reply-author" href="${profileUrl}">${escapeHtml(displayName)}</a>
+          <a class="reply-username" href="${profileUrl}">@${escapeHtml(username)}</a>
+          <span class="reply-time">· ${timeAgo(reply.created_at)}</span>
+        </div>
+        ${reply.status === "pending_review" && isOwn ? '<div class="composer-note">Tu respuesta quedó en revisión.</div>' : ""}
+        <div class="reply-content ${reply.has_spoiler ? "spoiler" : ""}">
+          ${reply.has_spoiler ? "Contiene spoilers." : escapeHtml(reply.content)}
+        </div>
+        <div class="reply-actions">
+          <button class="reply-report-btn">Reportar</button>
+          ${isOwn ? '<button class="reply-delete-btn">Eliminar</button>' : ""}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 // ---------- Calificar publicación ----------
@@ -351,6 +410,87 @@ async function deletePost(post) {
   if (!confirmed) return;
 
   const { error } = await sb.from("forum_posts").delete().eq("id", post.id);
+  if (error) {
+    await showSiteAlert("No se pudo eliminar: " + error.message);
+    return;
+  }
+  loadFeed();
+}
+
+// ---------- Responder a una publicación ----------
+async function submitReply(post, textarea) {
+  if (!window.ocAuth || !window.ocAuth.currentUser) {
+    window.ocAuth?.openAuth?.("login", "Inicia sesión para responder.");
+    return;
+  }
+  const content = textarea.value.trim();
+  if (!content) return;
+
+  const btn = textarea.nextElementSibling;
+  btn.disabled = true;
+
+  try {
+    const { data: sessionData } = await sb.auth.getSession();
+    const token = sessionData?.session?.access_token;
+    if (!token) throw new Error("Tu sesión expiró, vuelve a iniciar sesión.");
+
+    const res = await fetch(FORUM_REPLIES_FUNCTIONS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ post_id: post.id, content, has_spoiler: false }),
+    });
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.error || "No se pudo responder.");
+
+    textarea.value = "";
+    loadFeed();
+  } catch (err) {
+    await showSiteAlert(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ---------- Reportar / eliminar una respuesta ----------
+async function reportReply(reply) {
+  if (!window.ocAuth || !window.ocAuth.currentUser) {
+    window.ocAuth?.openAuth?.("login", "Inicia sesión para reportar.");
+    return;
+  }
+  const reason = await showSiteModal({
+    title: "Reportar respuesta",
+    message: "¿Por qué reportas esta respuesta? (opcional)",
+    showTextarea: true,
+    confirmLabel: "Reportar",
+  });
+  if (reason === null) return;
+
+  const { error } = await sb.from("forum_reports").insert({
+    reporter_id: window.ocAuth.currentUser.id,
+    reported_user_id: reply.author_id,
+    post_id: reply.post_id,
+    reason: reason || null,
+  });
+
+  if (error) {
+    let msg = "No se pudo enviar el reporte.";
+    if (error.message.includes("últimas 24 horas")) msg = "Ya reportaste a este usuario en las últimas 24 horas.";
+    else if (error.message.includes("no_self_report")) msg = "No puedes reportar tu propia publicación.";
+    await showSiteAlert(msg);
+    return;
+  }
+  await showSiteAlert("Reporte enviado. Gracias por ayudar a mantener la comunidad.");
+}
+
+async function deleteReply(reply) {
+  const confirmed = await showSiteModal({
+    title: "¿Eliminar respuesta?",
+    message: "Esta acción no se puede deshacer.",
+    confirmLabel: "Eliminar",
+  });
+  if (!confirmed) return;
+
+  const { error } = await sb.from("forum_replies").delete().eq("id", reply.id);
   if (error) {
     await showSiteAlert("No se pudo eliminar: " + error.message);
     return;
