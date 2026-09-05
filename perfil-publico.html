@@ -140,6 +140,8 @@ function escapeHtml(str) {
 
 function getSupabaseClient() {
   if (window.ocAuth && window.ocAuth.supabase && window.ocAuth.supabase.from) return window.ocAuth.supabase;
+  if (window.ocAuth && window.ocAuth.client && window.ocAuth.client.from) return window.ocAuth.client;
+  if (window.supabaseClient && window.supabaseClient.from) return window.supabaseClient;
   if (window.supabase && window.supabase.from) return window.supabase;
   return null;
 }
