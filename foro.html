@@ -166,6 +166,11 @@
   .image-input-label{ font-size:0.85rem; color:var(--fg-dim); cursor:pointer; text-decoration:underline; }
   .image-input-label:hover{ color:var(--accent); }
   #imagePreview{ max-width:100%; margin-top:12px; display:none; }
+  #removeImageBtn{
+    display:block; margin-top:6px; background:none; border:1px solid var(--line);
+    color:var(--fg-dim); padding:5px 12px; font-family:'Lora',serif; font-size:0.78rem; cursor:pointer;
+  }
+  #removeImageBtn:hover{ border-color:var(--accent); color:var(--accent); }
 
   .publish-btn{
     background:var(--accent); color:var(--fg); border:none; padding:9px 22px;
@@ -293,7 +298,10 @@
 
   <div class="composer">
     <textarea id="postContent" placeholder="¿Qué estás pensando sobre anime, manga, manhwa o novelas?" maxlength="1000"></textarea>
-    <img id="imagePreview" alt="Vista previa">
+    <div style="position:relative; display:inline-block;">
+      <img id="imagePreview" alt="Vista previa">
+      <button type="button" id="removeImageBtn" style="display:none;">✕ Quitar imagen</button>
+    </div>
     <div class="composer-row">
       <div class="custom-dropdown" id="tagDropdown">
         <button type="button" class="dropdown-trigger" id="tagDropdownTrigger">
