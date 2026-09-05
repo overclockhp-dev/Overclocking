@@ -255,20 +255,17 @@ function renderPost(post, myRating) {
           `).join("")}
         </div>
         <div class="post-actions-right">
-          <button class="report-link">Reportar</button>
+          ${isOwnPost ? "" : '<button class="report-link">Reportar</button>'}
           ${isOwnPost ? '<button class="delete-link">Eliminar</button>' : ""}
         </div>
       </div>
 
-      <button type="button" class="reply-toggle" data-post-id="${post.id}">
-        💬 ${replies.length ? `${replies.length} respuesta${replies.length === 1 ? "" : "s"}` : "Responder"}
-      </button>
-      <div class="replies-wrap" id="replies-${post.id}" hidden>
-        ${replies.map((r) => renderReplyHtml(r)).join("")}
-        <div class="reply-composer">
-          <textarea placeholder="Escribe una respuesta..." maxlength="500"></textarea>
-          <button type="button">Enviar</button>
-        </div>
+      ${replies.length ? `<div class="replies-wrap">${replies.map((r) => renderReplyHtml(r)).join("")}</div>` : ""}
+
+      <button type="button" class="reply-toggle" data-post-id="${post.id}">Responder</button>
+      <div class="reply-composer" id="composer-${post.id}" hidden>
+        <textarea placeholder="Escribe una respuesta..." maxlength="500"></textarea>
+        <button type="button">Enviar</button>
       </div>
     </div>
   `;
@@ -293,18 +290,20 @@ function renderPost(post, myRating) {
   }
 
   // ---- hilo de respuestas ----
-  const repliesWrap = el.querySelector(".replies-wrap");
+  const composerBox = el.querySelector(".reply-composer");
   el.querySelector(".reply-toggle").addEventListener("click", () => {
-    repliesWrap.hidden = !repliesWrap.hidden;
+    composerBox.hidden = !composerBox.hidden;
+    if (!composerBox.hidden) composerBox.querySelector("textarea").focus();
   });
 
-  const composerTextarea = el.querySelector(".reply-composer textarea");
-  el.querySelector(".reply-composer button").addEventListener("click", () => submitReply(post, composerTextarea));
+  const composerTextarea = composerBox.querySelector("textarea");
+  composerBox.querySelector("button").addEventListener("click", () => submitReply(post, composerTextarea));
 
   el.querySelectorAll(".reply-item").forEach((item) => {
     const replyId = item.dataset.replyId;
     const reply = replies.find((r) => r.id === replyId);
-    item.querySelector(".reply-report-btn").addEventListener("click", () => reportReply(reply));
+    const reportBtn = item.querySelector(".reply-report-btn");
+    if (reportBtn) reportBtn.addEventListener("click", () => reportReply(reply));
     const delBtn = item.querySelector(".reply-delete-btn");
     if (delBtn) delBtn.addEventListener("click", () => deleteReply(reply));
   });
@@ -343,7 +342,7 @@ function renderReplyHtml(reply) {
           ${reply.has_spoiler ? "Contiene spoilers." : escapeHtml(reply.content)}
         </div>
         <div class="reply-actions">
-          <button class="reply-report-btn">Reportar</button>
+          ${isOwn ? "" : '<button class="reply-report-btn">Reportar</button>'}
           ${isOwn ? '<button class="reply-delete-btn">Eliminar</button>' : ""}
         </div>
       </div>
