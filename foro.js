@@ -200,9 +200,9 @@ function renderPost(post, myRating) {
   const avatarMeta = window.ocGetAvatar ? window.ocGetAvatar(profile.avatar_id || "neko1") : null;
   const avatarSrc = avatarMeta ? avatarMeta.image : "";
   const avatarFallback = window.ocPlaceholderAvatar ? window.ocPlaceholderAvatar(displayName) : "";
-  const profileUrl = `perfil-publico.html?u=${encodeURIComponent(post.author_id)}`;
   const currentUser = window.ocAuth && window.ocAuth.currentUser;
   const isOwnPost = currentUser && currentUser.id === post.author_id;
+  const profileUrl = isOwnPost ? "perfil.html" : `perfil-publico.html?u=${encodeURIComponent(post.author_id)}`;
 
   const el = document.createElement("article");
   el.className = "post";
