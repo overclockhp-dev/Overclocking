@@ -310,6 +310,13 @@
     font-size:12px;
     color:var(--fg-mute);
   }
+  .username-edit-row{ display:flex; align-items:center; gap:5px; }
+  .username-edit-row input{
+    font-family:'Lora', serif; font-size:12px; color:var(--fg);
+    background:#0f0f11; border:1px solid var(--line-2); border-radius:6px;
+    padding:2px 6px; outline:none; width:110px;
+  }
+  .username-edit-row input:focus{ border-color:var(--gold); }
 
   .icon-btn{
     background:none;
@@ -747,11 +754,48 @@ async function fetchRemoteProfile() {
   if (!sb || !user) return;
 
   const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
-  if (error || !data) return;
+  if (!error && data) {
+    profile.username = data.username;
+    profile.reputationPoints = data.social_reputation_points || 0;
+    render();
+  }
 
-  profile.username = data.username;
-  profile.reputationPoints = data.social_reputation_points || 0;
-  render();
+  syncFavoritesToSupabase();
+}
+
+function getFavoritesFlat() {
+  const library = loadLibrary();
+  const works = loadWorksIndex();
+  const byId = Object.fromEntries(works.map(w => [w.id, w]));
+  return Object.keys(library).map(id => {
+    const meta = byId[id];
+    return {
+      id,
+      title: meta ? meta.title : id,
+      format: meta ? meta.format : guessFormat(id),
+      status: library[id],
+    };
+  }).filter(f => f.format);
+}
+
+async function syncFavoritesToSupabase() {
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) return;
+
+  const flat = getFavoritesFlat();
+
+  // Reemplaza el set completo: borra lo que había y sube el estado actual.
+  await sb.from('favorites').delete().eq('user_id', user.id);
+  if (flat.length) {
+    await sb.from('favorites').insert(flat.map(f => ({
+      user_id: user.id,
+      work_id: f.id,
+      title: f.title,
+      format: f.format,
+      status: f.status,
+    })));
+  }
 }
 
 function getAvatar(id) {
@@ -899,8 +943,10 @@ let activeId = profile.avatarId;
 let showGallery = false;
 let showSocialPanel = false;
 let editingName = false;
+let editingUsername = false;
 let editingDesc = false;
 let draftName = profile.name;
+let draftUsername = profile.username || '';
 let draftDesc = profile.description || '';
 let playing = false;
 
@@ -961,11 +1007,24 @@ function render() {
             ` : `
               <div class="name-display">
                 <h2>${escapeHtml(profile.name)}</h2>
-                ${profile.username ? `<span class="username-tag">@${escapeHtml(profile.username)}</span>` : ''}
+                ${editingUsername ? `
+                  <span class="username-edit-row">
+                    <span style="font-size:12px;color:var(--fg-mute);">@</span>
+                    <input id="usernameInput" maxlength="20" value="${escapeHtml(draftUsername)}" autocomplete="off">
+                    <button type="button" class="btn-mini ok" id="usernameSave" title="Guardar">✓</button>
+                    <button type="button" class="btn-mini cancel" id="usernameCancel" title="Cancelar">✕</button>
+                  </span>
+                ` : `
+                  <span class="username-tag">@${escapeHtml(profile.username || 'usuario')}</span>
+                  <button type="button" class="icon-btn" id="usernameEditBtn" title="Editar usuario" aria-label="Editar usuario">
+                    ${iconSvg('M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z', 11)}
+                  </button>
+                `}
                 <button type="button" class="icon-btn" id="nameEditBtn" title="Editar nombre" aria-label="Editar nombre">
                   ${iconSvg('M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z', 12)}
                 </button>
               </div>
+              <span class="field-error" id="usernameError"></span>
             `}
             <div class="social-inline">
               ${socialIcons}
@@ -1110,6 +1169,23 @@ function bindCardEvents() {
     });
   }
 
+  if (editingUsername) {
+    const input = document.getElementById('usernameInput');
+    input.focus();
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter') saveUsername();
+      if (e.key === 'Escape') cancelUsername();
+    };
+    document.getElementById('usernameSave').onclick = saveUsername;
+    document.getElementById('usernameCancel').onclick = cancelUsername;
+  } else {
+    document.getElementById('usernameEditBtn').onclick = () => {
+      draftUsername = profile.username || '';
+      editingUsername = true;
+      render();
+    };
+  }
+
   if (editingName) {
     const input = document.getElementById('nameInput');
     input.focus();
@@ -1208,6 +1284,45 @@ function saveName() {
 function cancelName() {
   draftName = profile.name;
   editingName = false;
+  render();
+}
+
+async function saveUsername() {
+  const input = document.getElementById('usernameInput');
+  const raw = (input?.value ?? draftUsername).trim().toLowerCase();
+  const err = document.getElementById('usernameError');
+
+  if (!/^[a-z0-9_]{3,20}$/.test(raw)) {
+    if (err) err.textContent = 'Usa entre 3 y 20 letras/números/guion bajo, sin espacios ni acentos.';
+    return;
+  }
+  if (containsBannedWord(raw)) {
+    if (err) err.textContent = 'Ese nombre de usuario contiene palabras no permitidas.';
+    return;
+  }
+
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) {
+    if (err) err.textContent = 'No se pudo conectar con el servidor.';
+    return;
+  }
+
+  const { error } = await sb.from('profiles').update({ username: raw }).eq('id', user.id);
+  if (error) {
+    if (err) err.textContent = error.message.includes('duplicate')
+      ? 'Ese @usuario ya lo tiene alguien más.'
+      : 'No se pudo guardar: ' + error.message;
+    return;
+  }
+
+  profile.username = raw;
+  editingUsername = false;
+  render();
+}
+function cancelUsername() {
+  draftUsername = profile.username || '';
+  editingUsername = false;
   render();
 }
 
