@@ -641,6 +641,25 @@ function containsBannedWord(text) {
   ));
 }
 
+// ---------- Cliente de Supabase, con reintento por si auth.js aún no lo prepara ----------
+function getSupabaseClient() {
+  if (window.ocAuth && window.ocAuth.supabase && window.ocAuth.supabase.from) return window.ocAuth.supabase;
+  if (window.supabase && window.supabase.from) return window.supabase;
+  return null;
+}
+function waitForSupabaseClient(maxAttempts = 30, intervalMs = 100) {
+  return new Promise((resolve) => {
+    let attempts = 0;
+    (function tryGet() {
+      const sb = getSupabaseClient();
+      if (sb) return resolve(sb);
+      attempts++;
+      if (attempts >= maxAttempts) return resolve(null);
+      setTimeout(tryGet, intervalMs);
+    })();
+  });
+}
+
 const SOCIALS = [
   { id: 'instagram', label: 'Instagram', path: 'M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-.9a1.1 1.1 0 110 2.2 1.1 1.1 0 010-2.2zM12 9a3 3 0 110 6 3 3 0 010-6z' },
   { id: 'twitter', label: 'X / Twitter', path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.99 2.25h7.04l4.261 5.687L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z' },
@@ -737,7 +756,7 @@ function setSyncNote(text) {
 }
 
 async function syncProfileToSupabase(data) {
-  const sb = window.ocAuth && window.ocAuth.supabase;
+  const sb = await waitForSupabaseClient();
   const user = window.ocAuth && window.ocAuth.currentUser;
   if (!sb || !user) return; // sin sesión o sin cliente disponible: solo queda local
 
@@ -753,7 +772,7 @@ async function syncProfileToSupabase(data) {
 }
 
 async function fetchRemoteProfile() {
-  const sb = window.ocAuth && window.ocAuth.supabase;
+  const sb = await waitForSupabaseClient();
   const user = window.ocAuth && window.ocAuth.currentUser;
   if (!sb || !user) return;
 
@@ -783,7 +802,7 @@ function getFavoritesFlat() {
 }
 
 async function syncFavoritesToSupabase() {
-  const sb = window.ocAuth && window.ocAuth.supabase;
+  const sb = await waitForSupabaseClient();
   const user = window.ocAuth && window.ocAuth.currentUser;
   if (!sb || !user) return;
 
@@ -1309,7 +1328,7 @@ async function saveUsername() {
     return;
   }
 
-  const sb = window.ocAuth && window.ocAuth.supabase;
+  const sb = await waitForSupabaseClient();
   const user = window.ocAuth && window.ocAuth.currentUser;
   if (!sb || !user) {
     if (err) err.textContent = 'No se pudo conectar con el servidor.';
