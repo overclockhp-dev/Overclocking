@@ -144,6 +144,21 @@ function getSupabaseClient() {
   return null;
 }
 
+// No sabemos con exactitud cuándo auth.js termina de preparar el cliente,
+// así que reintentamos por hasta 3 segundos en vez de rendirnos al primer intento.
+function waitForSupabaseClient(maxAttempts = 30, intervalMs = 100) {
+  return new Promise((resolve) => {
+    let attempts = 0;
+    (function tryGet() {
+      const sb = getSupabaseClient();
+      if (sb) return resolve(sb);
+      attempts++;
+      if (attempts >= maxAttempts) return resolve(null);
+      setTimeout(tryGet, intervalMs);
+    })();
+  });
+}
+
 async function loadPublicProfile() {
   const params = new URLSearchParams(window.location.search);
   const userId = params.get('u');
@@ -154,7 +169,7 @@ async function loadPublicProfile() {
     return;
   }
 
-  const sb = getSupabaseClient();
+  const sb = await waitForSupabaseClient();
   if (!sb) {
     page.innerHTML = '<p class="error-state">No se pudo conectar con el servidor.</p>';
     return;
@@ -233,3 +248,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
