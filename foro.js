@@ -349,6 +349,7 @@ async function deletePost(post) {
 function setupComposer() {
   const imageInput = document.getElementById("postImage");
   const imagePreview = document.getElementById("imagePreview");
+  const removeImageBtn = document.getElementById("removeImageBtn");
 
   imageInput.addEventListener("change", () => {
     const file = imageInput.files[0];
@@ -357,8 +358,16 @@ function setupComposer() {
     reader.onload = (e) => {
       imagePreview.src = e.target.result;
       imagePreview.style.display = "block";
+      removeImageBtn.style.display = "block";
     };
     reader.readAsDataURL(file);
+  });
+
+  removeImageBtn.addEventListener("click", () => {
+    imageInput.value = "";
+    imagePreview.src = "";
+    imagePreview.style.display = "none";
+    removeImageBtn.style.display = "none";
   });
 
   document.getElementById("publishBtn").addEventListener("click", publishPost);
@@ -419,6 +428,7 @@ async function publishPost() {
       document.getElementById("postContent").value = "";
       document.getElementById("postImage").value = "";
       document.getElementById("imagePreview").style.display = "none";
+      document.getElementById("removeImageBtn").style.display = "none";
       document.getElementById("postSpoiler").checked = false;
       selectedPostTag = "general";
       document.getElementById("tagDropdownLabel").textContent = "General";
@@ -431,3 +441,4 @@ async function publishPost() {
     btn.disabled = false;
   }
 }
+
