@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Registro oficial de cambios y lanzamientos de Overclock.">
+<title>Actualizaciones — Overclock</title>
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+<link rel="icon" href="assets/favicon.ico">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000000;
+    --fg:#F4F4F1;
+    --fg-dim:#8A8A85;
+    --line:#1E1E1C;
+    --accent:#E4293B;
+    --accent-glow:rgba(228,41,59,0.35);
+    --card:#0A0A0A;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Lora', serif;
+  }
+
+  header{
+    background:#000000;
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+
+  header::after{
+    content:"";
+    display:block;
+    height:2px;
+    background:linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity:0.8;
+  }
+
+  .header-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:18px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:var(--fg);
+  }
+
+  .brand img{
+    height:36px;
+    width:36px;
+    display:block;
+    border-radius:50%;
+    transition:filter .25s ease;
+  }
+
+  .brand:hover img{
+    filter:drop-shadow(0 0 10px var(--accent-glow));
+  }
+
+  .brand span{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size:1.25rem;
+    letter-spacing:0.02em;
+    position:relative;
+  }
+
+  .brand span::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-6px;
+    width:0%;
+    height:2px;
+    background:var(--accent);
+    transition:width .25s ease;
+  }
+
+  .brand:hover span::after{ width:100%; }
+
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:28px;
+  }
+
+  .menu{ position:relative; }
+
+  .menu-toggle{
+    background:none;
+    border:none;
+    border-bottom:2px solid transparent;
+    font-family:'Lora', serif;
+    font-size:1rem;
+    color:var(--fg);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    padding:8px 4px;
+    transition:border-color .2s ease, color .2s ease;
+  }
+
+  .menu.open .menu-toggle{ border-bottom-color:var(--accent); }
+  .menu-toggle:hover{ color:var(--accent); }
+
+  .menu-indicator{
+    font-size:0.85rem;
+    color:var(--fg-dim);
+  }
+
+  .menu-dropdown{
+    position:absolute;
+    top:calc(100% + 14px);
+    right:0;
+    min-width:200px;
+    max-height:60vh;
+    overflow-y:auto;
+    background:#0A0A0A;
+    border:1px solid var(--line);
+    padding:8px;
+    display:none;
+    flex-direction:column;
+  }
+
+  body.menu-open{ overflow:hidden; height:100%; }
+  .menu.open .menu-dropdown{ display:flex; }
+
+  .menu-dropdown a{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.95rem;
+    padding:10px 12px;
+  }
+
+  .menu-dropdown a:hover{
+    background:#161614;
+    color:var(--accent);
+  }
+
+  .menu-dropdown a.menu-item-profile{
+    display:none;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+    padding-top:12px;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .menu-dropdown a.menu-item-profile.visible{ display:block; }
+  .menu-dropdown a.menu-item-logout{
+    display:none;
+    color:var(--fg-dim);
+    font-size:0.88rem;
+  }
+  .menu-dropdown a.menu-item-logout.visible{ display:block; }
+  .menu-dropdown a.menu-item-login.hidden{ display:none; }
+
+  .login-link{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:1rem;
+    font-weight:500;
+    background:var(--accent);
+    padding:9px 20px;
+    transition:background .2s ease, box-shadow .2s ease, transform .15s ease;
+  }
+
+  .login-link:hover{
+    background:#FF3B4E;
+    box-shadow:0 0 16px var(--accent-glow);
+    transform:translateY(-1px);
+  }
+
+  .subnav-wrap{
+    border-bottom:1px solid var(--line);
+    background:#050505;
+  }
+
+  .subnav{
+    max-width:860px;
+    margin:0 auto;
+    padding:0 32px;
+    display:flex;
+    gap:0;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .subnav a{
+    flex-shrink:0;
+    color:var(--fg-dim);
+    text-decoration:none;
+    font-size:0.88rem;
+    font-weight:500;
+    padding:14px 18px;
+    border-bottom:2px solid transparent;
+    transition:color .2s ease, border-color .2s ease;
+  }
+
+  .subnav a:hover{ color:var(--fg); }
+
+  .subnav a.active{
+    color:var(--accent);
+    border-bottom-color:var(--accent);
+  }
+
+  main{
+    max-width:860px;
+    margin:0 auto;
+    padding:48px 32px 100px;
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  .eyebrow::before{
+    content:"";
+    width:22px;
+    height:1px;
+    background:var(--accent);
+  }
+
+  h1{
+    font-family:'Lora', serif;
+    font-weight:600;
+    font-size:clamp(2rem, 3.4vw, 2.7rem);
+    line-height:1.15;
+    margin:0 0 12px;
+  }
+
+  .lead{
+    color:var(--fg-dim);
+    font-size:1.02rem;
+    line-height:1.7;
+    max-width:58ch;
+    margin:0 0 40px;
+  }
+
+  .release{
+    border:1px solid var(--line);
+    background:
+      radial-gradient(circle at 12% 0%, rgba(228,41,59,0.14), transparent 48%),
+      var(--card);
+    padding:32px 28px 36px;
+  }
+
+  .release-meta{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px 16px;
+    margin-bottom:18px;
+  }
+
+  .release-tag{
+    display:inline-block;
+    font-size:0.68rem;
+    font-weight:600;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--accent);
+    border:1px solid var(--accent);
+    padding:4px 12px;
+  }
+
+  .release-date{
+    font-size:0.82rem;
+    color:var(--fg-dim);
+    letter-spacing:0.04em;
+  }
+
+  .release-version{
+    font-size:0.82rem;
+    color:var(--fg-dim);
+  }
+
+  .release h2{
+    font-size:1.55rem;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+
+  .release-subtitle{
+    color:var(--fg-dim);
+    font-size:0.98rem;
+    margin:0 0 22px;
+  }
+
+  .release-body{
+    font-size:0.95rem;
+    line-height:1.7;
+    color:var(--fg);
+  }
+
+  .release-body p{
+    margin:0 0 16px;
+    color:var(--fg-dim);
+  }
+
+  .release-body p strong{
+    color:var(--fg);
+    font-weight:600;
+  }
+
+  .release-section-label{
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:28px 0 12px;
+    font-weight:600;
+  }
+
+  .feature-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .feature-list li{
+    border-left:2px solid var(--line);
+    padding:10px 0 10px 16px;
+  }
+
+  .feature-list li strong{
+    display:block;
+    color:var(--fg);
+    font-weight:600;
+    margin-bottom:4px;
+  }
+
+  .feature-list li span{
+    color:var(--fg-dim);
+    font-size:0.9rem;
+    line-height:1.55;
+  }
+
+  .release-closing{
+    margin-top:28px;
+    padding-top:22px;
+    border-top:1px solid var(--line);
+    color:var(--fg-dim);
+    font-size:0.92rem;
+    line-height:1.65;
+  }
+
+  .release-closing em{
+    color:var(--fg);
+    font-style:italic;
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+  }
+  .footer-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:36px 32px 28px;
+  }
+  .footer-bottom{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:14px;
+    color:var(--fg-dim);
+    font-size:0.8rem;
+  }
+  .footer-legal{ display:flex; gap:20px; }
+  .footer-legal a{
+    color:var(--fg-dim);
+    text-decoration:none;
+  }
+  .footer-legal a:hover{ color:var(--accent); }
+
+  @media (max-width:560px){
+    .header-inner{ padding:16px 18px; }
+    .brand span{ font-size:1.05rem; }
+    .header-right{ gap:16px; }
+    .login-link{ padding:7px 14px; font-size:0.9rem; }
+    .subnav{ padding:0 12px; }
+    .subnav a{ padding:12px 14px; font-size:0.84rem; }
+    main{ padding:36px 18px 80px; }
+    .release{ padding:24px 18px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+
+<div class="subnav-wrap">
+  <nav class="subnav" aria-label="Secciones de soporte">
+    <a href="actualizaciones.html" class="active">Actualizaciones</a>
+    <a href="reporte.html">Reporte</a>
+    <a href="contacto.html">Contacto</a>
+    <a href="actividad.html">Actividad</a>
+  </nav>
+</div>
+
+<main>
+  <div class="eyebrow">Registro oficial</div>
+  <h1>Actualizaciones</h1>
+  <p class="lead">
+    Historial de cambios de Overclock. Aquí se documentan lanzamientos,
+    mejoras y correcciones cuando se publican.
+  </p>
+
+  <article class="release">
+    <div class="release-meta">
+      <span class="release-tag">Lanzamiento</span>
+      <span class="release-date">15 de septiembre de 2026</span>
+      <span class="release-version">Versión 1.0.1</span>
+    </div>
+
+    <h2>Overclock sale al aire</h2>
+    <p class="release-subtitle">Primera versión pública del sitio</p>
+
+    <div class="release-body">
+      <p>
+        Overclock inicia oficialmente sus operaciones con el lanzamiento de la
+        primera versión pública de la plataforma. La versión <strong>1.0.1</strong>
+        establece la base del sitio e incorpora secciones y herramientas orientadas
+        a una experiencia editorial clara, organizada y abierta a la comunidad.
+      </p>
+
+      <div class="release-section-label">Secciones y funciones</div>
+      <ul class="feature-list">
+        <li>
+          <strong>Foro</strong>
+          <span>Espacio comunitario para conversaciones, debates y opiniones sobre obras.</span>
+        </li>
+        <li>
+          <strong>Guía</strong>
+          <span>Material de apoyo para orientarse en la plataforma y sus funciones.</span>
+        </li>
+        <li>
+          <strong>Biblioteca</strong>
+          <span>Catálogo estructurado de recomendaciones de anime, manga, manhwa y novelas.</span>
+        </li>
+        <li>
+          <strong>Términos de uso</strong>
+          <span>Condiciones y normas que regulan el uso del servicio.</span>
+        </li>
+        <li>
+          <strong>Privacidad</strong>
+          <span>Información sobre el tratamiento de datos dentro del sitio.</span>
+        </li>
+        <li>
+          <strong>Actualizaciones</strong>
+          <span>Registro oficial de cambios, mejoras y correcciones.</span>
+        </li>
+        <li>
+          <strong>Créditos</strong>
+          <span>Reconocimiento a quienes han contribuido al desarrollo del proyecto.</span>
+        </li>
+        <li>
+          <strong>Contacto</strong>
+          <span>Canal oficial para consultas y sugerencias.</span>
+        </li>
+        <li>
+          <strong>Reporte</strong>
+          <span>Vía para informar problemas o contenido que requiera revisión.</span>
+        </li>
+        <li>
+          <strong>Actividad</strong>
+          <span>Vista del estado editorial de las páginas del sitio.</span>
+        </li>
+        <li>
+          <strong>Área administrativa</strong>
+          <span>Sección privada, fuera de la navegación pública, reservada a usuarios autorizados para tareas internas de gestión.</span>
+        </li>
+      </ul>
+
+      <div class="release-closing">
+        <p>
+          La versión 1.0.1 es el primer paso público de Overclock.
+          A partir de este lanzamiento se seguirán publicando funciones y mejoras
+          en este mismo registro.
+        </p>
+        <p><em>Este es solamente el comienzo.</em></p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <span>© 2026 Overclock. Todos los derechos reservados.</span>
+      <div class="footer-legal">
+        <a href="privacidad.html">Privacidad</a>
+        <a href="terminos.html">Términos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="auth-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script src="components.js"></script>
+</body>
+</html>
