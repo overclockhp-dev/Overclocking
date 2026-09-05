@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil — Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#0A0A0C;
+    --card:#101012;
+    --card-2:#151517;
+    --fg:#F5F3EE;
+    --fg-dim:#9C9691;
+    --fg-mute:#5c5954;
+    --line:#232326;
+    --line-2:#2a2a2e;
+    --gold:var(--accent);
+    --gold-soft:rgba(228,41,59,0.12);
+    --accent:#E4293B;
+    --danger:#C9705A;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Lora', serif;
+    min-height:100%;
+  }
+
+  header{
+    background:#000;
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+  header::after{
+    content:"";
+    display:block;
+    height:2px;
+    background:linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity:0.8;
+  }
+  .header-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:var(--fg);
+  }
+  .brand img{
+    height:32px;
+    width:32px;
+    border-radius:50%;
+    display:block;
+  }
+  .brand span{ font-weight:600; font-size:1.15rem; }
+  .header-right{ display:flex; align-items:center; gap:20px; }
+  .menu{ position:relative; }
+  .menu-toggle{
+    background:none;
+    border:none;
+    font-family:'Lora', serif;
+    font-size:0.95rem;
+    color:var(--fg);
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    padding:6px 2px;
+  }
+  .menu-toggle:hover{ color:var(--accent); }
+  .menu-indicator{ font-size:0.8rem; color:var(--fg-dim); }
+  .menu-dropdown{
+    position:absolute;
+    top:calc(100% + 12px);
+    right:0;
+    min-width:180px;
+    background:#0A0A0A;
+    border:1px solid #1E1E1C;
+    padding:6px;
+    display:none;
+    flex-direction:column;
+    z-index:50;
+  }
+  .menu.open .menu-dropdown{ display:flex; }
+  .menu-dropdown a{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.92rem;
+    padding:9px 11px;
+  }
+  .menu-dropdown a:hover{ background:#161614; color:var(--accent); }
+
+  .menu-dropdown a.menu-item-profile{
+    display:none;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+    padding-top:12px;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .menu-dropdown a.menu-item-profile.visible{ display:block; }
+
+  .menu-dropdown a.menu-item-logout{
+    display:none;
+    color:var(--fg-dim);
+    font-size:0.88rem;
+  }
+  .menu-dropdown a.menu-item-logout.visible{ display:block; }
+
+  .menu-dropdown a.menu-item-login.hidden{ display:none; }
+
+  body.menu-open{ overflow:hidden; height:100%; }
+
+  .login-link{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.9rem;
+    font-weight:500;
+    background:var(--accent);
+    padding:8px 16px;
+  }
+  .login-link:hover{ background:#FF3B4E; }
+
+  .page{
+    padding:28px 16px 80px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
+  }
+
+  .profile-card{
+    width:100%;
+    max-width:440px;
+    background:var(--card);
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 20px 60px rgba(0,0,0,0.55);
+  }
+
+  .profile-banner{
+    position:relative;
+    height:132px;
+    transition:background .6s ease;
+    overflow:hidden;
+  }
+  .profile-banner img.banner-photo{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+  }
+  .profile-banner.has-photo img.banner-photo{ display:block; }
+  .profile-banner.has-photo .banner-svg{ opacity:0.25; }
+
+  .banner-svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0.5;
+    pointer-events:none;
+  }
+
+  .exclusive-title{
+    position:absolute;
+    top:14px;
+    left:20px;
+    right:20px;
+    z-index:2;
+    font-style:italic;
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+  }
+
+  .profile-content{ position:relative; padding:0 20px; }
+
+  .identity-row{
+    display:flex;
+    align-items:flex-end;
+  }
+
+  .avatar-wrap{
+    margin-top:-44px;
+  }
+
+  .avatar-btn{
+    position:relative;
+    width:88px;
+    height:88px;
+    border-radius:50%;
+    border:3px solid var(--card);
+    outline:2px solid var(--gold);
+    cursor:pointer;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+    overflow:hidden;
+    background:#1a1a1e;
+  }
+  .avatar-btn img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:none;
+  }
+  .avatar-btn.has-photo img{ display:block; }
+  .avatar-btn .avatar-fallback{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:100%;
+    color:var(--gold);
+    opacity:0.85;
+  }
+  .avatar-btn.has-photo .avatar-fallback{ display:none; }
+
+  .avatar-btn.playing{ animation:pulseRing 1.1s ease-out; }
+
+  @keyframes pulseRing{
+    0%{ box-shadow:0 0 0 0 rgba(228,41,59,0.55); }
+    70%{ box-shadow:0 0 0 16px rgba(228,41,59,0); }
+    100%{ box-shadow:0 0 0 0 rgba(228,41,59,0); }
+  }
+
+  .avatar-hint{
+    position:absolute;
+    bottom:-26px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:10px;
+    color:var(--fg-dim);
+    white-space:nowrap;
+    opacity:0;
+    transition:opacity .2s ease;
+    pointer-events:none;
+  }
+  .avatar-btn:hover .avatar-hint{ opacity:1; }
+
+  .camera-btn{
+    position:absolute;
+    bottom:-2px;
+    right:-2px;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:#1b1b1e;
+    border:2px solid var(--card);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:3;
+    padding:0;
+    color:var(--fg-dim);
+  }
+  .camera-btn:hover{ color:var(--gold); }
+
+  .identity-text{
+    margin-left:14px;
+    padding-bottom:6px;
+    flex:1;
+    min-width:0;
+  }
+
+  .name-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .name-display{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .name-display h2{
+    margin:0;
+    font-weight:700;
+    font-size:20px;
+    color:var(--fg);
+  }
+  .username-tag{
+    font-size:12px;
+    color:var(--fg-mute);
+  }
+  .username-line{ display:flex; align-items:center; gap:5px; margin-top:2px; }
+  .username-edit-row{ display:flex; align-items:center; gap:5px; }
+  .username-edit-row input{
+    font-family:'Lora', serif; font-size:12px; color:var(--fg);
+    background:#0f0f11; border:1px solid var(--line-2); border-radius:6px;
+    padding:2px 6px; outline:none; width:110px;
+  }
+  .username-edit-row input:focus{ border-color:var(--gold); }
+
+  .icon-btn{
+    background:none;
+    border:none;
+    padding:4px;
+    cursor:pointer;
+    display:flex;
+    color:var(--fg-mute);
+    flex-shrink:0;
+  }
+  .icon-btn:hover{ color:var(--fg-dim); }
+
+  .name-edit{ display:flex; flex-direction:column; gap:3px; }
+  .name-edit-row{ display:flex; align-items:center; gap:6px; }
+  .name-edit input{
+    font-family:'Lora', serif;
+    font-weight:700;
+    font-size:20px;
+    color:var(--fg);
+    background:#0f0f11;
+    border:1px solid var(--line-2);
+    border-radius:7px;
+    padding:2px 8px;
+    outline:none;
+    width:150px;
+  }
+  .name-edit input:focus{ border-color:var(--gold); }
+
+  .btn-mini{
+    border-radius:6px;
+    width:22px;
+    height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    padding:0;
+    font-size:12px;
+    line-height:1;
+  }
+  .btn-mini.ok{ background:var(--gold); border:none; color:#101012; }
+  .btn-mini.cancel{ background:none; border:1px solid var(--line-2); color:var(--fg-dim); }
+
+  .char-hint{ font-size:10px; color:var(--fg-mute); padding-left:2px; }
+  .char-hint.over{ color:var(--danger); }
+
+  .field-error{
+    font-size:11px;
+    color:var(--danger);
+    padding-left:2px;
+    display:none;
+  }
+  .field-error.visible{ display:block; }
+
+  .social-inline{ display:flex; gap:6px; align-items:center; }
+  .social-inline a{ color:var(--fg-dim); display:flex; text-decoration:none; }
+  .social-inline a:hover{ color:var(--gold); }
+
+  .stars-row{ display:flex; gap:2px; align-items:center; margin-top:4px; }
+  .stars-row svg{ display:block; }
+  .stars-row .star-filled{ color:var(--gold); }
+  .stars-row .star-empty{ color:var(--line-2); }
+  .sync-note{ font-size:10px; color:var(--fg-mute); margin-top:6px; }
+
+  .gallery{ margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; }
+  .gallery button{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:2px solid var(--line);
+    cursor:pointer;
+    padding:0;
+    overflow:hidden;
+    background:#1a1a1e;
+  }
+  .gallery button.active{ border-color:var(--gold); }
+  .gallery button img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .gallery button.has-photo img{ display:block; }
+
+  .social-panel{
+    margin-top:14px;
+    padding:14px;
+    background:var(--card-2);
+    border:1px solid var(--line);
+    border-radius:12px;
+  }
+  .social-panel-label{
+    font-size:11px;
+    color:var(--fg-dim);
+    margin-bottom:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  .social-list{ display:flex; flex-direction:column; gap:8px; }
+  .social-row{ display:flex; align-items:center; gap:8px; }
+  .social-toggle{
+    width:26px;
+    height:26px;
+    border-radius:7px;
+    border:1px solid var(--line-2);
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    color:var(--fg-mute);
+    padding:0;
+  }
+  .social-toggle.on{
+    border-color:var(--gold);
+    background:var(--gold-soft);
+    color:var(--gold);
+  }
+  .social-row .net-label{
+    font-size:13px;
+    color:#cfcac4;
+    width:88px;
+    flex-shrink:0;
+  }
+  .social-row input{
+    flex:1;
+    min-width:0;
+    background:#0f0f11;
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:5px 8px;
+    font-size:12px;
+    color:#e8e4de;
+    outline:none;
+    font-family:'Lora', serif;
+  }
+  .social-row input:focus{ border-color:var(--gold); }
+  .social-row input:disabled{ opacity:0.4; }
+
+  .desc-block{ margin-top:16px; padding-bottom:22px; }
+  .desc-view{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .desc-view p{
+    margin:0;
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--fg-dim);
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .desc-view p.empty{ color:var(--fg-mute); font-style:italic; }
+  .desc-edit textarea{
+    width:100%;
+    resize:none;
+    background:#0f0f11;
+    border:1px solid var(--line-2);
+    border-radius:10px;
+    padding:10px;
+    color:#e8e4de;
+    font-family:'Lora', serif;
+    font-size:13.5px;
+    outline:none;
+  }
+  .desc-edit textarea:focus{ border-color:var(--gold); }
+  .desc-edit-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:6px;
+  }
+  .desc-actions{ display:flex; gap:8px; }
+  .btn-text{
+    background:none;
+    border:1px solid var(--line-2);
+    color:var(--fg-dim);
+    border-radius:7px;
+    padding:5px 10px;
+    font-size:12px;
+    cursor:pointer;
+    font-family:'Lora', serif;
+  }
+  .btn-gold{
+    background:var(--gold);
+    border:none;
+    color:#101012;
+    border-radius:7px;
+    padding:5px 10px;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:'Lora', serif;
+  }
+
+  .fav-wrap{ width:100%; max-width:440px; }
+  .fav-block{ margin-bottom:22px; }
+  .fav-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .fav-header h3{
+    margin:0;
+    font-size:0.95rem;
+    font-weight:600;
+    color:var(--fg);
+  }
+  .fav-header span{ font-size:0.75rem; color:var(--fg-mute); }
+  .fav-scroll{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding-bottom:8px;
+    scrollbar-width:thin;
+    scrollbar-color:var(--line) transparent;
+  }
+  .fav-card{
+    flex:0 0 auto;
+    width:100px;
+    border:1px solid var(--line);
+    background:var(--card);
+    border-radius:10px;
+    overflow:hidden;
+    text-decoration:none;
+    color:var(--fg);
+    transition:border-color .2s;
+  }
+  .fav-card:hover{ border-color:var(--gold); }
+  .fav-card-thumb{ aspect-ratio:3/4; background:#0f0f11; }
+  .fav-card-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .fav-card-title{
+    font-size:0.72rem;
+    font-weight:600;
+    padding:7px 7px 3px;
+    margin:0;
+    line-height:1.3;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+  .fav-card-status{
+    font-size:0.65rem;
+    color:var(--fg-mute);
+    padding:0 7px 8px;
+  }
+  .fav-empty{
+    border:1px dashed var(--line);
+    border-radius:10px;
+    color:var(--fg-mute);
+    font-size:0.82rem;
+    padding:14px;
+    line-height:1.5;
+  }
+  .fav-empty a{ color:var(--gold); }
+
+  @media (max-width:480px){
+    .header-inner{ padding:14px 16px; }
+    .brand span{ font-size:1.05rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+
+<div class="page">
+  <div class="profile-card" id="profileCard"></div>
+  <div class="fav-wrap" id="favWrap"></div>
+</div>
+
+<script src="auth.js"></script>
+<script src="components.js"></script>
+<script src="avatars-data.js"></script>
+<script>
+/*
+  Imágenes / audio (colócalos tú en assets):
+    assets/profile/avatars/{id}.jpg
+    assets/profile/banners/{id}.jpg
+    assets/profile/audio/{id}.mp3
+
+  Si no hay archivo, se usa degradado + tono Web Audio de demo.
+  Título exclusivo: no editable; cambia al cambiar de foto.
+
+  NOTA (sincronización con Supabase):
+  El catálogo AVATARS ahora vive en avatars-data.js (compartido con foro.html
+  y perfil-publico.html). Este script ya no lo declara, solo lo usa.
+  Además de guardar en localStorage (igual que siempre, para que el perfil
+  siga siendo instantáneo), cada cambio se sincroniza a la tabla "profiles"
+  de Supabase para que el foro y los perfiles públicos puedan mostrarlo.
+  El @usuario se genera automáticamente la primera vez (desde el correo) y
+  por ahora NO es editable desde aquí — si quieres que se pueda editar, lo
+  agregamos después.
+*/
+
+const GOLD = '#E4293B';
+const DESC_LIMIT = 160;
+const NAME_LIMIT = 32;
+const STORAGE_KEY = 'oc_profile_v1';
+
+// Lista base de palabras prohibidas para nombre y descripción.
+// Amplíala según lo que necesites moderar.
+const BANNED_WORDS = [
+  'puta', 'puto', 'putos', 'putas', 'mierda', 'pendejo', 'pendeja',
+  'idiota', 'estupido', 'estúpido', 'estupida', 'estúpida', 'maldito',
+  'maldita', 'cabron', 'cabrón', 'imbecil', 'imbécil', 'zorra', 'perra',
+  'verga', 'joder', 'gilipollas'
+];
+
+function containsBannedWord(text) {
+  const normalized = (text || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, ''); // quita acentos para detectar variantes
+  return BANNED_WORDS.some(w => normalized.includes(
+    w.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  ));
+}
+
+const SOCIALS = [
+  { id: 'instagram', label: 'Instagram', path: 'M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6.5-.9a1.1 1.1 0 110 2.2 1.1 1.1 0 010-2.2zM12 9a3 3 0 110 6 3 3 0 010-6z' },
+  { id: 'twitter', label: 'X / Twitter', path: 'M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.99 2.25h7.04l4.261 5.687L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z' },
+  { id: 'tiktok', label: 'TikTok', path: 'M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.3-.04.6-.05.88-.04V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z' },
+  { id: 'youtube', label: 'YouTube', path: 'M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31.5 31.5 0 000 12a31.5 31.5 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31.5 31.5 0 0024 12a31.5 31.5 0 00-.5-5.8zM9.75 15.5v-7l6.5 3.5-6.5 3.5z' },
+  { id: 'discord', label: 'Discord', path: 'M20.317 4.37a19.8 19.8 0 00-4.885-1.515.07.07 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.07.07 0 00-.079-.037A19.74 19.74 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.08.08 0 00.031.057 19.9 19.9 0 005.993 3.03.08.08 0 00.084-.028 14.09 14.09 0 001.226-1.994.07.07 0 00-.041-.098 13.1 13.1 0 01-1.872-.892.07.07 0 01-.007-.117c.126-.094.252-.192.371-.292a.07.07 0 01.076-.01c3.928 1.793 8.18 1.793 12.062 0a.07.07 0 01.077.009c.12.098.245.198.372.292a.07.07 0 01-.006.117 12.3 12.3 0 01-1.873.891.07.07 0 00-.041.099c.36.698.772 1.362 1.225 1.993a.08.08 0 00.084.028 19.84 19.84 0 006.002-3.03.08.08 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 00-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z' },
+  { id: 'facebook', label: 'Facebook', path: 'M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.62 23.1 24 18.1 24 12.07z' }
+];
+
+const STATUS_LABELS = {
+  quiero: 'Quiero leer',
+  leyendo: 'Leyendo',
+  terminado: 'Terminado',
+  abandonado: 'Abandonado'
+};
+
+const FORMAT_FAV = [
+  { key: 'manhwa', label: 'Manhwa ★' },
+  { key: 'manga', label: 'Manga ★' },
+  { key: 'anime', label: 'Anime ★' },
+  { key: 'novela', label: 'Novela ★' }
+];
+
+const WORKS_INDEX = [
+  // { id:'mh1', title:'Solo Leveling', format:'manhwa' },
+];
+
+function iconSvg(path, size) {
+  size = size || 15;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${path}"/></svg>`;
+}
+
+function starSvg(filled, size) {
+  size = size || 14;
+  const cls = filled ? 'star-filled' : 'star-empty';
+  return `<svg class="${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+}
+
+function reputationStarsHtml(points, size) {
+  const filled = Math.min(5, Math.floor((points || 0) / 5));
+  let html = '<div class="stars-row">';
+  for (let i = 0; i < 5; i++) html += starSvg(i < filled, size);
+  html += '</div>';
+  return html;
+}
+
+function escapeHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function defaultProfile() {
+  return {
+    name: 'Usuario',
+    description: '',
+    avatarId: AVATARS[0].id,
+    username: null,               // se llena al sincronizar con Supabase
+    reputationPoints: 0,          // se llena al sincronizar con Supabase
+    socials: SOCIALS.reduce((acc, s) => {
+      acc[s.id] = { enabled: s.id === 'instagram' || s.id === 'discord', url: '' };
+      return acc;
+    }, {})
+  };
+}
+
+function loadProfile() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultProfile();
+    const data = JSON.parse(raw);
+    const base = defaultProfile();
+    return { ...base, ...data, socials: { ...base.socials, ...(data.socials || {}) } };
+  } catch {
+    return defaultProfile();
+  }
+}
+
+function saveProfile(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  syncProfileToSupabase(data);
+}
+
+// ---------- Sincronización con Supabase (tabla "profiles") ----------
+let syncNoteTimer = null;
+function setSyncNote(text) {
+  const el = document.getElementById('syncNote');
+  if (!el) return;
+  el.textContent = text;
+  clearTimeout(syncNoteTimer);
+  if (text) syncNoteTimer = setTimeout(() => { el.textContent = ''; }, 2500);
+}
+
+async function syncProfileToSupabase(data) {
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) return; // sin sesión o sin cliente disponible: solo queda local
+
+  const { error } = await sb.from('profiles').upsert({
+    id: user.id,
+    display_name: data.name,
+    bio: data.description || '',
+    avatar_id: data.avatarId,
+    socials: data.socials
+  });
+
+  setSyncNote(error ? 'No se pudo sincronizar con el servidor.' : 'Sincronizado ✓');
+}
+
+async function fetchRemoteProfile() {
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) return;
+
+  const { data, error } = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+  if (!error && data) {
+    profile.username = data.username;
+    profile.reputationPoints = data.social_reputation_points || 0;
+    render();
+  }
+
+  syncFavoritesToSupabase();
+}
+
+function getFavoritesFlat() {
+  const library = loadLibrary();
+  const works = loadWorksIndex();
+  const byId = Object.fromEntries(works.map(w => [w.id, w]));
+  return Object.keys(library).map(id => {
+    const meta = byId[id];
+    return {
+      id,
+      title: meta ? meta.title : id,
+      format: meta ? meta.format : guessFormat(id),
+      status: library[id],
+    };
+  }).filter(f => f.format);
+}
+
+async function syncFavoritesToSupabase() {
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) return;
+
+  const flat = getFavoritesFlat();
+
+  // Reemplaza el set completo: borra lo que había y sube el estado actual.
+  await sb.from('favorites').delete().eq('user_id', user.id);
+  if (flat.length) {
+    await sb.from('favorites').insert(flat.map(f => ({
+      user_id: user.id,
+      work_id: f.id,
+      title: f.title,
+      format: f.format,
+      status: f.status,
+    })));
+  }
+}
+
+function getAvatar(id) {
+  return ocGetAvatar(id);
+}
+
+let audioCtx = null;
+const fileAudio = new Audio();
+fileAudio.preload = 'none';
+
+function playTone(freq) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, now);
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.18, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(now);
+    osc.stop(now + 1.2);
+    return 1100;
+  } catch {
+    return 0;
+  }
+}
+
+function playPhotoAudio(avatar, onStart, onEnd) {
+  fileAudio.pause();
+  fileAudio.currentTime = 0;
+
+  const tryFile = () => new Promise((resolve) => {
+    let settled = false;
+    const done = (ok) => { if (!settled) { settled = true; resolve(ok); } };
+    fileAudio.oncanplaythrough = () => done(true);
+    fileAudio.onerror = () => done(false);
+    fileAudio.src = avatar.audio;
+    fileAudio.load();
+    setTimeout(() => done(false), 600);
+  });
+
+  tryFile().then((ok) => {
+    if (ok) {
+      onStart();
+      fileAudio.play().then(() => { fileAudio.onended = onEnd; })
+        .catch(() => {
+          const ms = playTone(avatar.freq);
+          onStart();
+          setTimeout(onEnd, ms || 1100);
+        });
+    } else {
+      const ms = playTone(avatar.freq);
+      onStart();
+      setTimeout(onEnd, ms || 1100);
+    }
+  });
+}
+
+function loadWorksIndex() {
+  try {
+    const raw = localStorage.getItem('oc_works_index');
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (Array.isArray(p) && p.length) return p;
+    }
+  } catch (_) {}
+  return WORKS_INDEX.slice();
+}
+
+function loadLibrary() {
+  try { return JSON.parse(localStorage.getItem('oc_library') || '{}'); }
+  catch { return {}; }
+}
+
+function guessFormat(id) {
+  const s = String(id);
+  if (s.startsWith('mh')) return 'manhwa';
+  if (s.startsWith('mg')) return 'manga';
+  if (s.startsWith('an')) return 'anime';
+  if (s.startsWith('nv')) return 'novela';
+  return '';
+}
+
+function getFavoritesByFormat() {
+  const library = loadLibrary();
+  const works = loadWorksIndex();
+  const byId = Object.fromEntries(works.map(w => [w.id, w]));
+  const groups = { manhwa: [], manga: [], anime: [], novela: [] };
+
+  Object.keys(library).forEach(id => {
+    const meta = byId[id];
+    const format = meta ? meta.format : guessFormat(id);
+    if (!groups[format]) return;
+    groups[format].push({
+      id,
+      title: meta ? meta.title : id,
+      status: library[id],
+      cover: 'assets/covers/' + id + '.jpg'
+    });
+  });
+  return groups;
+}
+
+function placeholderCover(title) {
+  const initial = (title || '?').trim().charAt(0).toUpperCase() || '?';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="280"><rect width="100%" height="100%" fill="#0f0f11"/><text x="50%" y="50%" font-family="Georgia,serif" font-size="64" fill="#C9A15A" text-anchor="middle" dominant-baseline="central">${initial}</text></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+function renderFavorites() {
+  const groups = getFavoritesByFormat();
+  const wrap = document.getElementById('favWrap');
+  wrap.innerHTML = FORMAT_FAV.map(({ key, label }) => {
+    const items = groups[key] || [];
+    const body = items.length
+      ? `<div class="fav-scroll">${items.map(it => `
+          <a class="fav-card" href="biblioteca.html" title="${escapeHtml(it.title)}">
+            <div class="fav-card-thumb">
+              <img src="${escapeHtml(it.cover)}" alt="" loading="lazy"
+                onerror="this.onerror=null;this.src='${placeholderCover(it.title)}'">
+            </div>
+            <h4 class="fav-card-title">${escapeHtml(it.title)}</h4>
+            <div class="fav-card-status">${escapeHtml(STATUS_LABELS[it.status] || it.status || '')}</div>
+          </a>`).join('')}</div>`
+      : `<div class="fav-empty">Aún no tienes ${label.toLowerCase()}. Guarda obras en la <a href="biblioteca.html">Biblioteca</a>.</div>`;
+
+    return `
+      <section class="fav-block">
+        <div class="fav-header">
+          <h3>${label}</h3>
+          <span>${items.length}</span>
+        </div>
+        ${body}
+      </section>`;
+  }).join('');
+}
+
+let profile = loadProfile();
+let activeId = profile.avatarId;
+let showGallery = false;
+let showSocialPanel = false;
+let editingName = false;
+let editingUsername = false;
+let editingDesc = false;
+let draftName = profile.name;
+let draftUsername = profile.username || '';
+let draftDesc = profile.description || '';
+let playing = false;
+
+function setActiveAvatar(id) {
+  activeId = id;
+  profile.avatarId = id;
+  showGallery = false;
+  saveProfile(profile);
+  render();
+}
+
+function render() {
+  const avatar = getAvatar(activeId);
+  const card = document.getElementById('profileCard');
+  const activeSocials = SOCIALS.filter(s => profile.socials[s.id]?.enabled);
+
+  const socialIcons = activeSocials.map(s => {
+    const url = profile.socials[s.id].url || '#';
+    return `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer" title="${escapeHtml(s.label)}">${iconSvg(s.path, 15)}</a>`;
+  }).join('');
+
+  card.innerHTML = `
+    <div class="profile-banner" id="banner" style="background:${avatar.gradient}">
+      <img class="banner-photo" src="${escapeHtml(avatar.banner)}" alt="" id="bannerImg">
+      <svg class="banner-svg" viewBox="0 0 440 132" preserveAspectRatio="none">
+        <path d="M60 130 C 120 60, 180 30, 260 10" fill="none" stroke="#F5F3EE" stroke-opacity="0.12" stroke-width="1"/>
+        <path d="M40 132 C 110 90, 190 55, 300 25" fill="none" stroke="${GOLD}" stroke-opacity="0.18" stroke-width="1"/>
+        <path d="M0 110 C 90 100, 160 70, 250 15" fill="none" stroke="#F5F3EE" stroke-opacity="0.08" stroke-width="1"/>
+      </svg>
+      <div class="exclusive-title">${escapeHtml(avatar.title)}</div>
+    </div>
+
+    <div class="profile-content">
+      <div class="identity-row">
+        <div class="avatar-wrap" style="position:relative;flex-shrink:0">
+          <button type="button" class="avatar-btn${playing ? ' playing' : ''}" id="avatarBtn" aria-label="Reproducir audio" title="Toca para escuchar" style="background:${avatar.gradient}">
+            <img src="${escapeHtml(avatar.image)}" alt="" id="avatarImg">
+            <span class="avatar-fallback">${iconSvg('M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.97v6.05A4.49 4.49 0 0016.5 12zM14 3.23v2.06a7 7 0 010 13.42v2.06a9 9 0 000-17.54z', 22)}</span>
+            <span class="avatar-hint">toca para escuchar</span>
+          </button>
+          <button type="button" class="camera-btn" id="cameraBtn" title="Cambiar foto de perfil" aria-label="Cambiar foto">
+            ${iconSvg('M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4zM9 2L7.17 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2h-3.17L15 2H9z', 12)}
+          </button>
+        </div>
+
+        <div class="identity-text">
+          <div class="name-row">
+            ${editingName ? `
+              <div class="name-edit">
+                <div class="name-edit-row">
+                  <input id="nameInput" maxlength="${NAME_LIMIT}" value="${escapeHtml(draftName)}" autocomplete="off">
+                  <button type="button" class="btn-mini ok" id="nameSave" title="Guardar">✓</button>
+                  <button type="button" class="btn-mini cancel" id="nameCancel" title="Cancelar">✕</button>
+                </div>
+                <span class="char-hint${draftName.length >= NAME_LIMIT ? ' over' : ''}" id="nameCount">${draftName.length}/${NAME_LIMIT}</span>
+                <span class="field-error" id="nameError"></span>
+              </div>
+            ` : `
+              <div class="name-display">
+                <h2>${escapeHtml(profile.name)}</h2>
+                <button type="button" class="icon-btn" id="nameEditBtn" title="Editar nombre" aria-label="Editar nombre">
+                  ${iconSvg('M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z', 12)}
+                </button>
+              </div>
+            `}
+            <div class="social-inline">
+              ${socialIcons}
+              <button type="button" class="icon-btn" id="socialToggle" title="Editar redes sociales">
+                ${iconSvg('M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z', 14)}
+              </button>
+            </div>
+          </div>
+
+          <div class="username-line">
+            ${editingUsername ? `
+              <span class="username-edit-row">
+                <span style="font-size:12px;color:var(--fg-mute);">@</span>
+                <input id="usernameInput" maxlength="20" value="${escapeHtml(draftUsername)}" autocomplete="off">
+                <button type="button" class="btn-mini ok" id="usernameSave" title="Guardar">✓</button>
+                <button type="button" class="btn-mini cancel" id="usernameCancel" title="Cancelar">✕</button>
+              </span>
+            ` : `
+              <span class="username-tag">@${escapeHtml(profile.username || 'usuario')}</span>
+              <button type="button" class="icon-btn" id="usernameEditBtn" title="Editar usuario" aria-label="Editar usuario">
+                ${iconSvg('M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z', 11)}
+              </button>
+            `}
+            <span class="field-error" id="usernameError"></span>
+          </div>
+
+          ${reputationStarsHtml(profile.reputationPoints, 13)}
+          <div class="sync-note" id="syncNote"></div>
+        </div>
+      </div>
+
+      ${showGallery ? `
+        <div class="gallery" id="gallery">
+          ${AVATARS.map(a => `
+            <button type="button" data-id="${a.id}" class="${a.id === activeId ? 'active' : ''}" title="${escapeHtml(a.title)}" style="background:${a.gradient}">
+              <img src="${escapeHtml(a.image)}" alt="">
+            </button>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      ${showSocialPanel ? `
+        <div class="social-panel">
+          <div class="social-panel-label">Redes sociales</div>
+          <div class="social-list">
+            ${SOCIALS.map(s => {
+              const st = profile.socials[s.id] || { enabled: false, url: '' };
+              return `
+                <div class="social-row">
+                  <button type="button" class="social-toggle${st.enabled ? ' on' : ''}" data-net="${s.id}" title="${escapeHtml(s.label)}">
+                    ${iconSvg(s.path, 13)}
+                  </button>
+                  <span class="net-label">${escapeHtml(s.label)}</span>
+                  <input type="url" data-net-url="${s.id}" placeholder="enlace..." value="${escapeHtml(st.url || '')}" ${st.enabled ? '' : 'disabled'}>
+                </div>`;
+            }).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <div class="desc-block">
+        ${editingDesc ? `
+          <div class="desc-edit">
+            <textarea id="descInput" maxlength="${DESC_LIMIT}" rows="3">${escapeHtml(draftDesc)}</textarea>
+            <span class="field-error" id="descError"></span>
+            <div class="desc-edit-bar">
+              <span class="char-hint${draftDesc.length >= DESC_LIMIT ? ' over' : ''}" id="descCount">${draftDesc.length}/${DESC_LIMIT}</span>
+              <div class="desc-actions">
+                <button type="button" class="btn-text" id="descCancel">Cancelar</button>
+                <button type="button" class="btn-gold" id="descSave">✓ Guardar</button>
+              </div>
+            </div>
+          </div>
+        ` : `
+          <div class="desc-view">
+            <p class="${profile.description ? '' : 'empty'}">${profile.description ? escapeHtml(profile.description) : 'Sin descripción'}</p>
+            <button type="button" class="icon-btn" id="descEditBtn" title="Editar descripción">
+              ${iconSvg('M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z', 14)}
+            </button>
+          </div>
+        `}
+      </div>
+    </div>
+  `;
+
+  wireImageFallback('avatarImg', 'avatarBtn');
+  wireImageFallback('bannerImg', 'banner');
+  document.querySelectorAll('.gallery button').forEach(btn => {
+    const img = btn.querySelector('img');
+    if (!img) return;
+    img.onload = () => btn.classList.add('has-photo');
+    img.onerror = () => { img.style.display = 'none'; };
+  });
+
+  bindCardEvents();
+  renderFavorites();
+}
+
+function wireImageFallback(imgId, parentId) {
+  const img = document.getElementById(imgId);
+  const parent = document.getElementById(parentId);
+  if (!img || !parent) return;
+  img.onload = () => parent.classList.add('has-photo');
+  img.onerror = () => {
+    parent.classList.remove('has-photo');
+    img.style.display = 'none';
+  };
+  if (img.complete && img.naturalWidth > 0) parent.classList.add('has-photo');
+}
+
+function bindCardEvents() {
+  const avatar = getAvatar(activeId);
+
+  document.getElementById('avatarBtn').onclick = () => {
+    playPhotoAudio(avatar, () => {
+      playing = true;
+      document.getElementById('avatarBtn')?.classList.add('playing');
+    }, () => {
+      playing = false;
+      document.getElementById('avatarBtn')?.classList.remove('playing');
+    });
+  };
+
+  document.getElementById('cameraBtn').onclick = (e) => {
+    e.stopPropagation();
+    showGallery = !showGallery;
+    render();
+  };
+
+  document.getElementById('socialToggle').onclick = () => {
+    showSocialPanel = !showSocialPanel;
+    persistSocialInputs();
+    render();
+  };
+
+  if (showGallery) {
+    document.querySelectorAll('#gallery button').forEach(btn => {
+      btn.onclick = () => setActiveAvatar(btn.dataset.id);
+    });
+  }
+
+  if (showSocialPanel) {
+    document.querySelectorAll('.social-toggle').forEach(btn => {
+      btn.onclick = () => {
+        persistSocialInputs();
+        const id = btn.dataset.net;
+        profile.socials[id].enabled = !profile.socials[id].enabled;
+        saveProfile(profile);
+        render();
+      };
+    });
+    document.querySelectorAll('[data-net-url]').forEach(input => {
+      input.addEventListener('change', () => {
+        const id = input.getAttribute('data-net-url');
+        let url = input.value.trim();
+        if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+        profile.socials[id].url = url;
+        saveProfile(profile);
+      });
+    });
+  }
+
+  if (editingUsername) {
+    const input = document.getElementById('usernameInput');
+    input.focus();
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter') saveUsername();
+      if (e.key === 'Escape') cancelUsername();
+    };
+    document.getElementById('usernameSave').onclick = saveUsername;
+    document.getElementById('usernameCancel').onclick = cancelUsername;
+  } else {
+    document.getElementById('usernameEditBtn').onclick = () => {
+      draftUsername = profile.username || '';
+      editingUsername = true;
+      render();
+    };
+  }
+
+  if (editingName) {
+    const input = document.getElementById('nameInput');
+    input.focus();
+    input.oninput = () => {
+      draftName = input.value;
+      const c = document.getElementById('nameCount');
+      if (c) {
+        c.textContent = `${draftName.length}/${NAME_LIMIT}`;
+        c.classList.toggle('over', draftName.length >= NAME_LIMIT);
+      }
+      const err = document.getElementById('nameError');
+      if (err) err.classList.remove('visible');
+    };
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter') saveName();
+      if (e.key === 'Escape') cancelName();
+    };
+    document.getElementById('nameSave').onclick = saveName;
+    document.getElementById('nameCancel').onclick = cancelName;
+  } else {
+    document.getElementById('nameEditBtn').onclick = () => {
+      draftName = profile.name;
+      editingName = true;
+      render();
+    };
+  }
+
+  if (editingDesc) {
+    const ta = document.getElementById('descInput');
+    ta.focus();
+    ta.oninput = () => {
+      draftDesc = ta.value.slice(0, DESC_LIMIT);
+      const c = document.getElementById('descCount');
+      if (c) {
+        c.textContent = `${draftDesc.length}/${DESC_LIMIT}`;
+        c.classList.toggle('over', draftDesc.length >= DESC_LIMIT);
+      }
+      const err = document.getElementById('descError');
+      if (err) err.classList.remove('visible');
+    };
+    document.getElementById('descSave').onclick = () => {
+      const clean = draftDesc.slice(0, DESC_LIMIT);
+      if (containsBannedWord(clean)) {
+        const err = document.getElementById('descError');
+        if (err) {
+          err.textContent = 'Tu descripción contiene palabras no permitidas.';
+          err.classList.add('visible');
+        }
+        return;
+      }
+      profile.description = clean;
+      editingDesc = false;
+      saveProfile(profile);
+      render();
+    };
+    document.getElementById('descCancel').onclick = () => {
+      draftDesc = profile.description || '';
+      editingDesc = false;
+      render();
+    };
+  } else {
+    document.getElementById('descEditBtn').onclick = () => {
+      draftDesc = profile.description || '';
+      editingDesc = true;
+      render();
+    };
+  }
+}
+
+function persistSocialInputs() {
+  document.querySelectorAll('[data-net-url]').forEach(input => {
+    const id = input.getAttribute('data-net-url');
+    if (!profile.socials[id]) return;
+    let url = input.value.trim();
+    if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+    profile.socials[id].url = url;
+  });
+  saveProfile(profile);
+}
+
+function saveName() {
+  const clean = (draftName.trim() || 'Usuario').slice(0, NAME_LIMIT);
+  if (containsBannedWord(clean)) {
+    const err = document.getElementById('nameError');
+    if (err) {
+      err.textContent = 'Ese nombre contiene palabras no permitidas.';
+      err.classList.add('visible');
+    }
+    return;
+  }
+  profile.name = clean;
+  editingName = false;
+  saveProfile(profile);
+  render();
+}
+function cancelName() {
+  draftName = profile.name;
+  editingName = false;
+  render();
+}
+
+async function saveUsername() {
+  const input = document.getElementById('usernameInput');
+  const raw = (input?.value ?? draftUsername).trim().toLowerCase();
+  const err = document.getElementById('usernameError');
+
+  if (!/^[a-z0-9_]{3,20}$/.test(raw)) {
+    if (err) err.textContent = 'Usa entre 3 y 20 letras/números/guion bajo, sin espacios ni acentos.';
+    return;
+  }
+  if (containsBannedWord(raw)) {
+    if (err) err.textContent = 'Ese nombre de usuario contiene palabras no permitidas.';
+    return;
+  }
+
+  const sb = window.ocAuth && window.ocAuth.supabase;
+  const user = window.ocAuth && window.ocAuth.currentUser;
+  if (!sb || !user) {
+    if (err) err.textContent = 'No se pudo conectar con el servidor.';
+    return;
+  }
+
+  const { error } = await sb.from('profiles').update({ username: raw }).eq('id', user.id);
+  if (error) {
+    if (err) err.textContent = error.message.includes('duplicate')
+      ? 'Ese @usuario ya lo tiene alguien más.'
+      : 'No se pudo guardar: ' + error.message;
+    return;
+  }
+
+  profile.username = raw;
+  editingUsername = false;
+  render();
+}
+function cancelUsername() {
+  draftUsername = profile.username || '';
+  editingUsername = false;
+  render();
+}
+
+// El menú (abrir/cerrar, indicador ﹀/︿) ya lo controla auth.js.
+// Aquí solo reaccionamos al estado de sesión: si no hay usuario logueado,
+// esta página no debe mostrarse. Aprovechamos el mismo evento para traer
+// el @usuario y la reputación desde Supabase.
+if (window.ocAuth) {
+  if (!ocAuth.currentUser) window.location.href = 'index.html';
+  else fetchRemoteProfile();
+  ocAuth.onChange((user) => {
+    if (!user) window.location.href = 'index.html';
+    else fetchRemoteProfile();
+  });
+}
+
+render();
+</script>
+</body>
+  </html>
