@@ -594,4 +594,3 @@ async function publishPost() {
     btn.disabled = false;
   }
 }
-
