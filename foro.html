@@ -231,6 +231,48 @@
 
   .empty-state{ color:var(--fg-dim); text-align:center; padding:50px 0; font-size:0.9rem; }
 
+  /* ---- hilo de respuestas ---- */
+  .reply-toggle{
+    margin-top:12px; background:none; border:none; color:var(--fg-dim);
+    font-family:'Lora',serif; font-size:0.8rem; cursor:pointer; text-decoration:underline;
+  }
+  .reply-toggle:hover{ color:var(--accent); }
+  .replies-wrap{
+    margin-left:20px; margin-top:14px; padding-left:16px;
+    border-left:2px solid var(--line);
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .reply-item{ display:flex; gap:10px; }
+  .reply-avatar{
+    width:30px; height:30px; border-radius:50%; object-fit:cover; flex-shrink:0;
+    background:#141414; border:1px solid var(--line);
+  }
+  .reply-body{ flex:1; min-width:0; }
+  .reply-head{ display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; font-size:0.85rem; }
+  .reply-author{ color:var(--fg); text-decoration:none; font-weight:600; }
+  .reply-author:hover{ color:var(--accent); }
+  .reply-username{ color:var(--fg-dim); text-decoration:none; font-size:0.78rem; }
+  .reply-time{ color:var(--fg-dim); font-size:0.75rem; }
+  .reply-content{ font-size:0.9rem; white-space:pre-wrap; margin-top:2px; }
+  .reply-content.spoiler{ color:var(--accent); background:rgba(228,41,59,0.08); padding:8px; }
+  .reply-actions{ margin-top:4px; display:flex; gap:12px; }
+  .reply-actions button{
+    background:none; border:none; color:var(--fg-dim); font-family:'Lora',serif;
+    font-size:0.75rem; cursor:pointer; text-decoration:underline;
+  }
+  .reply-actions button:hover{ color:var(--accent); }
+  .reply-composer{ display:flex; gap:8px; margin-top:14px; align-items:flex-start; }
+  .reply-composer textarea{
+    flex:1; min-height:40px; background:#050505; border:1px solid var(--line); color:var(--fg);
+    font-family:'Lora',serif; font-size:0.88rem; padding:8px 10px; resize:vertical;
+  }
+  .reply-composer textarea:focus{ outline:none; border-color:var(--accent); }
+  .reply-composer button{
+    background:var(--accent); color:#fff; border:none; padding:9px 16px;
+    font-family:'Lora',serif; font-size:0.85rem; cursor:pointer; flex-shrink:0;
+  }
+  .reply-composer button:hover{ background:#FF3B4E; }
+
   /* ---- modal propio (reemplaza prompt()/confirm() nativos) ---- */
   .site-modal-overlay{
     position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(3px);
@@ -341,4 +383,3 @@
 <script src="foro.js"></script>
 </body>
 </html>
-
