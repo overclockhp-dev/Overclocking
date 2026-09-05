@@ -25,13 +25,26 @@ function getSupabaseClient() {
   return null;
 }
 
+function waitForSupabaseClient(maxAttempts = 30, intervalMs = 100) {
+  return new Promise((resolve) => {
+    let attempts = 0;
+    (function tryGet() {
+      const client = getSupabaseClient();
+      if (client) return resolve(client);
+      attempts++;
+      if (attempts >= maxAttempts) return resolve(null);
+      setTimeout(tryGet, intervalMs);
+    })();
+  });
+}
+
 let currentTag = "";
 let selectedPostTag = "general";
 let sb = null;
 let profilesCache = {}; // author_id -> fila de profiles
 
-document.addEventListener("DOMContentLoaded", () => {
-  sb = getSupabaseClient();
+document.addEventListener("DOMContentLoaded", async () => {
+  sb = await waitForSupabaseClient();
   setupTagBar();
   setupTagDropdown();
   setupComposer();
