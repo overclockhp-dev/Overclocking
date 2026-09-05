@@ -121,8 +121,20 @@
 function getSupabaseClient() {
   if (window.ocAuth && window.ocAuth.supabase && window.ocAuth.supabase.from) return window.ocAuth.supabase;
   if (window.supabase && window.supabase.from) return window.supabase;
-  if (window.supabaseClient && window.supabaseClient.from) return window.supabaseClient;
   return null;
+}
+
+function waitForSupabaseClient(maxAttempts = 30, intervalMs = 100) {
+  return new Promise((resolve) => {
+    let attempts = 0;
+    (function tryGet() {
+      const sb = getSupabaseClient();
+      if (sb) return resolve(sb);
+      attempts++;
+      if (attempts >= maxAttempts) return resolve(null);
+      setTimeout(tryGet, intervalMs);
+    })();
+  });
 }
 
 function escapeHtml(str) {
@@ -140,7 +152,7 @@ let sb = null;
 async function init() {
   const main = document.getElementById('mainContent');
   try {
-    sb = getSupabaseClient();
+    sb = await waitForSupabaseClient();
     if (!sb) {
       main.innerHTML = '<p class="not-authorized">No se encontró el cliente de Supabase (revisa auth.js).</p>';
       return;
