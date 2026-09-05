@@ -120,11 +120,13 @@
 <script>
 function getSupabaseClient() {
   if (window.ocAuth && window.ocAuth.supabase && window.ocAuth.supabase.from) return window.ocAuth.supabase;
+  if (window.ocAuth && window.ocAuth.client && window.ocAuth.client.from) return window.ocAuth.client;
+  if (window.supabaseClient && window.supabaseClient.from) return window.supabaseClient;
   if (window.supabase && window.supabase.from) return window.supabase;
   return null;
 }
 
-function waitForSupabaseClient(maxAttempts = 30, intervalMs = 100) {
+function waitForSupabaseClient(maxAttempts = 80, intervalMs = 100) {
   return new Promise((resolve) => {
     let attempts = 0;
     (function tryGet() {
