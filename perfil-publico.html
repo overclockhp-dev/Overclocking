@@ -227,7 +227,9 @@ function renderFavoritesHtml(rows) {
   }).join('');
 }
 
-loadPublicProfile();
+document.addEventListener('DOMContentLoaded', () => {
+  loadPublicProfile();
+});
 </script>
 </body>
 </html>
