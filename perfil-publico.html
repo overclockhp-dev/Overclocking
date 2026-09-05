@@ -59,15 +59,58 @@
 
   .fav-wrap{ width:100%; max-width:440px; }
   .fav-block{ margin-bottom:18px; }
-  .fav-header h3{ margin:0 0 8px; font-size:0.9rem; font-weight:600; }
+  .fav-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+  .fav-header h3{ margin:0; font-size:0.9rem; font-weight:600; }
+  .fav-header span{ font-size:0.75rem; color:var(--fg-mute); }
+  .fav-scroll{ display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; }
+  .fav-card{ flex:0 0 auto; width:100px; border:1px solid var(--line); background:var(--card); border-radius:10px; overflow:hidden; }
+  .fav-card-thumb{ aspect-ratio:3/4; background:#0f0f11; }
+  .fav-card-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .fav-card-title{ font-size:0.72rem; font-weight:600; padding:7px 7px 3px; margin:0; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .fav-card-status{ font-size:0.65rem; color:var(--fg-mute); padding:0 7px 8px; }
   .fav-empty{ border:1px dashed var(--line); border-radius:10px; color:var(--fg-mute); font-size:0.82rem; padding:14px; line-height:1.5; }
 
   .loading, .error-state{ color:var(--fg-dim); text-align:center; padding:60px 20px; font-size:0.9rem; }
+
+  /* ============ MODAL: INICIAR SESIÓN / CREAR CUENTA ============ */
+  .auth-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(3px); display:none; align-items:center; justify-content:center; padding:24px; z-index:200; }
+  .auth-overlay.open{ display:flex; }
+  .auth-card{
+    position:relative; width:100%; max-width:380px;
+    background:radial-gradient(circle at 50% 0%, rgba(228,41,59,0.22), transparent 55%), #0A0A0A;
+    border:1px solid var(--line); padding:40px 32px 34px; box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+  .auth-close{ position:absolute; top:16px; right:16px; background:none; border:none; color:var(--fg-dim); font-size:1.3rem; line-height:1; cursor:pointer; padding:4px; }
+  .auth-close:hover{ color:var(--gold); }
+  .auth-brand{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:26px; }
+  .auth-brand img{ width:44px; height:44px; border-radius:50%; }
+  .auth-brand span{ font-family:'Lora', serif; font-size:0.78rem; font-weight:600; letter-spacing:0.22em; color:var(--fg-dim); }
+  .auth-heading{ text-align:center; font-family:'Lora', serif; font-size:1.5rem; font-weight:700; margin-bottom:6px; }
+  .auth-subheading{ text-align:center; font-size:0.9rem; color:var(--fg-dim); margin-bottom:26px; }
+  .auth-tabs{ display:flex; border:1px solid var(--line); margin-bottom:24px; }
+  .auth-tab{ flex:1; background:none; border:none; color:var(--fg-dim); font-family:'Lora', serif; font-size:0.92rem; font-weight:500; padding:11px 0; cursor:pointer; }
+  .auth-tab.active{ background:var(--gold); color:var(--fg); }
+  .auth-form{ display:none; flex-direction:column; gap:16px; }
+  .auth-form.active{ display:flex; }
+  .auth-oauth{ display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#fff; color:#0d0d0d; border:none; font-family:'Lora', serif; font-size:0.95rem; font-weight:500; padding:12px 0; cursor:pointer; }
+  .auth-oauth svg{ width:19px; height:19px; }
+  .auth-divider{ display:flex; align-items:center; gap:14px; color:var(--fg-dim); font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase; margin:22px 0 18px; }
+  .auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+  .auth-error{ display:none; background:rgba(228,41,59,0.1); border:1px solid rgba(228,41,59,0.4); color:#ff8a95; font-size:0.85rem; line-height:1.5; padding:10px 14px; margin:-4px 0 18px; }
+  .auth-error.visible{ display:block; }
+  .auth-error.success{ background:rgba(76,175,80,0.1); border-color:rgba(76,175,80,0.4); color:#8fd694; }
+  .auth-field label{ display:block; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--fg-dim); margin-bottom:8px; }
+  .auth-field input{ width:100%; background:#050505; border:1px solid var(--line); color:var(--fg); font-family:'Lora', serif; font-size:0.95rem; padding:12px 14px; }
+  .auth-field input:focus{ outline:none; border-color:var(--gold); }
+  .auth-submit{ background:var(--gold); color:var(--fg); border:none; font-family:'Lora', serif; font-size:0.98rem; font-weight:500; padding:13px 0; cursor:pointer; margin-top:4px; }
+  .auth-switch{ text-align:center; font-size:0.85rem; color:var(--fg-dim); margin-top:20px; }
+  .auth-switch button{ background:none; border:none; color:var(--gold); font-family:'Lora', serif; font-size:0.85rem; cursor:pointer; text-decoration:underline; padding:0; }
 </style>
 </head>
 <body>
 
 <div id="menu-container"></div>
+<div id="auth-container"></div>
 
 <div class="page" id="page">
   <p class="loading">Cargando perfil…</p>
@@ -128,6 +171,9 @@ async function loadPublicProfile() {
   const avatarSrc = avatar ? avatar.image : '';
   const fallback = window.ocPlaceholderAvatar ? window.ocPlaceholderAvatar(profile.display_name) : '';
 
+  const { data: favRows } = await sb.from('favorites').select('*').eq('user_id', userId);
+  const favHtml = renderFavoritesHtml(favRows || []);
+
   page.innerHTML = `
     <div class="profile-card">
       <img class="pp-avatar" src="${escapeHtml(avatarSrc)}" alt="" onerror="this.onerror=null;this.src='${fallback}'">
@@ -138,14 +184,47 @@ async function loadPublicProfile() {
     </div>
 
     <div class="fav-wrap">
-      <div class="fav-block">
-        <div class="fav-header"><h3>Favoritos</h3></div>
-        <div class="fav-empty">Los favoritos todavía no están disponibles en perfiles públicos — por ahora solo se guardan en el propio dispositivo de cada usuario.</div>
-      </div>
+      ${favHtml}
     </div>
 
     <a class="pp-back" href="foro.html">← Volver al foro</a>
   `;
+}
+
+const FORMAT_FAV = [
+  { key: 'manhwa', label: 'Manhwa' },
+  { key: 'manga', label: 'Manga' },
+  { key: 'anime', label: 'Anime' },
+  { key: 'novela', label: 'Novela' },
+];
+const STATUS_LABELS = { quiero: 'Quiero leer', leyendo: 'Leyendo', terminado: 'Terminado', abandonado: 'Abandonado' };
+
+function placeholderCover(title) {
+  const initial = (title || '?').trim().charAt(0).toUpperCase() || '?';
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="280"><rect width="100%" height="100%" fill="#0f0f11"/><text x="50%" y="50%" font-family="Georgia,serif" font-size="64" fill="#E4293B" text-anchor="middle" dominant-baseline="central">${initial}</text></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+function renderFavoritesHtml(rows) {
+  return FORMAT_FAV.map(({ key, label }) => {
+    const items = rows.filter(r => r.format === key);
+    const body = items.length
+      ? `<div class="fav-scroll">${items.map(it => `
+          <div class="fav-card" title="${escapeHtml(it.title)}">
+            <div class="fav-card-thumb">
+              <img src="assets/covers/${escapeHtml(it.work_id)}.jpg" alt="" loading="lazy"
+                onerror="this.onerror=null;this.src='${placeholderCover(it.title)}'">
+            </div>
+            <h4 class="fav-card-title">${escapeHtml(it.title)}</h4>
+            <div class="fav-card-status">${escapeHtml(STATUS_LABELS[it.status] || it.status || '')}</div>
+          </div>`).join('')}</div>`
+      : `<div class="fav-empty">Sin ${label.toLowerCase()} todavía.</div>`;
+    return `
+      <section class="fav-block">
+        <div class="fav-header"><h3>${label}</h3><span>${items.length}</span></div>
+        ${body}
+      </section>`;
+  }).join('');
 }
 
 loadPublicProfile();
