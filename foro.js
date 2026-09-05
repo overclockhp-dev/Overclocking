@@ -279,7 +279,8 @@ function renderPost(post, myRating) {
     el.querySelector(".ignore-btn").addEventListener("click", () => {});
   }
 
-  el.querySelector(".report-link").addEventListener("click", () => reportPost(post));
+  const reportBtn = el.querySelector(".report-link");
+  if (reportBtn) reportBtn.addEventListener("click", () => reportPost(post));
   const deleteBtn = el.querySelector(".delete-link");
   if (deleteBtn) deleteBtn.addEventListener("click", () => deletePost(post));
 
