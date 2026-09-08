@@ -1305,6 +1305,7 @@ footer{
 ========================================================= -->
 
 <div id="menu-container"></div>
+<div id="support-nav-container"></div>
 
 
 <main class="contact-page">
@@ -1453,80 +1454,6 @@ footer{
 
 
         <!-- =================================================
-             TIPO DE CONTACTO
-        ================================================== -->
-
-        <div class="form-section">
-
-          <div class="form-section-heading">
-
-            <span class="form-section-number">
-              01
-            </span>
-
-            <span class="form-section-title">
-              Motivo del contacto
-            </span>
-
-          </div>
-
-
-          <div class="contact-type">
-
-            <div class="type-option">
-
-              <input
-                type="radio"
-                id="typeGeneral"
-                name="contactType"
-                value="general"
-                checked
-              >
-
-              <label for="typeGeneral">
-
-                <span class="type-title">
-                  Contacto general
-                </span>
-
-                <span class="type-description">
-                  Sugerencias, preguntas o cualquier otro asunto.
-                </span>
-
-              </label>
-
-            </div>
-
-
-            <div class="type-option">
-
-              <input
-                type="radio"
-                id="typeReport"
-                name="contactType"
-                value="reporte"
-              >
-
-              <label for="typeReport">
-
-                <span class="type-title">
-                  Reportar un problema
-                </span>
-
-                <span class="type-description">
-                  ¿Encontraste un error en una obra o en la biblioteca?
-                </span>
-
-              </label>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
              DATOS DE CONTACTO
         ================================================== -->
 
@@ -1535,7 +1462,7 @@ footer{
           <div class="form-section-heading">
 
             <span class="form-section-number">
-              02
+              01
             </span>
 
             <span class="form-section-title">
@@ -1588,144 +1515,6 @@ footer{
 
 
         <!-- =================================================
-             REPORTE
-        ================================================== -->
-
-        <div class="report-panel" id="reportPanel">
-
-          <div class="form-section-heading">
-
-            <span class="form-section-number">
-              03
-            </span>
-
-            <span class="form-section-title">
-              Detalles del reporte
-            </span>
-
-          </div>
-
-
-          <p class="report-intro">
-            Selecciona el problema que encontraste.
-          </p>
-
-
-          <!-- Categoría obligatoria -->
-
-          <div class="field">
-
-            <label id="workCategoryLabel">
-              Categoría de la obra <span class="required"></span>
-            </label>
-
-            <div class="report-chip-group" id="workCategoryGroup" role="radiogroup" aria-labelledby="workCategoryLabel">
-              <button type="button" class="report-chip" data-value="manga" role="radio" aria-checked="false">Manga</button>
-              <button type="button" class="report-chip" data-value="manhwa" role="radio" aria-checked="false">Manhwa</button>
-              <button type="button" class="report-chip" data-value="novela-ligera" role="radio" aria-checked="false">Novela ligera</button>
-              <button type="button" class="report-chip" data-value="novela-web" role="radio" aria-checked="false">Novela web</button>
-              <button type="button" class="report-chip" data-value="literatura" role="radio" aria-checked="false">Literatura</button>
-              <button type="button" class="report-chip" data-value="anime" role="radio" aria-checked="false">Anime</button>
-            </div>
-
-          </div>
-
-
-          <!-- Título obligatorio -->
-
-          <div class="field">
-
-            <label for="workTitle">
-              Título de la obra <span class="required"></span>
-            </label>
-
-            <input
-              type="text"
-              id="workTitle"
-              name="workTitle"
-              placeholder="Escribe el título de la obra"
-              maxlength="180"
-            >
-
-          </div>
-
-
-          <!-- Problemas -->
-
-          <div class="field">
-
-            <label id="issuesLabel">
-              ¿Qué problema encontraste?
-              <span class="required"></span>
-            </label>
-
-            <div class="custom-select" id="issueSelect">
-              <button type="button" class="custom-select-toggle" id="issueToggle" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="issuesLabel">
-                <span class="custom-select-label">Selecciona un problema</span>
-              </button>
-              <ul class="custom-select-dropdown" role="listbox" aria-label="Problema" id="issueList">
-                <li role="option" data-value="Portada con mala calidad">Portada con mala calidad</li>
-                <li role="option" data-value="Portada equivocada">Portada equivocada</li>
-                <li role="option" data-value="Portada no carga">Portada no carga</li>
-                <li role="option" data-value="Portada desactualizada">Portada desactualizada</li>
-                <li role="option" data-value="Portada no corresponde a la obra">Portada no corresponde a la obra</li>
-                <li role="option" data-value="Título mal escrito">Título mal escrito</li>
-                <li role="option" data-value="Título equivocado">Título equivocado</li>
-                <li role="option" data-value="Título incompleto">Título incompleto</li>
-                <li role="option" data-value="Título alternativo incorrecto">Título alternativo incorrecto</li>
-                <li role="option" data-value="Autor incorrecto">Autor incorrecto</li>
-                <li role="option" data-value="Autor faltante">Autor faltante</li>
-                <li role="option" data-value="Artista incorrecto">Artista incorrecto</li>
-                <li role="option" data-value="Sinopsis incorrecta">Sinopsis incorrecta</li>
-                <li role="option" data-value="Sinopsis incompleta">Sinopsis incompleta</li>
-                <li role="option" data-value="Género incorrecto">Género incorrecto</li>
-                <li role="option" data-value="Género faltante">Género faltante</li>
-                <li role="option" data-value="Etiqueta incorrecta">Etiqueta incorrecta</li>
-                <li role="option" data-value="Etiqueta faltante">Etiqueta faltante</li>
-                <li role="option" data-value="Tipo de obra incorrecto">Tipo de obra incorrecto</li>
-                <li role="option" data-value="Estado de la obra incorrecto">Estado de la obra incorrecto</li>
-                <li role="option" data-value="Número de capítulos incorrecto">Número de capítulos incorrecto</li>
-                <li role="option" data-value="Enlace incorrecto">Enlace incorrecto</li>
-                <li role="option" data-value="Obra duplicada">Obra duplicada</li>
-                <li role="option" data-value="Información desactualizada">Información desactualizada</li>
-                <li role="option" data-value="Reseña incorrecta">Reseña incorrecta</li>
-                <li role="option" data-value="Reseña no corresponde a la obra">Reseña no corresponde a la obra</li>
-                <li role="option" data-value="Botón que no funciona">Botón que no funciona</li>
-                <li role="option" data-value="Página que no carga">Página que no carga</li>
-                <li role="option" data-value="Error de navegación">Error de navegación</li>
-                <li role="option" data-value="Error de traducción">Error de traducción</li>
-                <li role="option" data-value="Otro problema">Otro problema</li>
-              </ul>
-            </div>
-
-          </div>
-
-
-          <!-- Información adicional -->
-
-          <div class="field">
-
-            <label for="reportDetails">
-              Cuéntanos más
-            </label>
-
-            <textarea
-              id="reportDetails"
-              name="reportDetails"
-              placeholder="Explícanos qué ocurre o qué debería corregirse..."
-              maxlength="2000"
-            ></textarea>
-
-            <div class="field-note">
-              Este campo es opcional.
-            </div>
-
-          </div>
-
-        </div>
-
-
-        <!-- =================================================
              MENSAJE GENERAL
         ================================================== -->
 
@@ -1734,7 +1523,7 @@ footer{
           <div class="form-section-heading">
 
             <span class="form-section-number">
-              03
+              02
             </span>
 
             <span class="form-section-title">
@@ -1922,913 +1711,156 @@ footer{
 <script src="auth.js"></script>
 
 <script src="components.js"></script>
+<script src="support-nav.js"></script>
 
   <script>
 document.addEventListener('DOMContentLoaded', async () => {
 
-  const contactForm =
-    document.getElementById('contactForm');
+  const contactForm = document.getElementById('contactForm');
+  const userStatus = document.getElementById('userStatus');
+  const formMessage = document.getElementById('formMessage');
+  const submitButton = document.getElementById('submitButton');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const messageInput = document.getElementById('message');
 
-  const reportPanel =
-    document.getElementById('reportPanel');
-
-  const generalMessageSection =
-    document.getElementById('generalMessageSection');
-
-  const userStatus =
-    document.getElementById('userStatus');
-
-  const formMessage =
-    document.getElementById('formMessage');
-
-  const submitButton =
-    document.getElementById('submitButton');
-
-  const nameInput =
-    document.getElementById('name');
-
-  const emailInput =
-    document.getElementById('email');
-
-  const messageInput =
-    document.getElementById('message');
-
-  const workTitle =
-    document.getElementById('workTitle');
-
-  const reportDetails =
-    document.getElementById('reportDetails');
-
-  const typeInputs =
-    document.querySelectorAll(
-      'input[name="contactType"]'
-    );
-
-
-  /* ========================================================
-     SUPABASE
-  ======================================================== */
-
+  /* Supabase client (desde auth.js si existe) */
   let supabaseClient = null;
-
-  if(typeof window.supabaseClient !== 'undefined'){
-
-    supabaseClient =
-      window.supabaseClient;
-
+  if (typeof window.supabaseClient !== 'undefined') {
+    supabaseClient = window.supabaseClient;
+  }
+  if (!supabaseClient && typeof window.supabase !== 'undefined' && window.supabase.auth) {
+    supabaseClient = window.supabase;
   }
 
-  if(
-    !supabaseClient &&
-    typeof window.supabase !== 'undefined' &&
-    typeof window.supabase.auth !== 'undefined'
-  ){
-
-    supabaseClient =
-      window.supabase;
-
-  }
-
-
-  /* ========================================================
-     TIPO DE CONTACTO
-  ======================================================== */
-
-  function updateContactType(){
-
-    const selected =
-      document.querySelector(
-        'input[name="contactType"]:checked'
-      );
-
-    if(!selected) return;
-
-
-    if(selected.value === 'reporte'){
-
-      reportPanel.classList.add('visible');
-
-      generalMessageSection.style.display = 'none';
-
-      messageInput.required = false;
-
-      workTitle.required = true;
-
-    }else{
-
-      reportPanel.classList.remove('visible');
-
-      generalMessageSection.style.display = '';
-
-      messageInput.required = true;
-
-      workTitle.required = false;
-
-    }
-
-  }
-
-
-  typeInputs.forEach(input => {
-
-    input.addEventListener(
-      'change',
-      updateContactType
-    );
-
-  });
-
-
-  updateContactType();
-
-
-  /* ========================================================
-     CATEGORÍA DE LA OBRA
-  ======================================================== */
-
-  let selectedWorkCategory = '';
-
-  const workCategoryGroup =
-    document.getElementById('workCategoryGroup');
-
-
-  workCategoryGroup.addEventListener(
-    'click',
-    (event) => {
-
-      const btn =
-        event.target.closest('.report-chip');
-
-      if(!btn) return;
-
-
-      workCategoryGroup
-        .querySelectorAll('.report-chip')
-        .forEach(b => {
-
-          b.classList.remove('selected');
-
-          b.setAttribute(
-            'aria-checked',
-            'false'
-          );
-
-        });
-
-
-      btn.classList.add('selected');
-
-      btn.setAttribute(
-        'aria-checked',
-        'true'
-      );
-
-
-      selectedWorkCategory =
-        btn.dataset.value;
-
-    }
-  );
-
-
-  function resetWorkCategory(){
-
-    selectedWorkCategory = '';
-
-    workCategoryGroup
-      .querySelectorAll('.report-chip')
-      .forEach(b => {
-
-        b.classList.remove('selected');
-
-        b.setAttribute(
-          'aria-checked',
-          'false'
-        );
-
-      });
-
-  }
-
-
-  /* ========================================================
-     PROBLEMA
-  ======================================================== */
-
-  let selectedIssue = '';
-
-  const issueSelect =
-    document.getElementById('issueSelect');
-
-  const issueToggle =
-    document.getElementById('issueToggle');
-
-  const issueList =
-    document.getElementById('issueList');
-
-  const issueLabel =
-    issueSelect.querySelector(
-      '.custom-select-label'
-    );
-
-
-  issueToggle.addEventListener(
-    'click',
-    (event) => {
-
-      event.stopPropagation();
-
-
-      const willOpen =
-        !issueSelect.classList.contains('open');
-
-
-      issueSelect.classList.toggle(
-        'open',
-        willOpen
-      );
-
-
-      issueToggle.setAttribute(
-        'aria-expanded',
-        String(willOpen)
-      );
-
-    }
-  );
-
-
-  issueList.addEventListener(
-    'click',
-    (event) => {
-
-      const li =
-        event.target.closest('li');
-
-      if(!li) return;
-
-
-      issueList
-        .querySelectorAll('li')
-        .forEach(o => {
-
-          o.classList.remove('active');
-
-        });
-
-
-      li.classList.add('active');
-
-
-      issueLabel.textContent =
-        li.textContent;
-
-
-      issueSelect.classList.remove(
-        'open'
-      );
-
-
-      issueToggle.setAttribute(
-        'aria-expanded',
-        'false'
-      );
-
-
-      selectedIssue =
-        li.dataset.value;
-
-    }
-  );
-
-
-  document.addEventListener(
-    'click',
-    (event) => {
-
-      if(!issueSelect.contains(event.target)){
-
-        issueSelect.classList.remove(
-          'open'
-        );
-
-        issueToggle.setAttribute(
-          'aria-expanded',
-          'false'
-        );
-
-      }
-
-    }
-  );
-
-
-  document.addEventListener(
-    'keydown',
-    (event) => {
-
-      if(event.key === 'Escape'){
-
-        issueSelect.classList.remove(
-          'open'
-        );
-
-        issueToggle.setAttribute(
-          'aria-expanded',
-          'false'
-        );
-
-      }
-
-    }
-  );
-
-
-  function resetIssues(){
-
-    selectedIssue = '';
-
-    issueLabel.textContent =
-      'Selecciona un problema';
-
-
-    issueList
-      .querySelectorAll('li')
-      .forEach(o => {
-
-        o.classList.remove('active');
-
-      });
-
-  }
-
-
-  /* ========================================================
-     CARGAR USUARIO
-  ======================================================== */
-
-  async function loadUser(){
-
-    try{
-
-      if(
-        supabaseClient &&
-        supabaseClient.auth &&
-        typeof supabaseClient.auth.getUser === 'function'
-      ){
-
-        const result =
-          await supabaseClient.auth.getUser();
-
-        const user =
-          result.data?.user;
-
-
-        if(user){
-
-          const metadata =
-            user.user_metadata || {};
-
-
+  /* Sesión: solo rellena si hay datos reales (no el fallback "Usuario") */
+  async function loadUser() {
+    try {
+      if (supabaseClient?.auth?.getUser) {
+        const result = await supabaseClient.auth.getUser();
+        const user = result.data?.user;
+        if (user) {
+          const metadata = user.user_metadata || {};
           const displayName =
             metadata.name ||
             metadata.full_name ||
             metadata.user_name ||
-            'Usuario';
+            metadata.preferred_username ||
+            '';
 
-
-          userStatus.innerHTML =
-            'Sesión iniciada como <strong>' +
-            escapeHTML(displayName) +
-            '</strong>.';
-
-
-          if(!nameInput.value){
-
-            nameInput.value =
-              displayName;
-
+          if (displayName) {
+            userStatus.innerHTML =
+              'Sesión iniciada como <strong>' + escapeHTML(displayName) + '</strong>.';
+            if (!nameInput.value) nameInput.value = displayName;
+          } else {
+            userStatus.innerHTML =
+              'Sesión iniciada. Completa tu nombre si deseas que te respondamos de forma personal.';
           }
 
-
-          if(!emailInput.value){
-
-            emailInput.value =
-              user.email || '';
-
+          if (user.email && !emailInput.value) {
+            emailInput.value = user.email;
           }
-
-
           return;
-
         }
-
       }
-
 
       userStatus.innerHTML =
         'Puedes escribirnos aunque no tengas una cuenta. ' +
         '<strong>Completa tus datos de contacto arriba.</strong>';
-
-
-    }catch(error){
-
-      console.warn(
-        'No se pudo comprobar la sesión:',
-        error
-      );
-
-
+    } catch (error) {
+      console.warn('No se pudo comprobar la sesión:', error);
       userStatus.innerHTML =
         'Completa tus datos de contacto para poder responder a tu mensaje.';
-
     }
-
   }
-
 
   loadUser();
 
-
-  /* ========================================================
-     ENVIAR FORMULARIO
-  ======================================================== */
-
-  contactForm.addEventListener(
-    'submit',
-    async (event) => {
-
-      event.preventDefault();
-
-      clearMessage();
-
-
-      const selectedType =
-        document.querySelector(
-          'input[name="contactType"]:checked'
-        )?.value;
-
-
-      const name =
-        nameInput.value.trim();
-
-
-      const email =
-        emailInput.value.trim();
-
-
-      /* ====================================================
-         DATOS GENERALES
-      ==================================================== */
-
-      if(!name){
-
-        showMessage(
-          'error',
-          'Escribe tu nombre.'
-        );
-
-        nameInput.focus();
-
-        return;
-
-      }
-
-
-      if(!email){
-
-        showMessage(
-          'error',
-          'Escribe tu correo electrónico.'
-        );
-
-        emailInput.focus();
-
-        return;
-
-      }
-
-
-      /* ====================================================
-         REPORTAR UN PROBLEMA
-      ==================================================== */
-
-      if(selectedType === 'reporte'){
-
-        const category =
-          selectedWorkCategory;
-
-
-        const title =
-          workTitle.value.trim();
-
-
-        const details =
-          reportDetails.value.trim();
-
-
-        /* -------------------------------
-           Validar categoría
-        -------------------------------- */
-
-        if(!category){
-
-          showMessage(
-            'error',
-            'Selecciona la categoría de la obra.'
-          );
-
-
-          workCategoryGroup.scrollIntoView({
-            behavior:'smooth',
-            block:'center'
-          });
-
-
-          return;
-
-        }
-
-
-        /* -------------------------------
-           Validar título
-        -------------------------------- */
-
-        if(!title){
-
-          showMessage(
-            'error',
-            'Escribe el título de la obra.'
-          );
-
-
-          workTitle.focus();
-
-
-          return;
-
-        }
-
-
-        /* -------------------------------
-           Validar problema
-        -------------------------------- */
-
-        if(!selectedIssue){
-
-          showMessage(
-            'error',
-            'Selecciona el problema que encontraste.'
-          );
-
-
-          issueSelect.scrollIntoView({
-            behavior:'smooth',
-            block:'center'
-          });
-
-
-          return;
-
-        }
-
-
-        /* -------------------------------
-           Obtener usuario actual
-        -------------------------------- */
-
-        let user = null;
-
-
-        try{
-
-          if(
-            supabaseClient &&
-            supabaseClient.auth &&
-            typeof supabaseClient.auth.getUser === 'function'
-          ){
-
-            const result =
-              await supabaseClient.auth.getUser();
-
-            user =
-              result.data?.user || null;
-
-          }
-
-        }catch(error){
-
-          console.warn(
-            'No se pudo obtener el usuario:',
-            error
-          );
-
-        }
-
-
-        /* -------------------------------
-           Datos para tabla REPORTS
-        -------------------------------- */
-
-        const reportPayload = {
-
-          title: title,
-
-          work_id: null,
-
-          content_type: category,
-
-          problem: selectedIssue,
-
-          comment: details,
-
-          page: window.location.href,
-
-          user_id:
-            user?.id || null,
-
-          user_email:
-            user?.email || email
-
-        };
-
-
-        await submitReport(
-          reportPayload
-        );
-
-
-        return;
-
-      }
-
-
-      /* ====================================================
-         CONTACTO GENERAL
-      ==================================================== */
-
-      const message =
-        messageInput.value.trim();
-
-
-      if(!message){
-
-        showMessage(
-          'error',
-          'Escribe tu mensaje.'
-        );
-
-
-        messageInput.focus();
-
-
-        return;
-
-      }
-
-
-      /* -------------------------------
-         Datos para CONTACT_MESSAGES
-      -------------------------------- */
-
-      const generalPayload = {
-
-        name: name,
-
-        email: email,
-
-        message: message,
-
-        created_at:
-          new Date().toISOString()
-
-      };
-
-
-      await submitContact(
-        generalPayload
-      );
-
+  contactForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    clearMessage();
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const message = messageInput.value.trim();
+
+    if (!name) {
+      showMessage('error', 'Escribe tu nombre.');
+      nameInput.focus();
+      return;
     }
-  );
-
-
-  /* ========================================================
-     GUARDAR REPORTE
-     
-     Tabla:
-     reports
-  ======================================================== */
-
-  async function submitReport(payload){
-
-    submitButton.disabled = true;
-
-    submitButton.textContent =
-      'Enviando…';
-
-
-    try{
-
-      if(!supabaseClient){
-
-        throw new Error(
-          'Supabase no está disponible.'
-        );
-
-      }
-
-
-      const result =
-        await supabaseClient
-          .from('reports')
-          .insert([payload]);
-
-
-      if(result.error){
-
-        throw result.error;
-
-      }
-
-
-      showMessage(
-        'success',
-        'Tu reporte fue enviado correctamente. Gracias por ayudarnos a mejorar Overclock.'
-      );
-
-
-      contactForm.reset();
-
-      resetWorkCategory();
-
-      resetIssues();
-
-      updateContactType();
-
-      loadUser();
-
-
-    }catch(error){
-
-      console.error(
-        'Error enviando reporte:',
-        error
-      );
-
-
-      showMessage(
-        'error',
-        'No pudimos enviar el reporte en este momento. Inténtalo nuevamente en unos minutos.'
-      );
-
-
-    }finally{
-
-      submitButton.disabled = false;
-
-      submitButton.textContent =
-        'Enviar mensaje →';
-
+    if (!email) {
+      showMessage('error', 'Escribe tu correo electrónico.');
+      emailInput.focus();
+      return;
+    }
+    if (!message) {
+      showMessage('error', 'Escribe tu mensaje.');
+      messageInput.focus();
+      return;
     }
 
-  }
+    const payload = {
+      name: name,
+      email: email,
+      message: message,
+      created_at: new Date().toISOString()
+    };
 
+    await submitContact(payload);
+  });
 
-  /* ========================================================
-     GUARDAR CONTACTO GENERAL
-     
-     Tabla:
-     contact_messages
-  ======================================================== */
-
-  async function submitContact(payload){
-
+  async function submitContact(payload) {
     submitButton.disabled = true;
-
-    submitButton.textContent =
-      'Enviando…';
-
-
-    try{
-
-      if(!supabaseClient){
-
-        throw new Error(
-          'Supabase no está disponible.'
-        );
-
+    submitButton.textContent = 'Enviando…';
+    try {
+      if (!supabaseClient) {
+        throw new Error('Supabase no está disponible.');
       }
-
-
-      const result =
-        await supabaseClient
-          .from('contact_messages')
-          .insert([payload]);
-
-
-      if(result.error){
-
-        throw result.error;
-
-      }
-
+      const result = await supabaseClient
+        .from('contact_messages')
+        .insert([payload]);
+      if (result.error) throw result.error;
 
       showMessage(
         'success',
         'Tu mensaje fue enviado correctamente. Gracias por ponerte en contacto con Overclock.'
       );
-
-
       contactForm.reset();
-
-      resetWorkCategory();
-
-      resetIssues();
-
-      updateContactType();
-
       loadUser();
-
-
-    }catch(error){
-
-      console.error(
-        'Error enviando contacto:',
-        error
-      );
-
-
+    } catch (error) {
+      console.error('Error enviando contacto:', error);
       showMessage(
         'error',
-        'No pudimos enviar el mensaje en este momento. Revisa la conexión con el sistema de contacto e inténtalo nuevamente.'
+        'No pudimos enviar el mensaje en este momento. Inténtalo nuevamente en unos minutos.'
       );
-
-
-    }finally{
-
+    } finally {
       submitButton.disabled = false;
-
-      submitButton.textContent =
-        'Enviar mensaje →';
-
+      submitButton.textContent = 'Enviar mensaje →';
     }
-
   }
 
-
-  /* ========================================================
-     MENSAJES
-  ======================================================== */
-
-  function showMessage(type,text){
-
-    formMessage.className =
-      'form-message visible ' + type;
-
-
-    formMessage.textContent =
-      text;
-
-
-    formMessage.scrollIntoView({
-      behavior:'smooth',
-      block:'nearest'
-    });
-
+  function showMessage(type, text) {
+    formMessage.className = 'form-message visible ' + type;
+    formMessage.textContent = text;
+    formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-
-  function clearMessage(){
-
-    formMessage.className =
-      'form-message';
-
-
-    formMessage.textContent =
-      '';
-
+  function clearMessage() {
+    formMessage.className = 'form-message';
+    formMessage.textContent = '';
   }
 
-
-  /* ========================================================
-     SEGURIDAD
-  ======================================================== */
-
-  function escapeHTML(value){
-
+  function escapeHTML(value) {
     return String(value)
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#039;');
-
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
-
 });
-
-  </script>
+</script>
 
 </body>
 </html>
