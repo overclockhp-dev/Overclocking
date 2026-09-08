@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía — Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#000000;
+    --fg:#F4F4F1;
+    --fg-dim:#8A8A85;
+    --line:#1E1E1C;
+    --accent:#E4293B;
+    --accent-glow:rgba(228,41,59,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Lora', serif;
+  }
+
+  header{
+    background:#000;
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+
+  header::after{
+    content:"";
+    display:block;
+    height:2px;
+    background:linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity:0.8;
+  }
+
+  .header-inner{
+    max-width:1200px;
+    margin:0 auto;
+    padding:18px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+    color:var(--fg);
+  }
+
+  .brand img{
+    height:36px;
+    width:36px;
+    border-radius:50%;
+    display:block;
+  }
+
+  .brand:hover img{ filter:drop-shadow(0 0 10px var(--accent-glow)); }
+
+  .brand span{
+    font-weight:600;
+    font-size:1.25rem;
+    letter-spacing:0.02em;
+    position:relative;
+  }
+
+  .brand span::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-6px;
+    width:0;
+    height:2px;
+    background:var(--accent);
+    transition:width .25s;
+  }
+
+  .brand:hover span::after{ width:100%; }
+
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap:28px;
+  }
+
+  .menu{ position:relative; }
+
+  .menu-toggle{
+    background:none;
+    border:none;
+    border-bottom:2px solid transparent;
+    font-family:'Lora', serif;
+    font-size:1rem;
+    color:var(--fg);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    padding:8px 4px;
+  }
+
+  .menu.open .menu-toggle{ border-bottom-color:var(--accent); }
+  .menu-toggle:hover{ color:var(--accent); }
+
+  .menu-indicator{ font-size:0.85rem; color:var(--fg-dim); }
+
+  .menu-dropdown{
+    position:absolute;
+    top:calc(100% + 14px);
+    right:0;
+    min-width:200px;
+    background:#0A0A0A;
+    border:1px solid var(--line);
+    padding:8px;
+    display:none;
+    flex-direction:column;
+  }
+
+  .menu.open .menu-dropdown{ display:flex; }
+
+  .menu-dropdown a{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.95rem;
+    padding:10px 12px;
+  }
+
+  .menu-dropdown a:hover{
+    background:#161614;
+    color:var(--accent);
+  }
+
+  .menu-dropdown a.menu-item-profile{
+    display:none;
+    border-top:1px solid var(--line);
+    margin-top:6px;
+    padding-top:12px;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .menu-dropdown a.menu-item-profile.visible{ display:block; }
+
+  .menu-dropdown a.menu-item-logout{
+    display:none;
+    color:var(--fg-dim);
+    font-size:0.88rem;
+  }
+  .menu-dropdown a.menu-item-logout.visible{ display:block; }
+
+  .menu-dropdown a.menu-item-login.hidden{ display:none; }
+
+  .login-link{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:1rem;
+    font-weight:500;
+    background:var(--accent);
+    padding:9px 20px;
+    transition:background .2s, box-shadow .2s;
+  }
+
+  .login-link:hover{
+    background:#FF3B4E;
+    box-shadow:0 0 16px var(--accent-glow);
+  }
+
+  body.menu-open{ overflow:hidden; }
+
+  /* ========== GUÍA ========== */
+  .guide-hero{
+    max-width:780px;
+    margin:0 auto;
+    padding:56px 32px 24px;
+  }
+
+  .guide-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    font-weight:600;
+    margin-bottom:14px;
+  }
+
+  .guide-eyebrow::before{
+    content:"";
+    width:22px;
+    height:1px;
+    background:var(--accent);
+  }
+
+  .guide-hero h1{
+    font-size:clamp(2rem, 3.5vw, 2.7rem);
+    font-weight:600;
+    margin:0 0 14px;
+    line-height:1.15;
+  }
+
+  .guide-hero .lead{
+    color:var(--fg-dim);
+    font-size:1.05rem;
+    line-height:1.7;
+    max-width:54ch;
+    margin:0 0 12px;
+  }
+
+  .guide-meta{
+    font-size:0.85rem;
+    color:var(--fg-dim);
+    margin:0;
+  }
+
+  .guide-meta strong{ color:var(--fg); font-weight:500; }
+
+  .guide-body{
+    max-width:780px;
+    margin:0 auto;
+    padding:20px 32px 100px;
+  }
+
+  .guide-toc{
+    border:1px solid var(--line);
+    background:#0A0A0A;
+    padding:20px 24px;
+    margin-bottom:40px;
+  }
+
+  .guide-toc h2{
+    font-size:0.72rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--fg-dim);
+    font-weight:600;
+    margin:0 0 14px;
+  }
+
+  .guide-toc ol{
+    margin:0;
+    padding:0;
+    list-style:none;
+    counter-reset:toc;
+  }
+
+  .guide-toc li{
+    counter-increment:toc;
+    margin-bottom:8px;
+  }
+
+  .guide-toc li:last-child{ margin-bottom:0; }
+
+  .guide-toc a{
+    color:var(--fg);
+    text-decoration:none;
+    font-size:0.95rem;
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    transition:color .2s;
+  }
+
+  .guide-toc a:hover{ color:var(--accent); }
+
+  .guide-toc a::before{
+    content:counter(toc, decimal-leading-zero);
+    color:var(--accent);
+    font-size:0.8rem;
+    font-weight:600;
+    min-width:1.6em;
+  }
+
+  .guide-section{
+    padding:36px 0 8px;
+    border-top:1px solid var(--line);
+  }
+
+  .guide-section:first-of-type{ border-top:none; padding-top:0; }
+
+  .guide-section h2{
+    font-size:1.35rem;
+    font-weight:600;
+    margin:0 0 16px;
+    line-height:1.3;
+  }
+
+  .guide-section h3{
+    font-size:1.05rem;
+    font-weight:600;
+    margin:22px 0 10px;
+    color:var(--fg);
+  }
+
+  .guide-section p{
+    color:var(--fg-dim);
+    font-size:1rem;
+    line-height:1.75;
+    margin:0 0 14px;
+  }
+
+  .guide-section p strong{ color:var(--fg); font-weight:600; }
+
+  .guide-section ul,
+  .guide-section ol.steps{
+    margin:0 0 16px;
+    padding:0 0 0 1.25em;
+    color:var(--fg-dim);
+    font-size:1rem;
+    line-height:1.7;
+  }
+
+  .guide-section li{ margin-bottom:8px; }
+  .guide-section li strong{ color:var(--fg); font-weight:600; }
+
+  .guide-note{
+    margin:18px 0 8px;
+    padding:16px 18px;
+    border-left:3px solid var(--accent);
+    background:#0A0A0A;
+    color:var(--fg-dim);
+    font-size:0.92rem;
+    line-height:1.6;
+  }
+
+  .guide-note strong{ color:var(--fg); }
+
+  .guide-section a{
+    color:var(--accent);
+    text-decoration:underline;
+    text-underline-offset:3px;
+  }
+
+  .guide-section a:hover{ color:#FF3B4E; }
+
+  .guide-footer{
+    max-width:780px;
+    margin:0 auto;
+    padding:0 32px 80px;
+    font-size:0.9rem;
+    color:var(--fg-dim);
+    line-height:1.6;
+  }
+
+  .guide-footer a{ color:var(--accent); }
+
+  @media (max-width:560px){
+    .header-inner{ padding:16px 18px; }
+    .brand span{ font-size:1.05rem; }
+    .header-right{ gap:14px; }
+    .login-link{ padding:7px 14px; font-size:0.9rem; }
+    .guide-hero{ padding:40px 18px 16px; }
+    .guide-body{ padding:12px 18px 80px; }
+    .guide-footer{ padding:0 18px 60px; }
+    .guide-toc{ padding:16px 18px; }
+  }
+
+  /* ============ MODAL: INICIAR SESIÓN / CREAR CUENTA ============ */
+  .auth-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    z-index:200;
+  }
+
+  .auth-overlay.open{ display:flex; }
+
+  .auth-card{
+    position:relative;
+    width:100%;
+    max-width:380px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(228,41,59,0.22), transparent 55%),
+      #0A0A0A;
+    border:1px solid var(--line);
+    padding:40px 32px 34px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+
+  .auth-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    background:none;
+    border:none;
+    color:var(--fg-dim);
+    font-size:1.3rem;
+    line-height:1;
+    cursor:pointer;
+    padding:4px;
+    transition:color .2s ease;
+  }
+
+  .auth-close:hover{ color:var(--accent); }
+
+  .auth-brand{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+
+  .auth-brand img{ width:44px; height:44px; border-radius:50%; }
+
+  .auth-brand span{
+    font-family:'Lora', serif;
+    font-size:0.78rem;
+    font-weight:600;
+    letter-spacing:0.22em;
+    color:var(--fg-dim);
+  }
+
+  .auth-heading{
+    text-align:center;
+    font-family:'Lora', serif;
+    font-size:1.5rem;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+
+  .auth-subheading{
+    text-align:center;
+    font-size:0.9rem;
+    color:var(--fg-dim);
+    margin-bottom:26px;
+  }
+
+  .auth-tabs{ display:flex; border:1px solid var(--line); margin-bottom:24px; }
+
+  .auth-tab{
+    flex:1;
+    background:none;
+    border:none;
+    color:var(--fg-dim);
+    font-family:'Lora', serif;
+    font-size:0.92rem;
+    font-weight:500;
+    padding:11px 0;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+
+  .auth-tab.active{ background:var(--accent); color:var(--fg); }
+
+  .auth-form{ display:none; flex-direction:column; gap:16px; }
+  .auth-form.active{ display:flex; }
+
+  .auth-oauth{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    background:#fff;
+    color:#0d0d0d;
+    border:none;
+    font-family:'Lora', serif;
+    font-size:0.95rem;
+    font-weight:500;
+    padding:12px 0;
+    cursor:pointer;
+    transition:background .2s ease, transform .15s ease;
+  }
+
+  .auth-oauth:hover{ background:#e6e6e6; transform:translateY(-1px); }
+  .auth-oauth svg{ width:19px; height:19px; }
+
+  .auth-divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    color:var(--fg-dim);
+    font-size:0.75rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    margin:22px 0 18px;
+  }
+
+  .auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+
+  .auth-error{
+    display:none;
+    background:rgba(228,41,59,0.1);
+    border:1px solid rgba(228,41,59,0.4);
+    color:#ff8a95;
+    font-size:0.85rem;
+    line-height:1.5;
+    padding:10px 14px;
+    margin:-4px 0 18px;
+  }
+
+  .auth-error.visible{ display:block; }
+  .auth-error.success{ background:rgba(76,175,80,0.1); border-color:rgba(76,175,80,0.4); color:#8fd694; }
+
+  .auth-field label{
+    display:block;
+    font-size:0.72rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--fg-dim);
+    margin-bottom:8px;
+  }
+
+  .auth-field input{
+    width:100%;
+    background:#050505;
+    border:1px solid var(--line);
+    color:var(--fg);
+    font-family:'Lora', serif;
+    font-size:0.95rem;
+    padding:12px 14px;
+    transition:border-color .2s ease;
+  }
+
+  .auth-field input:focus{ outline:none; border-color:var(--accent); }
+
+  .auth-submit{
+    background:var(--accent);
+    color:var(--fg);
+    border:none;
+    font-family:'Lora', serif;
+    font-size:0.98rem;
+    font-weight:500;
+    padding:13px 0;
+    cursor:pointer;
+    margin-top:4px;
+    transition:background .2s ease, box-shadow .2s ease;
+  }
+
+  .auth-submit:hover{ background:#FF3B4E; box-shadow:0 0 20px var(--accent-glow); }
+
+  .auth-switch{ text-align:center; font-size:0.85rem; color:var(--fg-dim); margin-top:20px; }
+
+  .auth-switch button{
+    background:none;
+    border:none;
+    color:var(--accent);
+    font-family:'Lora', serif;
+    font-size:0.85rem;
+    cursor:pointer;
+    text-decoration:underline;
+    padding:0;
+  }
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+
+<main>
+  <div class="guide-hero">
+    <div class="guide-eyebrow">Ayuda</div>
+    <h1>Guía de Overclock</h1>
+    <p class="lead">
+      Todo lo que necesitas para moverte por el sitio: iniciar sesión, personalizar tu perfil,
+      organizar tu biblioteca y participar en el foro con confianza.
+    </p>
+    <p class="guide-meta">
+      <strong>Última actualización:</strong> 8 de septiembre de 2026
+    </p>
+  </div>
+
+  <div class="guide-body">
+    <nav class="guide-toc" aria-label="Índice">
+      <h2>Contenido</h2>
+      <ol>
+        <li><a href="#login">Iniciar sesión</a></li>
+        <li><a href="#perfil">Perfil</a></li>
+        <li><a href="#biblioteca">Biblioteca</a></li>
+        <li><a href="#foro">Foro</a></li>
+        <li><a href="#reputacion">Reputación y suspensiones</a></li>
+        <li><a href="#comunidad">Convivencia en la comunidad</a></li>
+      </ol>
+    </nav>
+
+    <section class="guide-section" id="login">
+      <h2>1. Iniciar sesión</h2>
+      <p>
+        Para guardar tu biblioteca, participar en el foro y personalizar tu perfil, necesitas
+        una cuenta. Es gratis y toma menos de un minuto.
+      </p>
+      <h3>Cómo entrar</h3>
+      <ol class="steps">
+        <li>Toca <strong>Iniciar sesión</strong> en la parte superior del sitio.</li>
+        <li>Elige entrar con <strong>Google</strong> o con <strong>correo y contraseña</strong>.</li>
+        <li>Si es tu primera vez, usa la pestaña <strong>Crear cuenta</strong> en vez de «Iniciar sesión».</li>
+      </ol>
+      <h3>Si algo falla</h3>
+      <ul>
+        <li>Revisa que el correo y la contraseña estén escritos correctamente (sin espacios de más).</li>
+        <li>Si olvidaste tu contraseña, prueba a crear la cuenta de nuevo con ese mismo correo — el sistema te avisará si ya existe.</li>
+        <li>Si usaste Google la primera vez, vuelve a entrar con Google, no con correo y contraseña.</li>
+        <li>Si el problema sigue, cuéntanos qué pasó en <a href="reporte.html">Reporte</a>.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section" id="perfil">
+      <h2>2. Perfil</h2>
+      <p>
+        Tu perfil es tu carta de presentación en el foro: tu foto, tu nombre, tu @usuario y
+        lo que has leído o visto aparecen junto a todo lo que publicas.
+      </p>
+      <h3>Cambiar tu avatar</h3>
+      <ol class="steps">
+        <li>Entra a <strong>Perfil</strong> desde el menú.</li>
+        <li>Toca el ícono de cámara junto a tu foto.</li>
+        <li>Elige uno de los avatares disponibles — se guarda al instante.</li>
+      </ol>
+      <h3>Editar tu nombre y @usuario</h3>
+      <p>
+        Toca el lápiz junto a tu nombre o junto a tu @usuario para cambiarlos. El @usuario debe
+        tener entre 3 y 20 caracteres, solo letras minúsculas, números y guion bajo.
+      </p>
+      <h3>Agregar y quitar favoritos</h3>
+      <ul>
+        <li><strong>Agregar:</strong> desde la ficha de cualquier obra en la Biblioteca, marca el estado que le corresponde (Quiero leer, Leyendo, Terminado, Abandonado) — eso la suma a tus favoritos.</li>
+        <li><strong>Quitar:</strong> vuelve a esa misma obra y retira el estado que le pusiste.</li>
+        <li>Tus favoritos se agrupan por formato (Manhwa, Manga, Anime, Novela) y son visibles en tu perfil público para el resto de la comunidad.</li>
+      </ul>
+      <div class="guide-note">
+        <strong>Consejo.</strong> Tu descripción y tu nombre pasan por un filtro básico de
+        lenguaje — si algo no se guarda, revisa que no contenga palabras no permitidas.
+      </div>
+    </section>
+
+    <section class="guide-section" id="biblioteca">
+      <h2>3. Biblioteca</h2>
+      <p>
+        La Biblioteca es el catálogo de obras del sitio, con criterio editorial y fichas
+        detalladas de cada título.
+      </p>
+      <h3>Cómo sacarle más provecho</h3>
+      <ul>
+        <li><strong>Usa los filtros</strong> (formato, estado, orden) antes de hacer scroll largo — te ahorran tiempo y afinan la búsqueda mucho mejor que revisar todo el catálogo a mano.</li>
+        <li><strong>Marca tu estado de lectura</strong> en cada obra que sigas — así tu perfil refleja de verdad lo que has visto o leído.</li>
+        <li><strong>Usa el buscador</strong> si ya sabes el título exacto que buscas; los filtros son mejores cuando todavía no sabes qué quieres leer.</li>
+      </ul>
+    </section>
+
+    <section class="guide-section" id="foro">
+      <h2>4. Foro</h2>
+      <p>
+        El foro es para hablar de anime, manga, manhwa y novelas con el resto de la comunidad,
+        compartir arte y hacer preguntas.
+      </p>
+      <h3>Cómo publicar</h3>
+      <ol class="steps">
+        <li>Escribe tu mensaje en el cuadro de arriba del foro.</li>
+        <li>Elige una etiqueta: General, Abrir Debate, Teoría, Mi arte, Pregunta o Ayuda.</li>
+        <li>Si tu mensaje revela algo importante de una historia, marca <strong>¿Tiene spoilers?</strong> — se mostrará oculto hasta que cada quien decida verlo.</li>
+        <li>Publica. Puedes responder a cualquier publicación tocando <strong>Responder</strong> debajo de ella.</li>
+      </ol>
+      <h3>Calificaciones y reputación</h3>
+      <p>
+        Puedes calificar con estrellas las publicaciones de otros usuarios (no las tuyas).
+        Esas estrellas se acumulan y forman la reputación pública que se ve junto a su nombre.
+      </p>
+      <div class="guide-note">
+        <strong>Seguridad ante todo.</strong> Te recomendamos <strong>no compartir fotos personales,
+        tu ubicación, tu nombre completo real ni ningún dato que te identifique fuera de internet</strong>.
+        Lo que publicas en el foro es visible para toda la comunidad. Si alguien te hace sentir
+        incómodo o publica algo inapropiado, usa el botón <strong>Reportar</strong> — no necesitas
+        responderle ni resolverlo tú mismo.
+      </div>
+    </section>
+
+    <section class="guide-section" id="reputacion">
+      <h2>5. Reputación y suspensiones</h2>
+      <p>
+        Además de la reputación pública por estrellas, cada cuenta tiene una reputación de
+        moderación privada que empieza en 100 puntos. Cada tres reportes válidos que recibas
+        se descuentan 15 puntos; al llegar a 0, la cuenta queda suspendida temporalmente
+        mientras se revisa el caso.
+      </p>
+      <p>
+        Publicar el mismo mensaje varias veces seguidas también puede activar una suspensión
+        automática por spam.
+      </p>
+      <p>
+        Si crees que una suspensión fue un error, cuéntanoslo desde <a href="reporte.html">Reporte</a>.
+      </p>
+    </section>
+
+    <section class="guide-section" id="comunidad">
+      <h2>6. Convivencia en la comunidad</h2>
+      <p>
+        Overclock funciona mejor cuando se trata a los demás con el mismo respeto que
+        esperarías recibir. Antes de publicar, vale la pena preguntarse si el mensaje suma
+        a la conversación o solo busca molestar.
+      </p>
+      <ul>
+        <li>Discute ideas, no ataques a personas.</li>
+        <li>Marca spoilers siempre que compartas algo que revele una trama.</li>
+        <li>Usa el reporte quirúrgicamente: para lo que de verdad lo amerita, no para ganar una discusión.</li>
+      </ul>
+    </section>
+  </div>
+
+  <p class="guide-footer">
+    Overclock — criterio editorial, comunidad y respeto por tu experiencia.
+    <a href="index.html">Volver al inicio</a>
+  </p>
+</main>
+
+<div id="auth-container"></div>
+
+<script src="auth.js"></script>
+<script src="components.js"></script>
+</body>
+</html>
