@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créditos — Overclock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#000000;
+    --fg:#F4F4F1;
+    --fg-dim:#8A8A85;
+    --line:#1E1E1C;
+    --accent:#E4293B;
+    --accent-glow:rgba(228,41,59,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:'Lora', serif;
+  }
+
+  header{ background:#000; position:sticky; top:0; z-index:100; }
+  header::after{
+    content:"";
+    display:block;
+    height:2px;
+    background:linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    opacity:0.8;
+  }
+
+  .header-inner{
+    max-width:1200px; margin:0 auto; padding:18px 32px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--fg); }
+  .brand img{ height:36px; width:36px; border-radius:50%; display:block; }
+  .brand:hover img{ filter:drop-shadow(0 0 10px var(--accent-glow)); }
+  .brand span{ font-weight:600; font-size:1.25rem; letter-spacing:0.02em; position:relative; }
+  .brand span::after{ content:""; position:absolute; left:0; bottom:-6px; width:0; height:2px; background:var(--accent); transition:width .25s; }
+  .brand:hover span::after{ width:100%; }
+  .header-right{ display:flex; align-items:center; gap:28px; }
+  .menu{ position:relative; }
+  .menu-toggle{ background:none; border:none; border-bottom:2px solid transparent; font-family:'Lora', serif; font-size:1rem; color:var(--fg); display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 4px; }
+  .menu.open .menu-toggle{ border-bottom-color:var(--accent); }
+  .menu-toggle:hover{ color:var(--accent); }
+  .menu-indicator{ font-size:0.85rem; color:var(--fg-dim); }
+  .menu-dropdown{ position:absolute; top:calc(100% + 14px); right:0; min-width:200px; background:#0A0A0A; border:1px solid var(--line); padding:8px; display:none; flex-direction:column; }
+  .menu.open .menu-dropdown{ display:flex; }
+  .menu-dropdown a{ color:var(--fg); text-decoration:none; font-size:0.95rem; padding:10px 12px; }
+  .menu-dropdown a:hover{ background:#161614; color:var(--accent); }
+  .menu-dropdown a.menu-item-profile{ display:none; border-top:1px solid var(--line); margin-top:6px; padding-top:12px; color:var(--accent); font-weight:600; }
+  .menu-dropdown a.menu-item-profile.visible{ display:block; }
+  .menu-dropdown a.menu-item-logout{ display:none; color:var(--fg-dim); font-size:0.88rem; }
+  .menu-dropdown a.menu-item-logout.visible{ display:block; }
+  .menu-dropdown a.menu-item-login.hidden{ display:none; }
+  .login-link{ color:var(--fg); text-decoration:none; font-size:1rem; font-weight:500; background:var(--accent); padding:9px 20px; transition:background .2s, box-shadow .2s; }
+  .login-link:hover{ background:#FF3B4E; box-shadow:0 0 16px var(--accent-glow); }
+  body.menu-open{ overflow:hidden; }
+
+  /* ========== CRÉDITOS ========== */
+  .credits-hero{ max-width:780px; margin:0 auto; padding:56px 32px 24px; }
+  .credits-eyebrow{
+    display:inline-flex; align-items:center; gap:10px; font-size:0.78rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:600; margin-bottom:14px;
+  }
+  .credits-eyebrow::before{ content:""; width:22px; height:1px; background:var(--accent); }
+  .credits-hero h1{ font-size:clamp(2rem, 3.5vw, 2.7rem); font-weight:600; margin:0 0 14px; line-height:1.15; }
+  .credits-hero .lead{ color:var(--fg-dim); font-size:1.05rem; line-height:1.7; max-width:54ch; margin:0 0 12px; }
+  .credits-meta{ font-size:0.85rem; color:var(--fg-dim); margin:0; }
+  .credits-meta strong{ color:var(--fg); font-weight:500; }
+
+  .credits-body{ max-width:780px; margin:0 auto; padding:20px 32px 100px; }
+
+  .credits-toc{ border:1px solid var(--line); background:#0A0A0A; padding:20px 24px; margin-bottom:40px; }
+  .credits-toc h2{ font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--fg-dim); font-weight:600; margin:0 0 14px; }
+  .credits-toc ol{ margin:0; padding:0; list-style:none; counter-reset:toc; }
+  .credits-toc li{ counter-increment:toc; margin-bottom:8px; }
+  .credits-toc li:last-child{ margin-bottom:0; }
+  .credits-toc a{ color:var(--fg); text-decoration:none; font-size:0.95rem; display:flex; align-items:baseline; gap:12px; transition:color .2s; }
+  .credits-toc a:hover{ color:var(--accent); }
+  .credits-toc a::before{ content:counter(toc, decimal-leading-zero); color:var(--accent); font-size:0.8rem; font-weight:600; min-width:1.6em; }
+
+  .credits-section{ padding:36px 0 8px; border-top:1px solid var(--line); }
+  .credits-section:first-of-type{ border-top:none; padding-top:0; }
+  .credits-section h2{ font-size:1.35rem; font-weight:600; margin:0 0 16px; line-height:1.3; }
+  .credits-section p{ color:var(--fg-dim); font-size:1rem; line-height:1.75; margin:0 0 14px; }
+  .credits-section p strong{ color:var(--fg); font-weight:600; }
+  .credits-section a{ color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+  .credits-section a:hover{ color:#FF3B4E; }
+
+  .credits-note{
+    margin:18px 0 8px; padding:16px 18px; border-left:3px solid var(--accent);
+    background:#0A0A0A; color:var(--fg-dim); font-size:0.92rem; line-height:1.6;
+  }
+  .credits-note strong{ color:var(--fg); }
+
+  .credits-grid{ display:flex; flex-direction:column; gap:0; }
+  .credits-item{
+    display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+    padding:16px 0; border-top:1px solid var(--line);
+  }
+  .credits-item:first-child{ border-top:none; }
+  .credits-item-name{ color:var(--fg); font-size:1rem; font-weight:600; }
+  .credits-item-role{ color:var(--fg-dim); font-size:0.88rem; margin-top:2px; }
+  .credits-item-link{ flex-shrink:0; font-size:0.85rem; }
+
+  .credits-footer{ max-width:780px; margin:0 auto; padding:0 32px 80px; font-size:0.9rem; color:var(--fg-dim); line-height:1.6; }
+  .credits-footer a{ color:var(--accent); }
+
+  @media (max-width:560px){
+    .header-inner{ padding:16px 18px; }
+    .brand span{ font-size:1.05rem; }
+    .header-right{ gap:14px; }
+    .login-link{ padding:7px 14px; font-size:0.9rem; }
+    .credits-hero{ padding:40px 18px 16px; }
+    .credits-body{ padding:12px 18px 80px; }
+    .credits-footer{ padding:0 18px 60px; }
+    .credits-toc{ padding:16px 18px; }
+    .credits-item{ flex-direction:column; gap:4px; }
+  }
+
+  /* ============ MODAL: INICIAR SESIÓN / CREAR CUENTA ============ */
+  .auth-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(3px); display:none; align-items:center; justify-content:center; padding:24px; z-index:200; }
+  .auth-overlay.open{ display:flex; }
+  .auth-card{
+    position:relative; width:100%; max-width:380px;
+    background:radial-gradient(circle at 50% 0%, rgba(228,41,59,0.22), transparent 55%), #0A0A0A;
+    border:1px solid var(--line); padding:40px 32px 34px; box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  }
+  .auth-close{ position:absolute; top:16px; right:16px; background:none; border:none; color:var(--fg-dim); font-size:1.3rem; line-height:1; cursor:pointer; padding:4px; transition:color .2s ease; }
+  .auth-close:hover{ color:var(--accent); }
+  .auth-brand{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:26px; }
+  .auth-brand img{ width:44px; height:44px; border-radius:50%; }
+  .auth-brand span{ font-family:'Lora', serif; font-size:0.78rem; font-weight:600; letter-spacing:0.22em; color:var(--fg-dim); }
+  .auth-heading{ text-align:center; font-family:'Lora', serif; font-size:1.5rem; font-weight:700; margin-bottom:6px; }
+  .auth-subheading{ text-align:center; font-size:0.9rem; color:var(--fg-dim); margin-bottom:26px; }
+  .auth-tabs{ display:flex; border:1px solid var(--line); margin-bottom:24px; }
+  .auth-tab{ flex:1; background:none; border:none; color:var(--fg-dim); font-family:'Lora', serif; font-size:0.92rem; font-weight:500; padding:11px 0; cursor:pointer; transition:background .2s ease, color .2s ease; }
+  .auth-tab.active{ background:var(--accent); color:var(--fg); }
+  .auth-form{ display:none; flex-direction:column; gap:16px; }
+  .auth-form.active{ display:flex; }
+  .auth-oauth{ display:flex; align-items:center; justify-content:center; gap:10px; width:100%; background:#fff; color:#0d0d0d; border:none; font-family:'Lora', serif; font-size:0.95rem; font-weight:500; padding:12px 0; cursor:pointer; transition:background .2s ease, transform .15s ease; }
+  .auth-oauth:hover{ background:#e6e6e6; transform:translateY(-1px); }
+  .auth-oauth svg{ width:19px; height:19px; }
+  .auth-divider{ display:flex; align-items:center; gap:14px; color:var(--fg-dim); font-size:0.75rem; letter-spacing:0.06em; text-transform:uppercase; margin:22px 0 18px; }
+  .auth-divider::before, .auth-divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+  .auth-error{ display:none; background:rgba(228,41,59,0.1); border:1px solid rgba(228,41,59,0.4); color:#ff8a95; font-size:0.85rem; line-height:1.5; padding:10px 14px; margin:-4px 0 18px; }
+  .auth-error.visible{ display:block; }
+  .auth-error.success{ background:rgba(76,175,80,0.1); border-color:rgba(76,175,80,0.4); color:#8fd694; }
+  .auth-field label{ display:block; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--fg-dim); margin-bottom:8px; }
+  .auth-field input{ width:100%; background:#050505; border:1px solid var(--line); color:var(--fg); font-family:'Lora', serif; font-size:0.95rem; padding:12px 14px; transition:border-color .2s ease; }
+  .auth-field input:focus{ outline:none; border-color:var(--accent); }
+  .auth-submit{ background:var(--accent); color:var(--fg); border:none; font-family:'Lora', serif; font-size:0.98rem; font-weight:500; padding:13px 0; cursor:pointer; margin-top:4px; transition:background .2s ease, box-shadow .2s ease; }
+  .auth-submit:hover{ background:#FF3B4E; box-shadow:0 0 20px var(--accent-glow); }
+  .auth-switch{ text-align:center; font-size:0.85rem; color:var(--fg-dim); margin-top:20px; }
+  .auth-switch button{ background:none; border:none; color:var(--accent); font-family:'Lora', serif; font-size:0.85rem; cursor:pointer; text-decoration:underline; padding:0; }
+</style>
+</head>
+<body>
+
+<div id="menu-container"></div>
+
+<main>
+  <div class="credits-hero">
+    <div class="credits-eyebrow">Sobre el sitio</div>
+    <h1>Créditos</h1>
+    <p class="lead">
+      Overclock existe gracias a herramientas, servicios y personas. Aquí reconocemos a cada uno.
+    </p>
+    <p class="credits-meta">
+      <strong>Última actualización:</strong> 8 de septiembre de 2026
+    </p>
+  </div>
+
+  <div class="credits-body">
+    <nav class="credits-toc" aria-label="Índice">
+      <h2>Contenido</h2>
+      <ol>
+        <li><a href="#herramientas">Herramientas y servicios</a></li>
+        <li><a href="#colaboradores">Colaboradores</a></li>
+      </ol>
+    </nav>
+
+    <section class="credits-section" id="herramientas">
+      <h2>1. Herramientas y servicios</h2>
+      <p>Overclock se apoya en las siguientes plataformas para funcionar y para el contenido de referencia que usamos:</p>
+
+      <div class="credits-grid">
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">SSSTIK</div>
+            <div class="credits-item-role">Descarga de audio usado en el sitio</div>
+          </div>
+          <a class="credits-item-link" href="https://ssstik.io" target="_blank" rel="noopener">ssstik.io</a>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">KlickPin</div>
+            <div class="credits-item-role">Descarga de GIFs usados en el sitio</div>
+          </div>
+          <a class="credits-item-link" href="https://klickpin.com" target="_blank" rel="noopener">klickpin.com</a>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">AniList</div>
+            <div class="credits-item-role">Referencia de imágenes de obras</div>
+          </div>
+          <a class="credits-item-link" href="https://anilist.co" target="_blank" rel="noopener">anilist.co</a>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Flaticon</div>
+            <div class="credits-item-role">Iconos del sitio</div>
+          </div>
+          <a class="credits-item-link" href="https://www.flaticon.com" target="_blank" rel="noopener">flaticon.com</a>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Supabase</div>
+            <div class="credits-item-role">Base de datos, autenticación y almacenamiento</div>
+          </div>
+          <a class="credits-item-link" href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">GitHub</div>
+            <div class="credits-item-role">Alojamiento del sitio y control de versiones</div>
+          </div>
+          <a class="credits-item-link" href="https://github.com" target="_blank" rel="noopener">github.com</a>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Render</div>
+            <div class="credits-item-role">Servicio de moderación de imágenes</div>
+          </div>
+          <a class="credits-item-link" href="https://render.com" target="_blank" rel="noopener">render.com</a>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Google</div>
+            <div class="credits-item-role">Inicio de sesión y otros servicios vinculados a Overclock</div>
+          </div>
+          <a class="credits-item-link" href="https://google.com" target="_blank" rel="noopener">google.com</a>
+        </div>
+      </div>
+
+      <div class="credits-note">
+        <strong>Sobre el contenido descargado.</strong> El audio, las imágenes y los GIFs obtenidos
+        a través de herramientas de terceros pertenecen a sus creadores originales, no a Overclock
+        ni a las herramientas usadas para obtenerlos. Los usamos con fines no comerciales y de
+        catalogación editorial; si eres el creador de algún contenido y quieres que lo retiremos,
+        contáctanos en <a href="contacto.html">Contacto</a>.
+      </div>
+    </section>
+
+    <section class="credits-section" id="colaboradores">
+      <h2>2. Colaboradores</h2>
+      <p>Las personas detrás de Overclock:</p>
+
+      <div class="credits-grid">
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Andy.Ss</div>
+            <div class="credits-item-role">Rey — desarrollador de Overclock</div>
+          </div>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Rey Kawaii</div>
+            <div class="credits-item-role">Testing — encargado de probar el sitio y detectar fallas</div>
+          </div>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Bau Okka</div>
+            <div class="credits-item-role">Recomendaciones — busca novedades y tendencias en redes sociales (TikTok) para el sitio</div>
+          </div>
+        </div>
+        <div class="credits-item">
+          <div>
+            <div class="credits-item-name">Neko</div>
+            <div class="credits-item-role">Diseño — elige los avatares e iconos del sitio</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <p class="credits-footer">
+    Overclock — gracias a quienes lo hacen posible.
+    <a href="index.html">Volver al inicio</a>
+  </p>
+</main>
+
+<div id="auth-container"></div>
+
+<script src="auth.js"></script>
+<script src="components.js"></script>
+</body>
+</html>
