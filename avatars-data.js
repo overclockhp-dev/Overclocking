@@ -47,6 +47,15 @@ const AVATARS = [
     image: 'assets/profile/avatars/neko5.jpg',
     banner: 'assets/profile/banners/neko5.gif',
     audio: 'assets/profile/audio/neko5.mp3'
+  },
+  {
+    id: 'neko6',
+    title: '',
+    gradient: 'linear-gradient(135deg, #3a3320 0%, #0a0a0c 65%)',
+    freq: 523.25,
+    image: 'assets/profile/avatars/neko6.jpg',
+    banner: 'assets/profile/banners/neko6.gif',
+    audio: 'assets/profile/audio/neko6.mp3'
   }
 ];
 
