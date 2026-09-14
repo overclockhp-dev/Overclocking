@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /perfil.html
+Disallow: /perfil-publico.html
+Disallow: /moderacion.html
+Disallow: /reporte.html
+Disallow: /actividad.html
+
+Sitemap: https://overclockhp-dev.github.io/Overclocking/sitemap.xml
